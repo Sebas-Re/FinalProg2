@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F6EC">
+
+
+    <!-- Título de Recuperar Contraseña -->
+    <TextView
+        android:id="@+id/tv_titulo_recu_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recuperar\nContraseña"
+        android:textColor="#132625"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="40dp" />
+
+
+    <!-- Campo de Email -->
+    <EditText
+        android:id="@+id/input_email"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="10dp"
+        android:textColor="#000000"
+        android:textColorHint="#132625"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_titulo_recu_pass"
+        tools:ignore="Autofill" />
+
+
+    <!-- Contenedor del código recibido -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contenedor_codigo"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_email">
+
+
+        <!-- Instrucción para ingresar el código -->
+        <TextView
+            android:id="@+id/tv_instrucciones"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingrese el código enviado a su email"
+            android:textColor="#132625"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!-- Campo de Código recibido -->
+        <EditText
+            android:id="@+id/input_codigo"
+            android:layout_width="300dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="Código recibido"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#132625"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_instrucciones"
+            tools:ignore="Autofill" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- Botón de Recuperar Contraseña -->
+    <Button
+        android:id="@+id/btn_recu_pass"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:text="Recuperar Contraseña"
+        app:layout_constraintTop_toBottomOf="@id/contenedor_codigo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="#4F9A6E"
+        android:textColor="#FFFFFF" />
+    
+</androidx.constraintlayout.widget.ConstraintLayout>

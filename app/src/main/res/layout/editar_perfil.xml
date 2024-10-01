@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F6EC">
+
+    <!-- Título de EditarPerfil -->
+    <TextView
+        android:id="@+id/tv_titulo_EditarPerfil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EditarPerfil"
+        android:textColor="#132625"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp" />
+
+    <!-- Campo de Nombre -->
+    <EditText
+        android:id="@+id/input_nombre"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Nombre"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/tv_titulo_EditarPerfil"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#132625"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        tools:ignore="Autofill" />
+
+    <!-- Campo de Apellido -->
+    <EditText
+        android:id="@+id/input_apellido"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Apellido"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/input_nombre"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#132625"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        tools:ignore="Autofill" />
+
+    <!-- Campo de Usuario -->
+    <EditText
+        android:id="@+id/input_usuario"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Usuario"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/input_apellido"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#132625"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        tools:ignore="Autofill" />
+
+    <!-- Campo de Email -->
+    <EditText
+        android:id="@+id/input_email"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintTop_toBottomOf="@id/input_usuario"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#132625"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        tools:ignore="Autofill" />
+
+    <!-- Campo de Contraseña -->
+    <EditText
+        android:id="@+id/input_pass"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/input_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#132625"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        tools:ignore="Autofill" />
+
+    <!-- Campo de Repetir Contraseña -->
+    <EditText
+        android:id="@+id/input_repetir_pass"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Repetir Contraseña"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/input_pass"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#132625"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        tools:ignore="Autofill" />
+
+    <!-- Texto de Nota para la contraseña -->
+    <TextView
+        android:id="@+id/tv_PassRequerimientos"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="La contraseña debe tener por lo menos 8 caracteres, contener letras y números"
+        android:textColor="#132625"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/input_repetir_pass"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp" />
+
+    <!-- Botón de Guardar Cambios -->
+    <Button
+        android:id="@+id/btn_guardarCambios"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:text="Guardar Cambios"
+        app:layout_constraintTop_toBottomOf="@id/tv_PassRequerimientos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="#4F9A6E"
+        android:textColor="#FFFFFF" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

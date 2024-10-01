@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F6EC">
+
+
+    <!--tv titulo -->
+    <TextView
+        android:id="@+id/tv_titulo_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Titulo"
+        android:textColor="#132625"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.144"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--input titulo -->
+    <EditText
+        android:id="@+id/input_titulo"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/edit_text_bg"
+        android:hint="Titulo del Post"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#132625"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_titulo_post"
+        tools:ignore="Autofill" />
+
+
+    <TextView
+        android:id="@+id/tv_descripcion_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Descripcion del post"
+        android:textColor="#132625"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.206"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_titulo" />
+
+
+    <EditText
+        android:id="@+id/input_descripcion_post"
+        android:layout_width="240dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/edit_text_bg"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:textColor="#132625"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.321"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_descripcion_post" />
+
+    <RadioGroup
+        android:id="@+id/rg_relacionado_a"
+        android:layout_width="160dp"
+        android:layout_height="156dp"
+        android:layout_marginTop="36dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_relacionado_a">
+
+        <RadioButton
+            android:id="@+id/rb_opcion_eolica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Energía Eólica"
+            android:textColor="#132625"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/rb_opcion_electrica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Energía Eléctrica"
+            android:textColor="#132625"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/rb_opcion_ecologia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ecología"
+            android:textColor="#132625"
+            android:textSize="16sp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_crear_post"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="60dp"
+        android:backgroundTint="#4F9A6E"
+        android:text="Crear Post"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_relacionado_a" />
+
+    <TextView
+        android:id="@+id/tv_relacionado_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="Relacionado a..."
+        android:textColor="#132625"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_descripcion_post" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

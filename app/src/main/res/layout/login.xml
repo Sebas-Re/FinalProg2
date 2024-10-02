@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
-        android:text="EcoCasa"
+        android:text="@string/ecocasa"
         android:textColor="#132625"
         android:textSize="52sp"
         android:textStyle="bold"
@@ -26,16 +26,13 @@
 
 
     <!-- Identificador de Seccion de la app -->
-
-
-    <!-- Logo de la app -->
     <TextView
         android:id="@+id/tv_LogIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
-        android:text="LogIn"
+        android:text="@string/login"
         android:textColor="#132625"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -44,12 +41,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_logo" />
 
+
+    <!-- Logo de la app -->
     <ImageView
         android:id="@+id/img_logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="20dp"
-        android:contentDescription="Logo de la Aplicacion"
+        android:contentDescription="@string/logo_de_la_aplicacion"
         android:src="@drawable/logo_placeholder2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -58,10 +57,6 @@
 
 
     <!-- Campo de Usuario -->
-
-
-    <!-- Campo de Contraseña -->
-
     <EditText
         android:id="@+id/input_usuario"
         android:layout_width="320dp"
@@ -70,7 +65,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_text_bg"
-        android:hint="Usuario"
+        android:hint="@string/usuario"
         android:inputType="text"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
@@ -82,6 +77,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_LogIn"
         tools:ignore="Autofill" />
 
+
+    <!-- Campo de Contraseña -->
     <EditText
         android:id="@+id/input_pass"
         android:layout_width="320dp"
@@ -90,7 +87,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_text_bg"
-        android:hint="Contraseña"
+        android:hint="@string/contrasenia"
         android:inputType="textPassword"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
@@ -112,7 +109,7 @@
         android:layout_marginTop="68dp"
         android:layout_marginEnd="32dp"
         android:backgroundTint="#4F9A6E"
-        android:text="Iniciar sesión"
+        android:text="@string/iniciar_sesion"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.481"
@@ -126,7 +123,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginTop="56dp"
-        android:text="¿Olvidaste tu contraseña?"
+        android:text="@string/olvidaste_tu_contrasenia"
         android:textColor="#132625"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,7 +137,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginTop="36dp"
-        android:text="Regístrate"
+        android:text="@string/registrate"
         android:textColor="#132625"
         android:textSize="14sp"
         android:textStyle="bold"

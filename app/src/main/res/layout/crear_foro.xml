@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:text="Titulo"
+        android:text="@string/titulo"
         android:textColor="#132625"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +28,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/edit_text_bg"
-        android:hint="Titulo del Post"
+        android:hint="@string/titulo_del_post"
         android:inputType="text"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Descripcion del post"
+        android:text="@string/descripcion_del_post"
         android:textColor="#132625"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,6 +71,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_descripcion_post" />
 
+
+    <TextView
+        android:id="@+id/tv_relacionado_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="@string/relacionado_a"
+        android:textColor="#132625"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_descripcion_post" />
+
     <RadioGroup
         android:id="@+id/rg_relacionado_a"
         android:layout_width="160dp"
@@ -86,7 +99,7 @@
             android:id="@+id/rb_opcion_eolica"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Energía Eólica"
+            android:text="@string/energia_eolica"
             android:textColor="#132625"
             android:textSize="16sp" />
 
@@ -94,7 +107,7 @@
             android:id="@+id/rb_opcion_electrica"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Energía Eléctrica"
+            android:text="@string/energia_electrica"
             android:textColor="#132625"
             android:textSize="16sp" />
 
@@ -102,7 +115,7 @@
             android:id="@+id/rb_opcion_ecologia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ecología"
+            android:text="@string/ecolog_a"
             android:textColor="#132625"
             android:textSize="16sp" />
     </RadioGroup>
@@ -113,24 +126,14 @@
         android:layout_height="48dp"
         android:layout_marginTop="60dp"
         android:backgroundTint="#4F9A6E"
-        android:text="Crear Post"
+        android:text="@string/crear_post"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rg_relacionado_a" />
 
-    <TextView
-        android:id="@+id/tv_relacionado_a"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="Relacionado a..."
-        android:textColor="#132625"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_descripcion_post" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">FinalProg2</string>
+    <string name="titulo">Titulo</string>
+    <string name="titulo_del_post">Titulo del Post</string>
+    <string name="descripcion_del_post">Descripcion del post</string>
+    <string name="relacionado_a">Relacionado a...</string>
+    <string name="energia_eolica">Energía Eólica</string>
+    <string name="energia_electrica">Energía Eléctrica</string>
+    <string name="ecolog_a">Ecologia</string>
+    <string name="crear_post">Crear Post</string>
+    <string name="ecocasa">EcoCasa</string>
+    <string name="login">LogIn</string>
+    <string name="logo_de_la_aplicacion">Logo de la Aplicacion</string>
+    <string name="usuario">Usuario</string>
+    <string name="contrasenia">Contraseña</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="olvidaste_tu_contrasenia">¿Olvidaste tu contraseña?</string>
+    <string name="registrate">Regístrate</string>
+    <string name="editarperfil">EditarPerfil</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <string name="email">Email</string>
+    <string name="repetir_contrasenia">Repetir Contraseña</string>
+    <string name="requerimientos_pass">La contraseña debe tener por lo menos 8 caracteres, contener letras y números</string>
+    <string name="guardar_cambios">Guardar Cambios</string>
+    <string name="nueva_contrasenia">Nueva\nContraseña</string>
+    <string name="recuperar_contrasenia">Recuperar Contraseña</string>
+    <string name="recuperar_ncontrasenia">Recuperar\nContraseña</string>
+    <string name="instruccion_codigo">Ingrese el código enviado a su email</string>
+    <string name="codigo_recibido">Código recibido</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="si_ya_tienes_un_usuario">Si ya tienes un usuario</string>
+    <string name="inicia_sesion">inicia sesión</string>
 </resources>

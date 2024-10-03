@@ -31,4 +31,6 @@
     <string name="registrarse">Registrarse</string>
     <string name="si_ya_tienes_un_usuario">Si ya tienes un usuario</string>
     <string name="inicia_sesion">inicia sesión</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

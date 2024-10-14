@@ -7,60 +7,44 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalprog2.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LogInFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class LogInFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public LogInFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LogInFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LogInFragment newInstance(String param1, String param2) {
-        LogInFragment fragment = new LogInFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_log_in, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_log_in, container, false);
+        Button btn_login = view.findViewById(R.id.btn_login);
+        TextView tv_pass_olvidada = view.findViewById(R.id.tv_pass_olvidada);
+        TextView tv_registro_usuario = view.findViewById(R.id.tv_registro_usuario);
+
+
+        btn_login.setOnClickListener(v -> {
+            // implementar lógica para iniciar sesion
+            Toast.makeText(getActivity(), "Iniciar Sesión", Toast.LENGTH_SHORT).show();
+        });
+
+        tv_pass_olvidada.setOnClickListener(v -> {
+            // implementar lógica para olvide mi contraseña
+            Toast.makeText(getActivity(), "Olvide mi contraseña", Toast.LENGTH_SHORT).show();
+
+        });
+
+        tv_registro_usuario.setOnClickListener(v -> {
+            // implementar lógica para registrarse
+            Toast.makeText(getActivity(), "Registrate", Toast.LENGTH_SHORT).show();
+
+        });
+
+     return view;
     }
 }

@@ -27,6 +27,12 @@ public class Usuario {
         this.id = id;
     }
 
+    public Usuario (String nombre, String email, String pass){
+        this.nombre = nombre;
+        this.email = email;
+        this.pass = pass;
+    }
+
     public int getId() {
         return id;
     }

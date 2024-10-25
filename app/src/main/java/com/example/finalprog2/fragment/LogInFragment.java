@@ -64,15 +64,21 @@ public class LogInFragment extends Fragment {
         });
 
         tv_pass_olvidada.setOnClickListener(v -> {
-            // implementar lógica para olvide mi contraseña
-            Toast.makeText(getActivity(), "Olvide mi contraseña", Toast.LENGTH_SHORT).show();
-
+            // Reemplazar el fragmento actual por RegistroUsuarioFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new RecuperarPassFragment()) // Usa el ID correcto de tu contenedor de fragmentos
+                    .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                    .commit();
         });
 
         tv_registro_usuario.setOnClickListener(v -> {
-            // implementar lógica para registrarse
-            Toast.makeText(getActivity(), "Registrate", Toast.LENGTH_SHORT).show();
-
+            // Reemplazar el fragmento actual por RegistroUsuarioFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new RegistroUsuarioFragment()) // Usa el ID correcto de tu contenedor de fragmentos
+                    .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                    .commit();
         });
 
      return view;

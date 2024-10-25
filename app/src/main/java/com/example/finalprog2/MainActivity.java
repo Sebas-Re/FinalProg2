@@ -8,17 +8,21 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.finalprog2.fragment.LogInFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.fragment_log_in);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        setContentView(R.layout.activity_main);
+        if (savedInstanceState == null) {
+            // Cargar el fragmento de inicio de sesión
+            LogInFragment logInFragment = new LogInFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, logInFragment) // Utiliza el ID del contenedor
+                    .commit();
+        }
     }
 }

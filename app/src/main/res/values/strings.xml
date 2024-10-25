@@ -33,4 +33,5 @@
     <string name="inicia_sesion">inicia sesión</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="img_encabezado_desc">Descubre un nuevo sistema para la incorporacion de energia eolica hogareña</string>
 </resources>

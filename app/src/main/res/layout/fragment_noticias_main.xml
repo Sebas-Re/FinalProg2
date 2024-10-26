@@ -4,85 +4,240 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/noticiasMain"
-    tools:context=".MainActivity">
+    android:background="@color/white"
+    android:padding="16dp"
+    android:layout_margin="16dp">
 
-    <!-- Imagen clickeable y texto -->
-    <LinearLayout
-        android:id="@+id/encabezado"
+    <!-- Sección de la noticia principal -->
+    <FrameLayout
+        android:id="@+id/linearLayoutPrincipal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="200dp"
+        tools:ignore="MissingConstraints">
 
         <ImageView
-            android:id="@+id/img_encabezado"
+            android:id="@+id/image_main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/logo_placeholder2"
-            android:contentDescription="@string/img_encabezado_desc"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/main_news_background" />
 
-        <TextView
-            android:id="@+id/txt_encabezado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nuevo sistema eólico"
-            android:textSize="24sp"
-            android:textColor="@android:color/black"
-            android:layout_gravity="center"
-            android:paddingTop="8dp" />
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:padding="16dp"
+            android:background="#66000000"> <!-- Fondo semitransparente -->
 
-    <!-- Toolbar con barra de búsqueda -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintTop_toBottomOf="@id/encabezado"
-        android:background="@drawable/edit_text_bg"
-        app:titleTextColor="@android:color/white"
-        app:navigationIcon="@null"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:padding="16dp"
+                android:background="#66000000"
+                android:orientation="vertical"> <!-- Cambiar la orientación a vertical -->
 
+                <TextView
+                    android:id="@+id/text_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Título de la Noticia"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Descripción de la noticia"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Cuadro de búsqueda -->
     <EditText
-        android:id="@+id/search_input"
+        android:id="@+id/et_buscar_foro"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:hint="Buscar..."
-        android:background="@drawable/edit_text_bg"
-        app:layout_constraintTop_toBottomOf="@id/encabezado"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="8dp"/>
-
-
-    <!-- ViewPager para la paginación -->
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/find_text"
+        android:hint="Buscar foro"
+        android:paddingStart="48dp"
+        android:paddingEnd="10dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#B0B0B0"
+        android:drawableRight="@drawable/ic_lupa"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutPrincipal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Botón "Ver más" -->
-    <Button
-        android:id="@+id/btn_mostrarMas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:backgroundTint="#4F9A6E"
-        android:text="Ver Más..."
-        android:textColor="#ffff"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/viewPager" />
+    <!-- Contenedor con scroll para la lista de Noticias -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/et_buscar_foro"
+        app:layout_constraintBottom_toTopOf="@id/paginationText"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- LinearLayout para organizar los CardViews -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Primer CardView -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#ffffff"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Ícono del foro -->
+                <ImageView
+                    android:layout_width="98dp"
+                    android:layout_height="104dp"
+                    android:contentDescription="Icono de Noticia"
+                    android:src="@drawable/sample_main_news"
+                    android:layout_gravity="center_vertical" />
+
+                <!-- Contenedor para el texto y el botón -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center">
+
+                    <!-- Título del foro -->
+                    <TextView
+                        android:id="@+id/text_forum_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Título de la Noticia 1"
+                        android:textColor="#132625"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Descripción del foro -->
+                    <TextView
+                        android:id="@+id/text_forum_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Descripción de la noticia"
+                        android:textColor="#132625"
+                        android:textSize="14sp" />
+
+                    <!-- Botón para ir a la noticia -->
+                    <Button
+                        android:id="@+id/button_view_news"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ver"
+                        android:backgroundTint="#4F9A6E"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Segundo CardView -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#ffffff"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Ícono del foro -->
+                <ImageView
+                    android:layout_width="98dp"
+                    android:layout_height="104dp"
+                    android:contentDescription="Icono de Noticia"
+                    android:src="@drawable/sample_main_news2"
+                    android:layout_gravity="center_vertical" />
+
+                <!-- Contenedor para el texto y el botón -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center">
+
+                    <!-- Título del foro -->
+                    <TextView
+                        android:id="@+id/text_forum_title2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Título de la Noticia 2"
+                        android:textColor="#132625"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Descripción del foro -->
+                    <TextView
+                        android:id="@+id/text_forum_description2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Descripción de la segunda noticia"
+                        android:textColor="#132625"
+                        android:textSize="14sp" />
+
+                    <!-- Botón para ir a la noticia -->
+                    <Button
+                        android:id="@+id/button_view_news2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ver"
+                        android:backgroundTint="#4F9A6E"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>
+
+    <!-- TextView para mostrar "1 2 3 ·" -->
+<TextView
+android:id="@+id/paginationText"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_gravity="center"
+    android:text="1 2 3 ·"
+    android:textColor="@android:color/holo_green_light"
+    android:textSize="18sp"
+    android:padding="16dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

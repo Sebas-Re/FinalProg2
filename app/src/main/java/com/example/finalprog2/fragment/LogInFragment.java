@@ -76,7 +76,7 @@ public class LogInFragment extends Fragment {
             // Reemplazar el fragmento actual por RegistroUsuarioFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new CrearForoFragment()) // Usa el ID correcto de tu contenedor de fragmentos
+                    .replace(R.id.fragment_container, new NoticiasMainFragment()) // Usa el ID correcto de tu contenedor de fragmentos
                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                     .commit();
         });

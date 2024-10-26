@@ -4,65 +4,33 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
-import com.example.finalprog2.R;
-import com.example.finalprog2.adapter.MyPagerAdapter;
-
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
-
+import com.example.finalprog2.R;
 public class NoticiasMainFragment extends Fragment {
 
-    private ViewPager viewPager;
-    private MyPagerAdapter myPagerAdapter;
-    private Button btn_mostrarMas;
-    ImageView img_encabezado;
+    // Método para crear la vista del fragmento
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Infla el layout del fragmento
+        return inflater.inflate(R.layout.fragment_noticias_main, container, false);
     }
 
+    // Método que se llama cuando la vista ha sido creada
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Infla el layout del fragmento
-        View view = inflater.inflate(R.layout.fragment_noticias_main, container, false);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        // Inicializa la Toolbar
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        // Aquí puedes inicializar los elementos de la vista, por ejemplo:
+        // ImageView imageView = view.findViewById(R.id.image_main);
+        // TextView titleTextView = view.findViewById(R.id.text_title);
+        // TextView descriptionTextView = view.findViewById(R.id.text_description);
+        // EditText searchEditText = view.findViewById(R.id.et_buscar_foro);
+        // ScrollView scrollView = view.findViewById(R.id.scrollView);
+        // TextView paginationTextView = view.findViewById(R.id.paginationText);
 
-        // Inicializa el ViewPager
-        viewPager = view.findViewById(R.id.viewPager);
-        myPagerAdapter = new MyPagerAdapter(getChildFragmentManager()); // Usa getChildFragmentManager
-        viewPager.setAdapter(myPagerAdapter);
-
-        // Inicializa el botón "Ver más"
-        btn_mostrarMas = view.findViewById(R.id.btn_mostrarMas);
-        btn_mostrarMas.setOnClickListener(v -> {
-            // Maneja el clic del botón "Ver más"
-            // Aquí puedes implementar la acción que deseas cuando se clickea el botón
-        });
-
-        ImageView img_encabezado = view.findViewById(R.id.img_encabezado);
-        img_encabezado.setOnClickListener(v -> {
-            // Acciones al hacer clic en la imagen
-        });
-
-        return view; // Devuelve la vista inflada
+        // Aquí puedes cargar datos en los elementos de la vista
     }
 }

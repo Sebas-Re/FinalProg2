@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color de fondo del cuadro de texto -->
+    <solid android:color="#F0F0F0"/> <!-- Color de fondo (puedes ajustarlo) -->
+
+    <!-- Bordes y radio de las esquinas -->
+    <corners android:radius="16dp"/> <!-- Esquinas redondeadas -->
+
+    <!-- Color y ancho del borde del cuadro de texto -->
+    <stroke
+        android:width="1dp"
+        android:color="#CCCCCC"/> <!-- Color del borde (gris claro) -->
+</shape>

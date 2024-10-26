@@ -1,8 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.MapaSitiosFragment" />
+    tools:context=".fragment.MapaSitiosFragment">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tituloMapa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mapa de sitios de interés"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:layout_marginTop="100dp" /> <!-- Ajusta este margen según sea necesario -->
+
+    <!-- Texto informativo -->
+    <TextView
+        android:id="@+id/textoInformativo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccione la ubicación que le interese para obtener más detalles."
+        android:layout_gravity="center"
+        android:padding="8dp"
+        android:layout_marginBottom="16dp" /> <!-- Agrega un margen inferior para el espaciado -->
+
+    <!-- Fragmento del mapa -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" /> <!-- Usando weight para que ocupe el resto del espacio -->
+
+</LinearLayout>

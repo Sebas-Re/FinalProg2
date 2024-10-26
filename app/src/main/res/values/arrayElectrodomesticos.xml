@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="electrodomesticos">
+        <item>Horno - Eficiencia B</item>
+        <item>Heladera - Eficiencia +A</item>
+    </string-array>
+</resources>

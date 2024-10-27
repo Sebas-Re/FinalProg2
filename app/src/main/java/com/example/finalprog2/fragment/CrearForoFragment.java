@@ -7,60 +7,68 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.finalprog2.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CrearForoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.HashMap;
+import java.util.Map;
+
 public class CrearForoFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public CrearForoFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CrearForoFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CrearForoFragment newInstance(String param1, String param2) {
-        CrearForoFragment fragment = new CrearForoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_crear_publicacion, container, false);
+        View view = inflater.inflate(R.layout.fragment_crear_publicacion, container, false);
+        EditText input_titulo = view.findViewById(R.id.input_titulo);
+        EditText input_descripcion_post = view.findViewById(R.id.input_descripcion_post);
+        RadioGroup rg_relacionado_a = view.findViewById(R.id.rg_relacionado_a);
+        Button btn_crear_post = view.findViewById(R.id.btn_crear_post);
+
+
+        //Esto todavia debe probarse. Por algun motivo se pueden seleccionar multiples opciones de radiobutton,
+        // como si no pertenecieran al mismo radiogroup.
+        Map<Integer, Runnable> radioButtonActions = new HashMap<>();
+        radioButtonActions.put(R.id.rb_opcion_eolica, () -> {
+            Toast.makeText(getActivity(), "Opción 1 seleccionada", Toast.LENGTH_SHORT).show();
+        });
+        radioButtonActions.put(R.id.rb_opcion_electrica, () -> {
+            Toast.makeText(getActivity(), "Opción 2 seleccionada", Toast.LENGTH_SHORT).show();
+        });
+        radioButtonActions.put(R.id.rb_opcion_ecologia, () -> {
+           Toast.makeText(getActivity(), "Opción 3 seleccionada", Toast.LENGTH_SHORT).show();
+        });
+
+        rg_relacionado_a.setOnCheckedChangeListener((group, checkedId) -> {
+            Runnable action = radioButtonActions.get(checkedId);
+            if (action != null) {
+                action.run();
+            }
+        });
+
+
+        btn_crear_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String titulo = input_titulo.getText().toString();
+                String descripcion = input_descripcion_post.getText().toString();
+                //int seleccionadoId = rg_relacionado_a.getCheckedRadioButtonId();
+
+
+
+
+
+               Toast.makeText(getActivity(), "Publicación creada", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return view;
     }
 }

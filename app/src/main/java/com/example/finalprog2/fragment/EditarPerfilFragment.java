@@ -7,60 +7,46 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.finalprog2.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditarPerfilFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class EditarPerfilFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public EditarPerfilFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditarPerfil.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditarPerfilFragment newInstance(String param1, String param2) {
-        EditarPerfilFragment fragment = new EditarPerfilFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_editar_perfil, container, false);
+        View view =inflater.inflate(R.layout.fragment_editar_perfil, container, false);
+        EditText input_nombre = view.findViewById(R.id.input_nombre);
+        EditText input_apellido = view.findViewById(R.id.input_apellido);
+        EditText input_usuario = view.findViewById(R.id.input_usuario);
+        EditText input_email = view.findViewById(R.id.input_email);
+        EditText input_pass = view.findViewById(R.id.input_pass);
+        EditText input_repetir_pass = view.findViewById(R.id.input_repetir_pass);
+        Button btn_guardarCambios = view.findViewById(R.id.btn_guardarCambios);
+
+
+        btn_guardarCambios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            String nombre = input_nombre.getText().toString();
+            String apellido = input_apellido.getText().toString();
+            String usuario = input_usuario.getText().toString();
+            String email = input_email.getText().toString();
+            String pass = input_pass.getText().toString();
+            String repetir_pass = input_repetir_pass.getText().toString();
+
+            //Logica de negocio para almacenar los datos modificados
+
+
+            }
+        });
+
+
+       return view;
     }
 }

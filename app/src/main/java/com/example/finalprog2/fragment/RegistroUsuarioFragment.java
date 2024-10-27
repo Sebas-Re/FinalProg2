@@ -7,60 +7,85 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalprog2.R;
+import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.negocio.NegocioUsuario;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RegistroUsuarioFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class RegistroUsuarioFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public RegistroUsuarioFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RegistroUsuarioFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RegistroUsuarioFragment newInstance(String param1, String param2) {
-        RegistroUsuarioFragment fragment = new RegistroUsuarioFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_registro_usuario, container, false);
+        View view = inflater.inflate(R.layout.fragment_registro_usuario, container, false);
+        EditText input_nombre = view.findViewById(R.id.input_nombre);
+        EditText input_apellido = view.findViewById(R.id.input_apellido);
+        EditText input_usuario = view.findViewById(R.id.input_usuario);
+        EditText input_email = view.findViewById(R.id.input_email);
+        EditText input_pass = view.findViewById(R.id.input_pass);
+        EditText input_repetir_pass = view.findViewById(R.id.input_repetir_pass);
+        Button btn_registro_usuario = view.findViewById(R.id.btn_registro_usuario);
+        TextView tv_Link_LogIn = view.findViewById(R.id.tv_link_LogIn);
+
+        btn_registro_usuario.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String nombre = input_nombre.getText().toString();
+                String apellido = input_apellido.getText().toString();
+                String usuario = input_usuario.getText().toString();
+                String email = input_email.getText().toString();
+                String pass = input_pass.getText().toString();
+                String repetir_pass = input_repetir_pass.getText().toString();
+
+
+                NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
+                if(!nombre.isEmpty() && !apellido.isEmpty() && !usuario.isEmpty() && !email.isEmpty() && !pass.isEmpty() && !repetir_pass.isEmpty()){
+                    if(pass.equals(repetir_pass)){
+                        Usuario nuevoUsuario = new Usuario(nombre, apellido, usuario, email, pass);
+                        if(negociousuario.registrarUsuario(nuevoUsuario)) {
+                            Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+                            // Redirige a la pantalla de LogInFragment
+                            requireActivity().getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, new LogInFragment())
+                                    .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                    .commit();
+                        }
+                        else{
+                            Toast.makeText(getActivity(), "El usuario ya existe", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(getActivity(), "Por favor ingrese todos los campos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+
+        });
+
+
+        tv_Link_LogIn.setOnClickListener(v -> {
+            // Redirige a la pantalla de LogInFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new LogInFragment())
+                    .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                    .commit();
+
+        });
+
+        return view;
     }
 }

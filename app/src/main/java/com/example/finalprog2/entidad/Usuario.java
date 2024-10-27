@@ -27,10 +27,22 @@ public class Usuario {
         this.id = id;
     }
 
+    // Constructor para LogIn
     public Usuario (String nombre, String email, String pass){
         this.nombre = nombre;
         this.email = email;
         this.pass = pass;
+        this.estado = true;
+    }
+
+    // Constructor de RegistroUsuario
+    public Usuario(String nombre, String apellido, String usuario, String email, String pass) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.usuario = usuario;
+        this.email = email;
+        this.pass = pass;
+        this.estado = true;
     }
 
     public int getId() {

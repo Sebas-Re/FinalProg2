@@ -1,6 +1,5 @@
 package com.example.finalprog2.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -41,7 +40,7 @@ public class LogInFragment extends Fragment {
                 String usuario = input_usuario.getText().toString();
                 String pass = input_pass.getText().toString();
 
-                Toast.makeText(getActivity(), "Iniciar Sesion", Toast.LENGTH_SHORT).show();
+
                 NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
                 if(!usuario.isEmpty() && !pass.isEmpty()){
 

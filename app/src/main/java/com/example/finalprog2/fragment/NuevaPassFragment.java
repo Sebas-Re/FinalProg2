@@ -7,60 +7,104 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.finalprog2.R;
+import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.negocio.NegocioUsuario;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NuevaPassFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class NuevaPassFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public NuevaPassFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NuevaPass.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NuevaPassFragment newInstance(String param1, String param2) {
-        NuevaPassFragment fragment = new NuevaPassFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_nueva_pass, container, false);
+        View view = inflater.inflate(R.layout.fragment_nueva_pass, container, false);
+        EditText inputPass = view.findViewById(R.id.input_pass);
+        EditText inputRepetirPass = view.findViewById(R.id.input_repetir_pass);
+        Button btnRecuPass = view.findViewById(R.id.btn_recu_pass);
+
+
+        btnRecuPass.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                String pass = inputPass.getText().toString();
+                String repetirPass = inputRepetirPass.getText().toString();
+
+                if(!pass.isEmpty() && !repetirPass.isEmpty()){
+                    if(pass.equals(repetirPass)){
+                        if(passValida(pass)) {
+
+                            // Obtener el email del bundle
+                            Bundle bundle = getArguments();
+                            String email = null;
+                            if (bundle != null) {
+                                email = bundle.getString("email");
+                            }
+
+                            NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
+                            // En este paso, tanto el email como el token ya fueron verificados,
+                            // por lo que no es necesario verificar nuevamente
+                            if (negocioUsuario.cambiarPass(email, pass)) {
+                                Toast.makeText(getActivity(), "Contraseña cambiada exitosamente", Toast.LENGTH_SHORT).show();
+                                Usuario usuario = negocioUsuario.obtenerUsuario(email);
+
+                                // Redireccionar a la pantalla de inicio de sesión, pasando el usuario como argumento
+                                Bundle bundleUsuario = new Bundle();
+                                bundleUsuario.putString("usuario", usuario.getUsuario());
+
+                                LogInFragment logInFragment = new LogInFragment();
+                                logInFragment.setArguments(bundleUsuario);
+
+                            } else {
+                                Toast.makeText(getActivity(), "Error al cambiar la contraseña", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(getActivity(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+
+        return view;
     }
+
+    private boolean passValida(String pass) {
+        // Verificar que la contraseña tenga al menos 8 caracteres
+        if (pass.length() < 8) {
+            return false;
+        }
+
+        // Uso de expresiones regulares para comprobar letras y números
+        boolean tieneLetras = false;
+        boolean tieneDigitos = false;
+
+        for (char c : pass.toCharArray()) {
+            if (Character.isLetter(c)) {
+                tieneLetras = true;
+            }
+            if (Character.isDigit(c)) {
+                tieneDigitos = true;
+            }
+            if (tieneLetras && tieneDigitos) {
+                return true; // Si tiene ambos, la contraseña es válida
+            }
+        }
+
+        return false; // Si no cumple los requisitos
+    }
+
 }

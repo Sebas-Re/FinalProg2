@@ -30,6 +30,14 @@ public class LogInFragment extends Fragment {
         TextView tv_pass_olvidada = view.findViewById(R.id.tv_pass_olvidada);
         TextView tv_registro_usuario = view.findViewById(R.id.tv_registro_usuario);
 
+        // Obtener el usuario del bundle
+        Bundle bundle = getArguments();
+
+        if (bundle != null) {
+            String usuario = bundle.getString("usuario");
+            EditText input_usuario = view.findViewById(R.id.input_usuario);
+            input_usuario.setText(usuario);
+        }
 
         btn_login.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -75,7 +83,7 @@ public class LogInFragment extends Fragment {
             // Reemplazar el fragmento actual por RegistroUsuarioFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new CrearForoFragment()) // Usa el ID correcto de tu contenedor de fragmentos
+                    .replace(R.id.fragment_container, new RegistroUsuarioFragment()) // Usa el ID correcto de tu contenedor de fragmentos
                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                     .commit();
         });

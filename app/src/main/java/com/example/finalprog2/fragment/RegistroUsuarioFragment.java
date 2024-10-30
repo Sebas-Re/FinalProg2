@@ -44,22 +44,35 @@ public class RegistroUsuarioFragment extends Fragment {
                 String pass = input_pass.getText().toString();
                 String repetir_pass = input_repetir_pass.getText().toString();
 
-
-                NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
                 if(!nombre.isEmpty() && !apellido.isEmpty() && !usuario.isEmpty() && !email.isEmpty() && !pass.isEmpty() && !repetir_pass.isEmpty()){
                     if(pass.equals(repetir_pass)){
-                        Usuario nuevoUsuario = new Usuario(nombre, apellido, usuario, email, pass);
-                        if(negociousuario.registrarUsuario(nuevoUsuario)) {
-                            Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
-                            // Redirige a la pantalla de LogInFragment
-                            requireActivity().getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.fragment_container, new LogInFragment())
-                                    .addToBackStack(null) // Esto permite regresar al fragmento anterior
-                                    .commit();
+                        if(passValida(pass)){
+                            Usuario nuevoUsuario = new Usuario(nombre, apellido, usuario, email, pass);
+                            NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
+                            //Carga de usuario en sistema
+
+                            if(negociousuario.registrarUsuario(nuevoUsuario)) {
+                                Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+
+                                // Pasa el usuario a la pantalla de LogInFragment, para autocompletar el campo de usuario
+                                Bundle bundle = new Bundle();
+                                bundle.putString("usuario", usuario);
+
+                                // Redirige a la pantalla de LogInFragment
+                                LogInFragment logInFragment = new LogInFragment();
+                                logInFragment.setArguments(bundle);
+                                requireActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.fragment_container, logInFragment)
+                                        .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                        .commit();
+                            }
+                            else{
+                                Toast.makeText(getActivity(), "El usuario ya existe", Toast.LENGTH_SHORT).show();
+                            }
                         }
                         else{
-                            Toast.makeText(getActivity(), "El usuario ya existe", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
                         }
                     }
                     else{
@@ -70,12 +83,8 @@ public class RegistroUsuarioFragment extends Fragment {
                     Toast.makeText(getActivity(), "Por favor ingrese todos los campos", Toast.LENGTH_SHORT).show();
                 }
             }
-
-
-
         });
-
-
+        
         tv_Link_LogIn.setOnClickListener(v -> {
             // Redirige a la pantalla de LogInFragment
             requireActivity().getSupportFragmentManager()
@@ -85,7 +94,31 @@ public class RegistroUsuarioFragment extends Fragment {
                     .commit();
 
         });
-
         return view;
+    }
+
+    private boolean passValida(String pass) {
+        // Verificar que la contraseña tenga al menos 8 caracteres
+        if (pass.length() < 8) {
+            return false;
+        }
+
+        // Uso de expresiones regulares para comprobar letras y números
+        boolean tieneLetras = false;
+        boolean tieneDigitos = false;
+
+        for (char c : pass.toCharArray()) {
+            if (Character.isLetter(c)) {
+                tieneLetras = true;
+            }
+            if (Character.isDigit(c)) {
+                tieneDigitos = true;
+            }
+            if (tieneLetras && tieneDigitos) {
+                return true; // Si tiene ambos, la contraseña es válida
+            }
+        }
+
+        return false; // Si no cumple los requisitos
     }
 }

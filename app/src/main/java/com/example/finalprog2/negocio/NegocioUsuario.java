@@ -39,20 +39,37 @@ public class NegocioUsuario {
 
     public boolean modificarUsuario(Usuario usuario) {
         // Busqueda SQL para modificar el usuario en la base de datos, con los datos del usuario
-        // Usaria try catch para evitar errores
 
-        try {
-            // Lógica para modificar el usuario en la base de datos
-            return true;
+        Usuario usuarioAmodificar = ObtenerUsuario(usuario.getId());
+
+        // Si la contra recibida es nula,
+        // es porque el usuario no quiere cambiarla
+        if(usuario.getPass() == null){
+            usuarioAmodificar.setNombre(usuario.getNombre());
+            usuarioAmodificar.setApellido(usuario.getApellido());
+            usuarioAmodificar.setUsuario(usuario.getUsuario());
+            usuarioAmodificar.setEmail(usuario.getEmail());
         }
-        catch (Exception e){
-            return false;
+        else{
+            usuarioAmodificar.setNombre(usuario.getNombre());
+            usuarioAmodificar.setApellido(usuario.getApellido());
+            usuarioAmodificar.setUsuario(usuario.getUsuario());
+            usuarioAmodificar.setEmail(usuario.getEmail());
+            usuarioAmodificar.setPass(usuario.getPass());
         }
 
+        return true;
     }
 
+    private Usuario ObtenerUsuario(int id) {
+        // Recibe ID, retorna usuario
+        Usuario usuarioEncontrado = new Usuario();
+        return usuarioEncontrado;
+    }
+
+
     public Usuario obtenerUsuario(String email){
-        // Recibiría un email y devolvería el usuario correspondiente a ese email
+        // Recibe un objeto usuario con el campo email cargado y devolvería el usuario correspondiente a ese email
         Usuario usuario = new Usuario();
 
         usuario.setEmail(email);

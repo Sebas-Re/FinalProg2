@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.finalprog2.R;
+import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.negocio.NegocioUsuario;
 
 
 public class EditarPerfilFragment extends Fragment {
@@ -41,6 +44,22 @@ public class EditarPerfilFragment extends Fragment {
             String repetir_pass = input_repetir_pass.getText().toString();
 
             //Logica de negocio para almacenar los datos modificados
+            NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
+                if(pass.isEmpty() && repetir_pass.isEmpty()){
+                 Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, null);
+                 // Manda el usuario con la contraseña nula, para que no se modifique
+                 negocioUsuario.modificarUsuario(usuarioAeditar);
+
+                }
+                else{
+                    if(pass.equals(repetir_pass)){
+                        Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, pass);
+                        negocioUsuario.modificarUsuario(usuarioAeditar);
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
 
             }

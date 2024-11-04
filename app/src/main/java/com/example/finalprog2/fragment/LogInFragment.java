@@ -1,5 +1,6 @@
 package com.example.finalprog2.fragment;
 
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,11 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
 import com.example.finalprog2.negocio.NegocioUsuario;
-
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LogInFragment extends Fragment {
 
@@ -24,6 +26,22 @@ public class LogInFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        // EJEMPLO PARA AGREGAR USUARIO A FIRESTORE
+        // Instanciar el objeto Usuario
+        //Usuario nuevoUsuario = new Usuario("Juan Perez", "Juan Perez@gmail.com", "1234lalal");
+        // Referencia a Firestore
+        //FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Agregar el documento a la colección 'usuarios'
+        //db.collection("usuarios")
+        //        .add(nuevoUsuario)
+        //        .addOnSuccessListener(documentReference -> {
+        //            Log.d("Firestore", "Usuario agregado con ID: " + documentReference.getId());
+        //        })
+        //        .addOnFailureListener(e -> {
+        //            Log.w("Firestore", "Error agregando usuario", e);
+        //        });
+
 
         View view = inflater.inflate(R.layout.fragment_log_in, container, false);
         Button btn_login = view.findViewById(R.id.btn_login);

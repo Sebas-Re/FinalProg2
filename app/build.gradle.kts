@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") // Aplica el plugin aquí
 }
 
 android {
@@ -27,6 +27,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -34,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -43,10 +43,11 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    // Firebase Firestore para gestionar las versiones
-    implementation("com.google.firebase:firebase-firestore:24.6.0")
-    implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
+
+    // Usa el BOM para Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-firestore")
 }
 
-// Aplica el plugin de Google Services
+// Aplica el plugin de Google Services al final
 apply(plugin = "com.google.gms.google-services")

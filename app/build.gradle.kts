@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
-
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -43,5 +43,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
+    // Firebase Firestore para gestionar las versiones
+    implementation("com.google.firebase:firebase-firestore:24.6.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
 }
+
+// Aplica el plugin de Google Services
+apply(plugin = "com.google.gms.google-services")

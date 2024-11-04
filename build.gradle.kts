@@ -3,3 +3,10 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin) apply false
 }
+
+buildscript {
+    dependencies {
+        // Agrega esta línea para incluir el plugin de Google Services
+        classpath("com.google.gms:google-services:4.3.10")
+    }
+}

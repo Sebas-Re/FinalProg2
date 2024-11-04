@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "656454265494",
+    "project_id": "ecocasa-beta1",
+    "storage_bucket": "ecocasa-beta1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656454265494:android:43935efc431687f25ab0b7",
+        "android_client_info": {
+          "package_name": "com.example.finalprog2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACz6Pkx8lCcu7CYjWlSXEkQdgfHxHkaok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

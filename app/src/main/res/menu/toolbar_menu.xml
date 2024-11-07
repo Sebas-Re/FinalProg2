@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_news"
+        android:title="Noticias"
+        android:icon="@drawable/ic_news"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sites"
+        android:title="Sitios"
+        android:icon="@drawable/ic_sitios"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_tutorials"
+        android:title="Tutoriales"
+        android:icon="@drawable/ic_tutorial"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_self_assessment"
+        android:title="Autoevaluación"
+        android:icon="@drawable/ic_autoevaluacion"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_forums"
+        android:title="Foros"
+        android:icon="@drawable/ic_foro"
+        app:showAsAction="never" />
+</menu>

@@ -27,20 +27,6 @@ public class LogInFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        // EJEMPLO PARA AGREGAR USUARIO A FIRESTORE
-        // Instanciar el objeto Usuario
-        //Usuario nuevoUsuario = new Usuario("Juan Perez", "Juan Perez@gmail.com", "1234lalal");
-        // Referencia a Firestore
-        //FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Agregar el documento a la colección 'usuarios'
-        //db.collection("usuarios")
-        //        .add(nuevoUsuario)
-        //        .addOnSuccessListener(documentReference -> {
-        //            Log.d("Firestore", "Usuario agregado con ID: " + documentReference.getId());
-        //        })
-        //        .addOnFailureListener(e -> {
-        //            Log.w("Firestore", "Error agregando usuario", e);
-        //        });
 
 
         View view = inflater.inflate(R.layout.fragment_log_in, container, false);
@@ -101,7 +87,7 @@ public class LogInFragment extends Fragment {
             // Reemplazar el fragmento actual por RegistroUsuarioFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new ListarForoFragment()) // Usa el ID correcto de tu contenedor de fragmentos
+                    .replace(R.id.fragment_container, new RegistroUsuarioFragment()) // Usa el ID correcto de tu contenedor de fragmentos
                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                     .commit();
         });

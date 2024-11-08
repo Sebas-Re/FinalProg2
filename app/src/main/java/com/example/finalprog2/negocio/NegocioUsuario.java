@@ -2,7 +2,12 @@ package com.example.finalprog2.negocio;
 
 import android.content.Context;
 
+import androidx.annotation.OptIn;
+import androidx.media3.common.util.Log;
+import androidx.media3.common.util.UnstableApi;
+
 import com.example.finalprog2.entidad.Usuario;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class NegocioUsuario {
 
@@ -11,11 +16,35 @@ public class NegocioUsuario {
 
     }
 
-    public boolean verificarUsuario(Usuario usuario){
-        //Recibe un objeto usuario (Con el campo usuario y pass) y verifica si existe en la base de datos
-        // Si existe, devuelve true
-        // Esta funcion forma parte del LogIn
-        return false;
+    @OptIn(markerClass = UnstableApi.class)
+    public boolean verificarUsuario(Usuario usuario) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final boolean[] verificacionExitosa = {false};
+
+        db.collection("usuarios")
+                .whereEqualTo("usuario", usuario.getUsuario())
+                .whereEqualTo("pass", usuario.getPass())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            Log.d("Firestore", "Usuario encontrado");
+                            verificacionExitosa[0] = true;
+                            // Aquí puedes realizar acciones adicionales, como navegar a otra actividad
+                        } else {
+                            Log.w("Firestore", "Nombre de usuario o contraseña incorrectos");
+                            verificacionExitosa[0] = false;
+                            // Aquí puedes mostrar un mensaje de error al usuario
+                        }
+                    } else {
+                        Log.w("Firestore", "Error al verificar LogIn", task.getException());
+                        verificacionExitosa[0] = false;
+                        // Aquí puedes mostrar un mensaje de error al usuario
+                    }
+                });
+
+        // **Importante:** Debido a la naturaleza asíncrona,este valor de retorno no es confiable
+        return verificacionExitosa[0];
     }
 
     public boolean verificarEmail(String email){
@@ -30,12 +59,41 @@ public class NegocioUsuario {
         return true;
     }
 
-    public boolean registrarUsuario(Usuario usuario){
-        //Logica para añadir un usuario en BD
+    @OptIn(markerClass = UnstableApi.class)
+    public boolean registrarUsuario(Usuario nuevoUsuario) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance(); //instanciado de firebase
+        final boolean[] registrationSuccessful = {false}; // Flag para trackear el estado del registro
 
+        db.collection("usuarios")
+                .whereEqualTo("usuario", nuevoUsuario.getUsuario()).whereEqualTo("email", nuevoUsuario.getEmail())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()) {
+                            db.collection("usuarios")
+                                    .add(nuevoUsuario)
+                                    .addOnSuccessListener(documentReference -> {
+                                        Log.d("Firestore", "Usuario agregado con ID: " + documentReference.getId());
+                                        registrationSuccessful[0] = true; // settea la flag a true en caso de exito
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error agregando usuario", e);
+                                        registrationSuccessful[0] = false; // Settea la flag a false en caso de error
+                                    });
+                        } else {
+                            Log.w("Firestore", "El nombre de usuario o el email ya están en uso");
+                            registrationSuccessful[0] = false;
+                        }
+                    } else {
+                        Log.w("Firestore", "Error al verificar usuario o email", task.getException());
+                        registrationSuccessful[0] = false;
+                    }
+                });
 
-        return false;
+        return registrationSuccessful[0]; // Retorna el estado del registro
     }
+
+
 
     public boolean modificarUsuario(Usuario usuario) {
         // Busqueda SQL para modificar el usuario en la base de datos, con los datos del usuario

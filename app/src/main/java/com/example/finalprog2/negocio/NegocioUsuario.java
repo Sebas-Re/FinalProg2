@@ -140,7 +140,7 @@ public class NegocioUsuario {
 
     private static @NonNull Map<String, Object> mapeoUsuarioAregistrar(Usuario nuevoUsuario, FirebaseUser user) {
         Map<String, Object> userData = new HashMap<>();
-        userData.put("id", user.getUid());
+        userData.put("id", Math.abs(user.getUid().hashCode()));
         userData.put("nombre", nuevoUsuario.getNombre());
         userData.put("apellido", nuevoUsuario.getApellido());
         userData.put("usuario", nuevoUsuario.getUsuario());

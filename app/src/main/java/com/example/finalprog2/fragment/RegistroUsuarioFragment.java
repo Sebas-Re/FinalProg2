@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.RegistrationCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
 
 
@@ -51,25 +52,30 @@ public class RegistroUsuarioFragment extends Fragment {
                             NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
                             //Carga de usuario en sistema
 
-                            if(negociousuario.registrarUsuario(nuevoUsuario)) {
-                                Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+                            negociousuario.registrarUsuario(nuevoUsuario, new RegistrationCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
 
-                                // Pasa el usuario a la pantalla de LogInFragment, para autocompletar el campo de usuario
-                                Bundle bundle = new Bundle();
-                                bundle.putString("usuario", usuario);
+                                    // Pasa el usuario a la pantalla de LogInFragment, para autocompletar el campo de usuario
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("usuario", usuario);
 
-                                // Redirige a la pantalla de LogInFragment
-                                LogInFragment logInFragment = new LogInFragment();
-                                logInFragment.setArguments(bundle);
-                                requireActivity().getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .replace(R.id.fragment_container, logInFragment)
-                                        .addToBackStack(null) // Esto permite regresar al fragmento anterior
-                                        .commit();
-                            }
-                            else{
-                                Toast.makeText(getActivity(), "El usuario ya existe", Toast.LENGTH_SHORT).show();
-                            }
+                                    // Redirige a la pantalla de LogInFragment
+                                    LogInFragment logInFragment = new LogInFragment();
+                                    logInFragment.setArguments(bundle);
+                                    requireActivity().getSupportFragmentManager()
+                                            .beginTransaction()
+                                            .replace(R.id.fragment_container, logInFragment)
+                                            .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                            .commit();
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                         else{
                             Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();

@@ -1,6 +1,13 @@
 package com.example.finalprog2.entidad;
 
-import java.util.Objects;
+import android.util.Log;
+
+import com.example.finalprog2.conexion.DataDB;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Publicacion {
     private int id;
@@ -21,72 +28,64 @@ public class Publicacion {
         this.estado = estado;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
+    // Métodos getter y setter
     public void setTitulo(String titulo) {
         this.titulo = titulo;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    public String getRelacionEnergetica() {
-        return relacionEnergetica;
-    }
-
     public void setRelacionEnergetica(String relacionEnergetica) {
         this.relacionEnergetica = relacionEnergetica;
-    }
-
-    public boolean isEstado() {
-        return estado;
     }
 
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
 
-    @Override
-    public String toString() {
-        return "Publicacion{" +
-                "id=" + id +
-                ", usuario=" + usuario +
-                ", titulo='" + titulo + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", relacionEnergetica='" + relacionEnergetica + '\'' +
-                ", estado=" + estado +
-                '}';
-    }
+    // Método para guardar la publicación en la base de datos
+    public void guardarPublicacion() {
+        Connection connection = null;
+        PreparedStatement statement = null;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Publicacion that = (Publicacion) o;
-        return id == that.id && estado == that.estado && Objects.equals(usuario, that.usuario) && Objects.equals(titulo, that.titulo) && Objects.equals(descripcion, that.descripcion) && Objects.equals(relacionEnergetica, that.relacionEnergetica);
-    }
+        try {
+            // Cargar el driver JDBC
+            Class.forName("com.mysql.jdbc.Driver");
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, usuario, titulo, descripcion, relacionEnergetica, estado);
+            // Establecer la conexión
+            connection = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
+
+            // Consulta SQL para insertar la publicación
+            //Despues agregar usuario para tener todo mas prolijo
+            String query = "INSERT INTO publicaciones (titulo, descripcion, relacionEnergetica, estado) VALUES (?, ?, ?, ?)";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, this.titulo);
+            statement.setString(2, this.descripcion);
+            statement.setString(3, this.relacionEnergetica);
+            statement.setBoolean(4, this.estado);
+
+            // Ejecutar la consulta
+            int result = statement.executeUpdate();
+
+            if (result > 0) {
+                Log.d("Publicacion", "Publicación insertada correctamente");
+            } else {
+                Log.d("Publicacion", "Error al insertar la publicación");
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            Log.e("Publicacion", "Error al conectar con la base de datos", e);
+        } finally {
+            // Cerrar los recursos
+            try {
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

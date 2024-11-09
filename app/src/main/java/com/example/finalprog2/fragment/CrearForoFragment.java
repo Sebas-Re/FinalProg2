@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.finalprog2.R;
+import com.example.finalprog2.entidad.Publicacion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class CrearForoFragment extends Fragment {
             }
         });
 
-
+        /*
         btn_crear_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,8 +68,44 @@ public class CrearForoFragment extends Fragment {
 
                Toast.makeText(getActivity(), "Publicación creada", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
+        btn_crear_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String titulo = input_titulo.getText().toString();
+                String descripcion = input_descripcion_post.getText().toString();
+
+                // Obtener la opción seleccionada del RadioGroup
+                int seleccionadoId = rg_relacionado_a.getCheckedRadioButtonId();
+                String categoriaSeleccionada = "";
+
+                if (seleccionadoId == R.id.rb_opcion_eolica) {
+                    categoriaSeleccionada = "Eólica";
+                } else if (seleccionadoId == R.id.rb_opcion_electrica) {
+                    categoriaSeleccionada = "Eléctrica";
+                } else if (seleccionadoId == R.id.rb_opcion_ecologia) {
+                    categoriaSeleccionada = "Ecología";
+                }
+
+                if (!titulo.isEmpty() && !descripcion.isEmpty() /*&& !categoriaSeleccionada.isEmpty()*/) {
+                    // Crear un nuevo objeto Publicacion
+                    Publicacion publicacion = new Publicacion();
+                    publicacion.setTitulo(titulo);
+                    publicacion.setDescripcion(descripcion);
+                    publicacion.setRelacionEnergetica(categoriaSeleccionada);
+                    publicacion.setEstado(true); // Por ejemplo, la publicación puede estar activa al crearse
+
+                    // Guardar la publicación en la base de datos
+                    publicacion.guardarPublicacion();
+
+                    // Mostrar un mensaje de éxito
+                    Toast.makeText(getActivity(), "Publicación creada correctamente", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         return view;
     }
 }

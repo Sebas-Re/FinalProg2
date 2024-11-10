@@ -13,7 +13,10 @@ import android.widget.Toast;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.updateUsuarioCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
+
+
 
 
 public class EditarPerfilFragment extends Fragment {
@@ -48,13 +51,12 @@ public class EditarPerfilFragment extends Fragment {
                 if(pass.isEmpty() && repetir_pass.isEmpty()){
                  Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, null);
                  // Manda el usuario con la contraseña nula, para que no se modifique
-                 negocioUsuario.modificarUsuario(usuarioAeditar);
-
+                    updateUsuario(negocioUsuario, usuarioAeditar);
                 }
                 else{
                     if(pass.equals(repetir_pass)){
                         Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, pass);
-                        negocioUsuario.modificarUsuario(usuarioAeditar);
+                        updateUsuario(negocioUsuario, usuarioAeditar);
                     }
                     else{
                         Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
@@ -68,4 +70,23 @@ public class EditarPerfilFragment extends Fragment {
 
        return view;
     }
+
+    // Funcion para modificar los datos del usuario
+    private void updateUsuario(NegocioUsuario negocioUsuario, Usuario usuarioAeditar) {
+        negocioUsuario.modificarUsuario(usuarioAeditar, new updateUsuarioCallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(getActivity(), "Datos modificados correctamente", Toast.LENGTH_SHORT).show();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(getActivity(), "Error al modificar los datos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
 }

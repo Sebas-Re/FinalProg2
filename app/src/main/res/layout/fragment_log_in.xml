@@ -57,14 +57,14 @@
 
     <!-- Campo de Usuario -->
     <EditText
-        android:id="@+id/input_usuario"
+        android:id="@+id/input_usuarioEmail"
         android:layout_width="320dp"
         android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_text_bg"
-        android:hint="@string/usuario"
+        android:hint="@string/usuarioEmail"
         android:inputType="text"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
@@ -95,7 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_usuario"
+        app:layout_constraintTop_toBottomOf="@id/input_usuarioEmail"
         tools:ignore="Autofill" />
 
 

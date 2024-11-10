@@ -1,7 +1,7 @@
 package com.example.finalprog2.negocio;
 
 import android.content.Context;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
@@ -9,8 +9,11 @@ import androidx.media3.common.util.Log;
 import androidx.media3.common.util.UnstableApi;
 
 import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.LogInCallback;
 import com.example.finalprog2.interfaces.RegistrationCallback;
+import com.example.finalprog2.interfaces.updateUsuarioCallback;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -27,25 +30,48 @@ public class NegocioUsuario {
 
     // Funcion de LogIn
     @OptIn(markerClass = UnstableApi.class)
-    public boolean verificarUsuario(Usuario usuario) {
+    public void verificarUsuario(Usuario usuario, LogInCallback callback) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        final boolean[] verificacionExitosa = {false}; // Flag para trackear el estado de la verificacion
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        mAuth.signInWithEmailAndPassword(usuario.getEmail(), usuario.getPass())
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d("Firebase", "signInWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        verificacionExitosa[0] = true;
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w("Firebase", "signInWithEmail:failure", task.getException());
-                        verificacionExitosa[0] = false;
-                    }
-                });
+        if(usuario.getEmail() == null){
+            //Inicia sesion a traves del usuario
 
-        return verificacionExitosa[0];
+            db.collection("usuarios")
+                    .whereEqualTo("usuario", usuario.getUsuario())
+                    .whereEqualTo("pass", usuario.getPass())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if (!task.getResult().isEmpty()) {
+                                Log.d("Firestore", "Usuario encontrado");
+                                callback.onSuccess();
+
+                            } else {
+                                Log.w("Firestore", "Nombre de usuario incorrecto");
+                                callback.onFailure(null);
+                            }
+                        } else {
+                            Log.w("Firestore", "Error al verificar LogIn", task.getException());
+                            callback.onFailure(null);
+
+                        }
+                    });
+        }
+        else{
+            mAuth.signInWithEmailAndPassword(usuario.getEmail(), usuario.getPass())
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success
+                            Log.d("Firebase", "signInWithEmail:success");
+                            callback.onSuccess();
+                        } else {
+                            // Sign in failed
+                            Log.w("Firebase", "signInWithEmail:failure", task.getException());
+                            callback.onFailure(null);
+                        }
+                    });
+        }
     }
 
     public boolean verificarEmail(String email){
@@ -153,25 +179,24 @@ public class NegocioUsuario {
 
 
     @OptIn(markerClass = UnstableApi.class)
-    public boolean modificarUsuario(Usuario usuario) {
+    public void modificarUsuario(Usuario usuario, updateUsuarioCallback callback) {
         // Busqueda SQL para modificar el usuario en la base de datos, con los datos del usuario
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final boolean[] ModificacionExitosa = {false}; // Flag para trackear el estado de la modificacion
         Map<String, Object> updates = mapeoUsuarioAmodificar(usuario);
 
         db.collection("usuarios").document(String.valueOf(usuario.getId())).update(updates)
                 .addOnSuccessListener(aVoid -> {
                     // Datos actualizados correctamente
                     Log.d("Firestore", "Datos de usuario actualizados exitosamente");
-                    ModificacionExitosa[0]=true;
+                    callback.onSuccess();
                 })
                 .addOnFailureListener(e -> {
                     // Error actualizando los datos del usuario
                     Log.w("Firestore", "Error actualizando los datos del usuario", e);
-                    ModificacionExitosa[0]=false;
+                    callback.onFailure(null);
 
                 });
-        return ModificacionExitosa[0];
+
     }
 
     private static @NonNull Map<String, Object> mapeoUsuarioAmodificar(Usuario usuario) {
@@ -195,22 +220,70 @@ public class NegocioUsuario {
         return updates;
     }
 
+    @OptIn(markerClass = UnstableApi.class)
     private Usuario ObtenerUsuario(int id) {
         // Recibe ID, retorna usuario
-        Usuario usuarioEncontrado = new Usuario();
-        return usuarioEncontrado;
+        //recibe email, retorna objeto usuario
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final Usuario[] usuario = {new Usuario()};
+        // Buscaría al usuario en la base de datos a partir del email
+
+        db.collection("usuarios")
+                .whereEqualTo("id", id)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            Log.d("Firestore", "Usuario encontrado");
+
+                            //obtiene el documento
+                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                            usuario[0] = document.toObject(Usuario.class);
+
+                        } else {
+                            Log.w("Firestore", "ID incorrecto");
+                        }
+                    } else {
+                        Log.w("Firestore", "Error al obtener usuario", task.getException());
+
+                    }
+                });
+
+        return usuario[0];
     }
 
 
+    @OptIn(markerClass = UnstableApi.class)
     public Usuario obtenerUsuario(String email){
-        // Recibe un objeto usuario con el campo email cargado y devolvería el usuario correspondiente a ese email
-        Usuario usuario = new Usuario();
+        //recibe email, retorna objeto usuario
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final Usuario[] usuario = {new Usuario()};
+        // Buscaría al usuario en la base de datos a partir del email
 
-        usuario.setEmail(email);
+        db.collection("usuarios")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            Log.d("Firestore", "Usuario encontrado");
 
-        // Lógica para obtener el usuario de la base de datos
+                            //obtiene el documento
+                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                            usuario[0] = document.toObject(Usuario.class);
 
-        return usuario;
+                        } else {
+                            Log.w("Firestore", "Email incorrecto");
+                        }
+                    } else {
+                        Log.w("Firestore", "Error al obtener Usuario", task.getException());
+
+                    }
+                });
+
+        return usuario[0];
     }
 
     public boolean verificarCodigo(String email, int codigo) {
@@ -223,15 +296,14 @@ public class NegocioUsuario {
         return usuario.getToken() == codigo;
     }
 
-    public boolean cambiarPass(String email, String pass) {
+    public void cambiarPass(String email, String pass, updateUsuarioCallback callback) {
         // En este paso, el email ya fue verificado, por lo que no es necesario verificar nuevamente
         // Lógica para cambiar la contraseña
         // Buscaría al usuario en la base de datos a partir del email y actualizaría su contraseña
 
         Usuario usuario = obtenerUsuario(email);
         usuario.setPass(pass);
-        modificarUsuario(usuario);
 
-        return true;
+        modificarUsuario(usuario, callback);
     }
 }

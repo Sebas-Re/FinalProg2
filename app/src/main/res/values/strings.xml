@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">FinalProg2</string>
     <string name="titulo">Titulo</string>
     <string name="titulo_del_post">Titulo del Post</string>
     <string name="descripcion_del_post">Descripcion del post</string>
-    <string name="relacionado_a">Relacionado a...</string>
+    <string name="relacionado_a">Relacionado a…</string>
     <string name="energia_eolica">Energía Eólica</string>
     <string name="energia_electrica">Energía Eléctrica</string>
     <string name="ecolog_a">Ecologia</string>
@@ -11,7 +11,7 @@
     <string name="ecocasa">EcoCasa</string>
     <string name="login">LogIn</string>
     <string name="logo_de_la_aplicacion">Logo de la Aplicacion</string>
-    <string name="usuario">Usuario</string>
+    <string name="usuarioEmail">Usuario o Email</string>
     <string name="contrasenia">Contraseña</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="olvidaste_tu_contrasenia">¿Olvidaste tu contraseña?</string>
@@ -34,4 +34,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="img_encabezado_desc">Descubre un nuevo sistema para la incorporacion de energia eolica hogareña</string>
+    <string name="usuario">Usuario</string>
 </resources>

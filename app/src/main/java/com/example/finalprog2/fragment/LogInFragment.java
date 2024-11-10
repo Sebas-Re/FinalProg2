@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.LogInCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
 //import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -39,31 +40,45 @@ public class LogInFragment extends Fragment {
 
         if (bundle != null) {
             String usuario = bundle.getString("usuario");
-            EditText input_usuario = view.findViewById(R.id.input_usuario);
-            input_usuario.setText(usuario);
+            EditText input_usuarioEmail = view.findViewById(R.id.input_usuarioEmail);
+            input_usuarioEmail.setText(usuario);
         }
 
         btn_login.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 // implementar lógica para iniciar sesion
-                EditText input_usuario = view.findViewById(R.id.input_usuario);
+                EditText input_usuarioEmail = view.findViewById(R.id.input_usuarioEmail);
                 EditText input_pass = view.findViewById(R.id.input_pass);
-                String usuario = input_usuario.getText().toString();
+                String usuarioEmail = input_usuarioEmail.getText().toString();
                 String pass = input_pass.getText().toString();
 
 
                 NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
-                if(!usuario.isEmpty() && !pass.isEmpty()){
+                if(!usuarioEmail.isEmpty() && !pass.isEmpty()){
 
-                    Usuario nuevologuser = new Usuario(usuario, null, pass);
-                    if(negociousuario.verificarUsuario(nuevologuser)){
-                        Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
+                    Usuario nuevoLogUser = new Usuario(usuarioEmail, pass);
 
+                    negociousuario.verificarUsuario(nuevoLogUser, new LogInCallback() {
 
-                    }else{
-                        Toast.makeText(getActivity(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
-                    }
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
+                            //Redirige a la pantalla de noticias
+                            NoticiasMainFragment noticiasMainFragment = new NoticiasMainFragment();
+                            requireActivity().getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, noticiasMainFragment)
+                                    .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                    .commit();
+
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(getActivity(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 else{
                     Toast.makeText(getActivity(), "Por favor ingrese usuario y contraseña", Toast.LENGTH_SHORT).show();

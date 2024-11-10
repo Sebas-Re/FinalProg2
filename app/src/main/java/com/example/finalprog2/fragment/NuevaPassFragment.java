@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.updateUsuarioCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
 
 
@@ -49,21 +50,30 @@ public class NuevaPassFragment extends Fragment {
                             NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
                             // En este paso, tanto el email como el token ya fueron verificados,
                             // por lo que no es necesario verificar nuevamente
-                            if (negocioUsuario.cambiarPass(email, pass)) {
-                                Toast.makeText(getActivity(), "Contraseña cambiada exitosamente", Toast.LENGTH_SHORT).show();
-                                Usuario usuario = negocioUsuario.obtenerUsuario(email);
 
-                                // Redireccionar a la pantalla de inicio de sesión, pasando el usuario como argumento
-                                Bundle bundleUsuario = new Bundle();
-                                bundleUsuario.putString("usuario", usuario.getUsuario());
+                            String finalEmail = email;
+                            negocioUsuario.cambiarPass(email, pass, new updateUsuarioCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    Toast.makeText(getActivity(), "Contraseña cambiada exitosamente", Toast.LENGTH_SHORT).show();
+                                    Usuario usuario = negocioUsuario.obtenerUsuario(finalEmail);
 
-                                LogInFragment logInFragment = new LogInFragment();
-                                logInFragment.setArguments(bundleUsuario);
+                                    // Redireccionar a la pantalla de inicio de sesión, pasando el usuario como argumento
+                                    Bundle bundleUsuario = new Bundle();
+                                    bundleUsuario.putString("usuario", usuario.getUsuario());
 
-                            } else {
-                                Toast.makeText(getActivity(), "Error al cambiar la contraseña", Toast.LENGTH_SHORT).show();
-                            }
+                                    LogInFragment logInFragment = new LogInFragment();
+                                    logInFragment.setArguments(bundleUsuario);
+                                }
 
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Toast.makeText(getActivity(), "Error al cambiar la contraseña", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        else{
+                            Toast.makeText(getActivity(), "La contraseña debe tener al menos 8 caracteres, una letra y un número", Toast.LENGTH_SHORT).show();
                         }
 
                     }

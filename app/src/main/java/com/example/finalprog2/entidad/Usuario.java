@@ -27,10 +27,18 @@ public class Usuario {
         this.id = id;
     }
 
+
     // Constructor para LogIn
-    public Usuario (String nombre, String email, String pass){
-        this.nombre = nombre;
-        this.email = email;
+    public Usuario(String usuarioEmail, String pass) {
+
+        //Verificar si lo ingresado en usuario es un email
+        if (usuarioEmail.contains("@")) {
+            this.email = usuarioEmail;
+            this.usuario = null;
+        } else {
+            this.usuario = usuarioEmail;
+            this.email = null;
+        }
         this.pass = pass;
         this.estado = true;
     }
@@ -44,6 +52,7 @@ public class Usuario {
         this.pass = pass;
         this.estado = true;
     }
+
 
     public int getId() {
         return id;

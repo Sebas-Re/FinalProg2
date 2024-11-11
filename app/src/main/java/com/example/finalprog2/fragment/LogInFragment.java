@@ -1,6 +1,8 @@
 package com.example.finalprog2.fragment;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -35,13 +37,15 @@ public class LogInFragment extends Fragment {
         TextView tv_pass_olvidada = view.findViewById(R.id.tv_pass_olvidada);
         TextView tv_registro_usuario = view.findViewById(R.id.tv_registro_usuario);
 
-        // Obtener el usuario del bundle
-        Bundle bundle = getArguments();
+        // Obtener el nombre de usuario de sharedPreferences
 
-        if (bundle != null) {
-            String usuario = bundle.getString("usuario");
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String nombreUsuario = sharedPreferences.getString("usuario", null);
+
+        //setea el nombre de usuario en el campo de texto
+        if (nombreUsuario != null) {
             EditText input_usuarioEmail = view.findViewById(R.id.input_usuarioEmail);
-            input_usuarioEmail.setText(usuario);
+            input_usuarioEmail.setText(nombreUsuario);
         }
 
         btn_login.setOnClickListener(new View.OnClickListener(){
@@ -58,11 +62,33 @@ public class LogInFragment extends Fragment {
                 if(!usuarioEmail.isEmpty() && !pass.isEmpty()){
 
                     Usuario nuevoLogUser = new Usuario(usuarioEmail, pass);
-
                     negociousuario.verificarUsuario(nuevoLogUser, new LogInCallback() {
 
                         @Override
                         public void onSuccess() {
+
+                            // Si el nombre de usuario el nulo (porque se inicio sesion con email),
+                            // se busca la info del usuario y se almacena en sharedPreferences
+                            // Si el nombre de usuario no es nulo, se almacena en sharedPreferences
+                            if (nuevoLogUser.getUsuario() == null){
+                                NegocioUsuario buscarUsuario = new NegocioUsuario(getActivity());
+                                Usuario usuarioEncontrado =  buscarUsuario.obtenerUsuario(nuevoLogUser.getEmail());
+
+                                // Guardar el nombre de usuario en SharedPreferences
+                                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("usuario", usuarioEncontrado.getUsuario());
+                                editor.apply();
+                            }
+                            else{
+                                // Guardar el nombre de usuario en SharedPreferences
+                                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("usuario", nuevoLogUser.getUsuario());
+                                editor.apply();
+                            }
+
+
                             Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
                             //Redirige a la pantalla de autoeval
                             AutoEvalFragment autoEvalFragment = new AutoEvalFragment();

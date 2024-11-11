@@ -1,5 +1,7 @@
 package com.example.finalprog2.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -57,13 +59,16 @@ public class RegistroUsuarioFragment extends Fragment {
                                 public void onSuccess() {
                                     Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
 
-                                    // Pasa el usuario a la pantalla de LogInFragment, para autocompletar el campo de usuario
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("usuario", usuario);
+
+                                    // Guardar el nombre de usuario en SharedPreferences
+                                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("usuario", usuario);
+                                    editor.apply();
+
 
                                     // Redirige a la pantalla de LogInFragment
                                     LogInFragment logInFragment = new LogInFragment();
-                                    logInFragment.setArguments(bundle);
                                     requireActivity().getSupportFragmentManager()
                                             .beginTransaction()
                                             .replace(R.id.fragment_container, logInFragment)

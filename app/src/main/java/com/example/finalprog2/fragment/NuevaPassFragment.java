@@ -1,5 +1,7 @@
 package com.example.finalprog2.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -42,28 +44,38 @@ public class NuevaPassFragment extends Fragment {
 
                             // Obtener el email del bundle
                             Bundle bundle = getArguments();
-                            String email = null;
-                            if (bundle != null) {
-                                email = bundle.getString("email");
-                            }
+                            assert bundle != null;
+                            String email = bundle.getString("email");
 
                             NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
                             // En este paso, tanto el email como el token ya fueron verificados,
                             // por lo que no es necesario verificar nuevamente
 
-                            String finalEmail = email;
-                            negocioUsuario.cambiarPass(email, pass, new updateUsuarioCallback() {
+
+                            Usuario usuarioAmodificar = new Usuario();
+                            usuarioAmodificar.setEmail(email);
+                            usuarioAmodificar.setPass(pass);
+
+                            negocioUsuario.cambiarPass(usuarioAmodificar, new updateUsuarioCallback() {
                                 @Override
                                 public void onSuccess() {
                                     Toast.makeText(getActivity(), "Contraseña cambiada exitosamente", Toast.LENGTH_SHORT).show();
-                                    Usuario usuario = negocioUsuario.obtenerUsuario(finalEmail);
+                                    Usuario usuarioEncontrado = negocioUsuario.obtenerUsuario(email);
 
-                                    // Redireccionar a la pantalla de inicio de sesión, pasando el usuario como argumento
-                                    Bundle bundleUsuario = new Bundle();
-                                    bundleUsuario.putString("usuario", usuario.getUsuario());
+                                    // Guardar el nombre de usuario en SharedPreferences
+                                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("usuario", usuarioEncontrado.getUsuario());
+                                    editor.apply();
 
+                                    // Redireccionar a la pantalla de inicio de sesión
+                                    // Redirige a la pantalla de LogInFragment
                                     LogInFragment logInFragment = new LogInFragment();
-                                    logInFragment.setArguments(bundleUsuario);
+                                    requireActivity().getSupportFragmentManager()
+                                            .beginTransaction()
+                                            .replace(R.id.fragment_container, logInFragment)
+                                            .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                            .commit();
                                 }
 
                                 @Override

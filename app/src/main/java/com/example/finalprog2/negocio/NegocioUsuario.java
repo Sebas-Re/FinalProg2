@@ -1,6 +1,7 @@
 package com.example.finalprog2.negocio;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.media3.common.util.UnstableApi;
 
 import com.example.finalprog2.entidad.Usuario;
 import com.example.finalprog2.interfaces.LogInCallback;
+import com.example.finalprog2.interfaces.ObtenerUsuarioCallbak;
 import com.example.finalprog2.interfaces.RegistrationCallback;
 import com.example.finalprog2.interfaces.updateUsuarioCallback;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +36,7 @@ public class NegocioUsuario {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
         if(usuario.getEmail() == null){
             //Inicia sesion a traves del usuario
 
@@ -46,6 +49,7 @@ public class NegocioUsuario {
                             if (!task.getResult().isEmpty()) {
                                 Log.d("Firestore", "Usuario encontrado");
                                 callback.onSuccess();
+
 
                             } else {
                                 Log.w("Firestore", "Nombre de usuario incorrecto");
@@ -220,17 +224,21 @@ public class NegocioUsuario {
         return updates;
     }
 
-    @OptIn(markerClass = UnstableApi.class)
-    private Usuario ObtenerUsuario(int id) {
-        // Recibe ID, retorna usuario
-        //recibe email, retorna objeto usuario
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final Usuario[] usuario = {new Usuario()};
-        // Buscaría al usuario en la base de datos a partir del email
 
+
+    // Esta funcion es util en el fragment EditarPerfil, puesto que cargaría la vista
+    // a partir del objeto usuario que retorna esta funcion
+    @OptIn(markerClass = UnstableApi.class)
+    public Usuario ObtenerUsuario(Usuario usuarioAbuscar, ObtenerUsuarioCallbak callback) {
+
+        // Recibe Nombre de Usuario, retorna usuario
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final Usuario[] usuarioEncontrado = {new Usuario()};
+
+
+        // Buscaría al usuario en la base de datos a partir del nombre de usuario
         db.collection("usuarios")
-                .whereEqualTo("id", id)
+                .whereEqualTo("usuario", usuarioAbuscar.getUsuario())
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -239,7 +247,7 @@ public class NegocioUsuario {
 
                             //obtiene el documento
                             DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                            usuario[0] = document.toObject(Usuario.class);
+                            usuarioEncontrado[0] = document.toObject(Usuario.class);
 
                         } else {
                             Log.w("Firestore", "ID incorrecto");
@@ -249,8 +257,7 @@ public class NegocioUsuario {
 
                     }
                 });
-
-        return usuario[0];
+        return usuarioEncontrado[0];
     }
 
 
@@ -274,6 +281,7 @@ public class NegocioUsuario {
                             DocumentSnapshot document = task.getResult().getDocuments().get(0);
                             usuario[0] = document.toObject(Usuario.class);
 
+
                         } else {
                             Log.w("Firestore", "Email incorrecto");
                         }
@@ -296,14 +304,21 @@ public class NegocioUsuario {
         return usuario.getToken() == codigo;
     }
 
-    public void cambiarPass(String email, String pass, updateUsuarioCallback callback) {
+    public void cambiarPass(Usuario usuarioAmodificar, updateUsuarioCallback callback) {
         // En este paso, el email ya fue verificado, por lo que no es necesario verificar nuevamente
         // Lógica para cambiar la contraseña
         // Buscaría al usuario en la base de datos a partir del email y actualizaría su contraseña
 
-        Usuario usuario = obtenerUsuario(email);
-        usuario.setPass(pass);
+        //Se busca al usuario en la base de datos a partir del email (funcion obtenerUsuario),
+        // y se almacenan los datos en un objeto
+        Usuario usuario = obtenerUsuario(usuarioAmodificar.getEmail());
 
+        // Se modifica la contraseña del usuario segun lo ingresado
+        usuario.setPass(usuarioAmodificar.getPass());
+
+
+        //Se actualiza la contraseña del usuario en la base de datos (funcion modificarUsuario)
         modificarUsuario(usuario, callback);
+
     }
 }

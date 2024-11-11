@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F6EC"
@@ -11,38 +12,25 @@
     <!-- Campo de entrada para Consumo por Hora -->
 
     <!-- Spinner para Seleccionar Frecuencia -->
-    <EditText
-        android:id="@+id/input_electrodomestico"
+    <Spinner
+        android:id="@+id/spinner_electrodomestico"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/edit_text_bg"
-        android:hint="Electrodomestico"
-        android:inputType="text"
-        android:padding="10dp"
-        android:textColor="#132625"
-        android:textColorHint="#132625"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/input_consumo_por_hora"
+    <Spinner
+        android:id="@+id/spinner_eficiencia"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/edit_text_bg"
-        android:hint="Consumo por Hora (KWH)"
-        android:inputType="numberDecimal"
-        android:padding="10dp"
-        android:textColor="#132625"
-        android:textColorHint="#132625"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_electrodomestico" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_electrodomestico" />
 
     <!-- Botón Agregar -->
 
@@ -50,17 +38,20 @@
 
     <!-- Campo de entrada para Tarifa -->
 
-    <Spinner
-        android:id="@+id/sp_frequency"
+    <TextView
+        android:id="@+id/tv_kwh"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/edit_text_bg"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_consumo_por_hora"
-        android:entries="@array/electrodomesticos"/>
+        android:clickable="false"
+        android:enabled="false"
+        android:focusable="false"
+        android:padding="12dp"
+        android:textColor="#132625"
+        app:layout_constraintStart_toEndOf="@id/spinner_eficiencia"
+        app:layout_constraintTop_toBottomOf="@id/spinner_electrodomestico" />
 
     <Button
         android:id="@+id/btn_agregar"
@@ -73,8 +64,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.773"
         
-        app:layout_constraintStart_toEndOf="@id/sp_frequency"
-        app:layout_constraintTop_toBottomOf="@id/input_consumo_por_hora" />
+        app:layout_constraintStart_toEndOf="@id/tv_kwh"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_eficiencia" />
 
     <!-- Texto de Promedio Semanal -->
 

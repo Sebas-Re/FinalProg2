@@ -64,11 +64,11 @@ public class LogInFragment extends Fragment {
                         @Override
                         public void onSuccess() {
                             Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
-                            //Redirige a la pantalla de noticias
-                            NoticiasMainFragment noticiasMainFragment = new NoticiasMainFragment();
+                            //Redirige a la pantalla de autoeval
+                            AutoEvalFragment autoEvalFragment = new AutoEvalFragment();
                             requireActivity().getSupportFragmentManager()
                                     .beginTransaction()
-                                    .replace(R.id.fragment_container, noticiasMainFragment)
+                                    .replace(R.id.fragment_container, autoEvalFragment)
                                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                                     .commit();
 

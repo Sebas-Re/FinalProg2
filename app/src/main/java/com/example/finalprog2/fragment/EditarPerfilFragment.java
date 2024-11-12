@@ -41,6 +41,7 @@ public class EditarPerfilFragment extends Fragment {
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String nombreUsuario = sharedPreferences.getString("usuario", null);
+        int idUsuario = sharedPreferences.getInt("id", -1);
         if (nombreUsuario != null) {
             NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
             Usuario usuarioAcargar = new Usuario();
@@ -80,12 +81,14 @@ public class EditarPerfilFragment extends Fragment {
             NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
                 if(pass.isEmpty() && repetir_pass.isEmpty()){
                  Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, null);
+                 usuarioAeditar.setId(idUsuario);
                  // Manda el usuario con la contraseña nula, para que no se modifique
                     updateUsuario(negocioUsuario, usuarioAeditar);
                 }
                 else{
                     if(pass.equals(repetir_pass)){
                         Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, pass);
+                        usuarioAeditar.setId(idUsuario);
                         updateUsuario(negocioUsuario, usuarioAeditar);
                     }
                     else{

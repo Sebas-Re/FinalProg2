@@ -41,11 +41,14 @@ public class LogInFragment extends Fragment {
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String nombreUsuario = sharedPreferences.getString("usuario", null);
+        Usuario usuario = new Usuario();
+
 
         //setea el nombre de usuario en el campo de texto
         if (nombreUsuario != null) {
             EditText input_usuarioEmail = view.findViewById(R.id.input_usuarioEmail);
             input_usuarioEmail.setText(nombreUsuario);
+            usuario.setUsuario(nombreUsuario);
         }
 
         btn_login.setOnClickListener(new View.OnClickListener(){
@@ -79,6 +82,7 @@ public class LogInFragment extends Fragment {
                                         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
                                         editor.putString("usuario", usuarioEncontrado.getUsuario());
+                                        editor.putInt("id", usuarioEncontrado.getId());
                                         editor.apply();
 
                                         return false;
@@ -93,20 +97,36 @@ public class LogInFragment extends Fragment {
 
                             }
                             else{
-                                // Guardar el nombre de usuario en SharedPreferences
-                                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("usuario", nuevoLogUser.getUsuario());
-                                editor.apply();
+                                NegocioUsuario buscarUsuario = new NegocioUsuario(getActivity());
+                                buscarUsuario.ObtenerUsuario(nuevoLogUser, new ObtenerUsuarioCallback() {
+                                    @Override
+                                    public boolean onSuccess(Usuario usuarioEncontrado) {
+                                        // Guardar el nombre de usuario en SharedPreferences
+                                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("usuario", nuevoLogUser.getUsuario());
+                                        editor.putInt("id", usuarioEncontrado.getId());
+                                        editor.apply();
+                                        return true;
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+
+                                    }
+                                });
+
+
                             }
 
 
                             Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
                             //Redirige a la pantalla de autoeval
-                            AutoEvalFragment autoEvalFragment = new AutoEvalFragment();
+                            //AutoEvalFragment autoEvalFragment = new AutoEvalFragment();
+                            EditarPerfilFragment editarPerfilFragment = new EditarPerfilFragment();
                             requireActivity().getSupportFragmentManager()
                                     .beginTransaction()
-                                    .replace(R.id.fragment_container, autoEvalFragment)
+                                    .replace(R.id.fragment_container, editarPerfilFragment)
                                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                                     .commit();
 

@@ -53,6 +53,9 @@ public class Usuario {
         this.estado = true;
     }
 
+    public void setId(int idUsuario) {
+        this.id = idUsuario;
+    }
 
     public int getId() {
         return id;
@@ -138,4 +141,6 @@ public class Usuario {
     public int hashCode() {
         return Objects.hash(id, nombre, apellido, usuario, email, pass, token, estado);
     }
+
+
 }

@@ -1,5 +1,7 @@
 package com.example.finalprog2.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
 import com.example.finalprog2.interfaces.updateUsuarioCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
 
@@ -34,6 +37,33 @@ public class EditarPerfilFragment extends Fragment {
         EditText input_pass = view.findViewById(R.id.input_pass);
         EditText input_repetir_pass = view.findViewById(R.id.input_repetir_pass);
         Button btn_guardarCambios = view.findViewById(R.id.btn_guardarCambios);
+
+
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String nombreUsuario = sharedPreferences.getString("usuario", null);
+        if (nombreUsuario != null) {
+            NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
+            Usuario usuarioAcargar = new Usuario();
+            usuarioAcargar.setUsuario(nombreUsuario);
+            negocioUsuario.ObtenerUsuario(usuarioAcargar, new ObtenerUsuarioCallback() {
+                @Override
+                public boolean onSuccess(Usuario usuarioEncontrado) {
+                    input_nombre.setText(usuarioEncontrado.getNombre());
+                    input_apellido.setText(usuarioEncontrado.getApellido());
+                    input_usuario.setText(usuarioEncontrado.getUsuario());
+                    input_email.setText(usuarioEncontrado.getEmail());
+                    return true;
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(getActivity(), "Error al cargar los datos", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else{
+            Toast.makeText(getActivity(), "No se encontro el nombre de usuario", Toast.LENGTH_SHORT).show();
+        }
 
 
         btn_guardarCambios.setOnClickListener(new View.OnClickListener() {

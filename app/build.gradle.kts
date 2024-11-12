@@ -50,11 +50,15 @@ dependencies {
     implementation(libs.media3.common)
     implementation(libs.firebase.auth)
     implementation(libs.play.services.location)
+    implementation(libs.firebase.inappmessaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.android.mail)
     implementation(libs.android.activation)
+
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     // Usa el BOM para Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))

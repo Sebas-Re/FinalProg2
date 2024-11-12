@@ -5,12 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
 import com.example.finalprog2.R;
+import com.example.finalprog2.utils.PopupMenuHelper;
+
 public class VerNoticiaFragment extends Fragment {
 
     // Método para crear la vista del fragmento
@@ -26,18 +33,37 @@ public class VerNoticiaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        if (toolbarTitle != null) {
+            toolbarTitle.setText("Noticias");
+        }
+
+        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
+        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+
+
         ImageView imageNoticia = view.findViewById(R.id.image_noticia);
         TextView titleTextView = view.findViewById(R.id.text_noticia_titulo);
         TextView contentTextView = view.findViewById(R.id.text_noticia_contenido);
 
 
-        // Cargar imagen desde drawable
-        imageNoticia.setImageResource(R.drawable.sample_main_news2); // Cambia "nombre_de_tu_imagen" por el nombre real de tu imagen sin la extensión
+        // Obtener los datos de la noticia del bundle
+        Bundle arguments = getArguments();
+        Bundle args = getArguments();
+        if (args != null) {
+            String titulo = args.getString("titulo");
+            String imagenUrl = args.getString("imagen");
+            String contenido = args.getString("textoCompleto");
 
-        // Asigna el título y contenido si es necesario
-        titleTextView.setText("Título de la Noticia");
-        contentTextView.setText("Contenido completo de la noticia...");
+            titleTextView.setText(titulo);
+            contentTextView.setText(contenido);
 
+           Glide.with(this).load(imagenUrl).into(imageNoticia); // Utiliza Glide o Picasso para cargar la imagen
+        }
 
     }
 

@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalprog2.R;
+import com.example.finalprog2.conexion.FirebaseTestData;
+import com.example.finalprog2.entidad.Sitio;
 import com.example.finalprog2.utils.PopupMenuHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,22 +41,27 @@ import com.google.android.gms.tasks.Task;
 
 import androidx.core.app.ActivityCompat;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MapaSitiosFragment extends Fragment {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private SupportMapFragment mapFragment; // Mover la declaración aquí
-    private LatLng mOriginalLatLng;  // Para almacenar la ubicación original del mapa
+    private SupportMapFragment mapFragment;
+    private LatLng mOriginalLatLng;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private FirebaseFirestore db;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
 
-            // Cargar el estilo de mapa desde el archivo JSON
+            // Cargar el estilo del mapa
             try {
                 boolean success = mMap.setMapStyle(
                         MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
@@ -64,74 +72,88 @@ public class MapaSitiosFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            mMap.getUiSettings().setZoomControlsEnabled(true);       // Controles de zoom
-            mMap.getUiSettings().setCompassEnabled(true);            // Brújula
-            mMap.getUiSettings().setZoomGesturesEnabled(true);       // Gesto de zoom
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.getUiSettings().setCompassEnabled(true);
+            mMap.getUiSettings().setZoomGesturesEnabled(true);
             mMap.getUiSettings().setScrollGesturesEnabled(true);
 
-            // Verificar permisos y obtener la ubicación
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                     || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true); // Habilitar el marcador de ubicación
+                mMap.setMyLocationEnabled(true); // Habilitar la ubicación
             } else {
-                // Si no se tienen permisos, pedirlos
                 requestLocationPermission();
-            };
+            }
 
-            LatLng puntoInteres = new LatLng(-34.6037, -58.3816); // Ejemplo: coordenadas de Buenos Aires
-            mMap.addMarker(new MarkerOptions()
-                    .position(puntoInteres)
-                    .title("Punto de Interés")
-                    .snippet("Descripción del lugar opcional"));
+            // Crear instancias de FirebaseTestData y agregar los datos
+            FirebaseTestData testData = new FirebaseTestData();
+          //  testData.generarSitiosAleatorios(20); // Este método agregará los 20 registros
 
-            // Mueve la cámara al punto de interés
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(puntoInteres, 12));
+            db = FirebaseFirestore.getInstance();
 
-            // Guardar la posición original del mapa después de mover la cámara
-            mOriginalLatLng = mMap.getCameraPosition().target;  // Asegúrate de que no sea null
+            loadSitesOnMap();  // Cargar sitios desde Firestore
 
-            // Configuración del listener para clic en los marcadores
+            // Restablecer la ubicación inicial del mapa
+            mOriginalLatLng = mMap.getCameraPosition().target;
+
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    // Obtener las coordenadas del marcador
-                    LatLng markerPosition = marker.getPosition();
+                    Sitio sitio = (Sitio) marker.getTag();  // Obtener el objeto Sitio asociado con el marcador
 
-                    // Mostrar la información del local
+                    // Mostrar la información del sitio
                     LinearLayout infoLocal = getView().findViewById(R.id.infoLocal);
                     infoLocal.setVisibility(View.VISIBLE);
 
                     // Ajustar el mapa para que ocupe la mitad de la pantalla
                     LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mapFragment.getView().getLayoutParams();
-                    params.height = 0; // Ocupa la mitad
+                    params.height = 0; // Ocupa la mitad de la pantalla
                     mapFragment.getView().setLayoutParams(params);
 
-                    // Actualizar los textos con la información del marcador
+                    // Actualizar la información del layout
                     TextView direccion = getView().findViewById(R.id.direccion);
-                    direccion.setText("Dirección: " + marker.getTitle());
+                    direccion.setText("Dirección: " + sitio.getDireccion());
 
                     TextView horarios = getView().findViewById(R.id.horarios);
-                    horarios.setText("Horarios: Lunes a Viernes 9:00 - 18:00");
+                    horarios.setText("Horarios: " + sitio.getHorarios());
 
-                    return false;  // Devuelve false para que el marcador no cambie su estado automáticamente
+                    // Configurar los botones con los datos del sitio
+                    ImageView whatsappIcon = getView().findViewById(R.id.whatsappIcon);
+                    whatsappIcon.setOnClickListener(v -> {
+                        String whatsappUrl = "https://wa.me/" + sitio.getWhatsapp();
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl));
+                        startActivity(intent);
+                    });
+
+                    ImageView instagramIcon = getView().findViewById(R.id.instagramIcon);
+                    instagramIcon.setOnClickListener(v -> {
+                        String instagramUrl = "https://www.instagram.com/" + sitio.getInstagram();
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(instagramUrl));
+                        startActivity(intent);
+                    });
+
+                    ImageView mailIcon = getView().findViewById(R.id.mailIcon);
+                    mailIcon.setOnClickListener(v -> {
+                        String email = "mailto:" + sitio.getCorreo();
+                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(email));
+                        startActivity(intent);
+                    });
+
+                    return false;  // Devolver false para no cambiar el estado del marcador
                 }
             });
 
-            // Listener para hacer clic fuera del pin
+            // Restaurar la vista del mapa al hacer clic fuera del marcador
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
                     if (mOriginalLatLng != null) {
-                        // Restaurar la visibilidad de la información del local
                         LinearLayout infoLocal = getView().findViewById(R.id.infoLocal);
                         infoLocal.setVisibility(View.GONE);
 
-                        // Volver a la posición original del mapa
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOriginalLatLng, 12));
 
-                        // Restaurar la altura del fragmento de mapa (para que ocupe toda la pantalla de nuevo)
                         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mapFragment.getView().getLayoutParams();
-                        params.height = LinearLayout.LayoutParams.MATCH_PARENT;  // Restaura el tamaño original
+                        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
                         mapFragment.getView().setLayoutParams(params);
                     }
                 }
@@ -147,6 +169,40 @@ public class MapaSitiosFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_mapa_sitios, container, false);
     }
 
+    private void loadSitesOnMap() {
+        Log.d("Firestore", "Iniciando consulta...");
+        db.collection("sitios").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Firestore", "Consulta exitosa");
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Sitio sitio = document.toObject(Sitio.class);
+
+                    GeoPoint location = sitio.getUbicacion();
+                    if (location != null) {
+                        Log.d("Firestore", "Ubicación obtenida: Lat=" + location.getLatitude() + ", Lng=" + location.getLongitude());
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                        Marker marker = mMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title(sitio.getNombre())
+                                .snippet(sitio.getDescripcion()));
+
+                        marker.setTag(sitio);
+
+                        // Mover la cámara para ver el marcador
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+
+                    } else {
+                        Log.d("Firestore", "Ubicación no disponible para el sitio: " + sitio.getNombre());
+                    }
+                }
+            } else {
+                Log.e("Firestore", "Error al cargar sitios: ", task.getException());
+                Toast.makeText(getContext(), "Error al cargar sitios", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -155,105 +211,56 @@ public class MapaSitiosFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
-        // Configurar el título
         TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         if (toolbarTitle != null) {
             toolbarTitle.setText("Mapa de Sitios");
         }
 
-        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button); // Tu ImageButton
-
-        // Configurar evento de clic para el botón del menú
+        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> {
             PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
-
         });
 
         // Configurar el fragmento del mapa
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map); // Inicializa mapFragment aquí
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
+        } else {
+            Log.e("Map", "El fragmento del mapa no se encontró.");
         }
 
-        // Configurar iconos de redes sociales con links
+        // Configurar los iconos de redes sociales
         ImageView whatsappIcon = view.findViewById(R.id.whatsappIcon);
         ImageView instagramIcon = view.findViewById(R.id.instagramIcon);
         ImageView mailIcon = view.findViewById(R.id.mailIcon);
 
-        // Configurar el click para WhatsApp
-        whatsappIcon.setOnClickListener(v -> {
-            String whatsappUrl = "https://wa.me/1165188743"; // Cambia el número por el tuyo
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl));
-            startActivity(intent);
-        });
-
-        // Configurar el click para Instagram
-        instagramIcon.setOnClickListener(v -> {
-            String instagramUrl = "https://www.instagram.com/manu_pais_"; // Cambia por tu URL de Instagram
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(instagramUrl));
-            startActivity(intent);
-        });
-
-        // Configurar el click para Mail
-        mailIcon.setOnClickListener(v -> {
-            String email = "mailto:manupais22gmail.com"; // Cambia por tu correo
-            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(email));
-            startActivity(intent);
-        });
-
-        // Inicializar el FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
     }
 
     private void getDeviceLocation() {
-        // Obtener la ubicación actual
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermission();
             return;
         }
-        fusedLocationClient.getLastLocation()
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<android.location.Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<android.location.Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            android.location.Location currentLocation = task.getResult();
-                            LatLng currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
-                            // Mover la cámara a la ubicación del dispositivo
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15));
-
-                            // Agregar marcador en la ubicación actual
-                            mMap.addMarker(new MarkerOptions().position(currentLatLng).title("Tu ubicación"));
-
-                        } else {
-                            Toast.makeText(getContext(), "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        Task<android.location.Location> locationResult = fusedLocationClient.getLastLocation();
+        locationResult.addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                android.location.Location currentLocation = task.getResult();
+                if (currentLocation != null) {
+                    LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+                }
+            } else {
+                Log.d("Location", "Error al obtener la ubicación.");
+            }
+        });
     }
 
     private void requestLocationPermission() {
-        // Solicitar permiso de ubicación
-        ActivityCompat.requestPermissions(getActivity(),
+        ActivityCompat.requestPermissions(requireActivity(),
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 LOCATION_PERMISSION_REQUEST_CODE);
-    }
-
-    // Callback para manejar el resultado de la solicitud de permisos
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permiso otorgado, intentar obtener la ubicación
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    mMap.setMyLocationEnabled(true);
-                    getDeviceLocation();
-                }
-            } else {
-                Toast.makeText(getContext(), "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 }

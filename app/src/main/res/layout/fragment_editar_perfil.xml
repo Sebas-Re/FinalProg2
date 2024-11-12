@@ -61,13 +61,13 @@
         tools:ignore="Autofill" />
 
     <!-- Campo de Usuario -->
-    <EditText
-        android:id="@+id/input_usuario"
+    <TextView
+        android:id="@+id/tv_usuario"
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:background="@drawable/edit_text_bg"
-        android:hint="@string/usuario"
-        android:inputType="text"
+        android:text="@string/usuario"
+        android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/input_apellido"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,18 +77,17 @@
         android:textColor="#132625"
         android:textColorHint="#132625"
         android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        tools:ignore="Autofill" />
+        android:paddingEnd="10dp" />
 
     <!-- Campo de Email -->
-    <EditText
-        android:id="@+id/input_email"
+    <TextView
+        android:id="@+id/tv_email"
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:background="@drawable/edit_text_bg"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/input_usuario"
+        android:text="@string/email"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_usuario"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="10dp"
@@ -97,8 +96,7 @@
         android:textColor="#132625"
         android:textColorHint="#132625"
         android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        tools:ignore="Autofill" />
+        android:paddingEnd="10dp"/>
 
     <!-- Campo de Contraseña -->
     <EditText
@@ -108,7 +106,7 @@
         android:background="@drawable/edit_text_bg"
         android:hint="@string/contrasenia"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/input_email"
+        app:layout_constraintTop_toBottomOf="@id/tv_email"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="10dp"

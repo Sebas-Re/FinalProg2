@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalprog2.R;
@@ -32,13 +33,15 @@ public class EditarPerfilFragment extends Fragment {
         View view =inflater.inflate(R.layout.fragment_editar_perfil, container, false);
         EditText input_nombre = view.findViewById(R.id.input_nombre);
         EditText input_apellido = view.findViewById(R.id.input_apellido);
-        EditText input_usuario = view.findViewById(R.id.input_usuario);
-        EditText input_email = view.findViewById(R.id.input_email);
+        TextView tv_usuario = view.findViewById(R.id.tv_usuario);
+        TextView tv_email = view.findViewById(R.id.tv_email);
         EditText input_pass = view.findViewById(R.id.input_pass);
         EditText input_repetir_pass = view.findViewById(R.id.input_repetir_pass);
         Button btn_guardarCambios = view.findViewById(R.id.btn_guardarCambios);
 
 
+        
+        // Carga de datos al iniciar el fragment
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String nombreUsuario = sharedPreferences.getString("usuario", null);
         int idUsuario = sharedPreferences.getInt("id", -1);
@@ -51,8 +54,8 @@ public class EditarPerfilFragment extends Fragment {
                 public boolean onSuccess(Usuario usuarioEncontrado) {
                     input_nombre.setText(usuarioEncontrado.getNombre());
                     input_apellido.setText(usuarioEncontrado.getApellido());
-                    input_usuario.setText(usuarioEncontrado.getUsuario());
-                    input_email.setText(usuarioEncontrado.getEmail());
+                    tv_usuario.setText(usuarioEncontrado.getUsuario());
+                    tv_email.setText(usuarioEncontrado.getEmail());
                     return true;
                 }
 
@@ -72,8 +75,8 @@ public class EditarPerfilFragment extends Fragment {
             public void onClick(View view) {
             String nombre = input_nombre.getText().toString();
             String apellido = input_apellido.getText().toString();
-            String usuario = input_usuario.getText().toString();
-            String email = input_email.getText().toString();
+            String usuario = tv_usuario.getText().toString();
+            String email = tv_email.getText().toString();
             String pass = input_pass.getText().toString();
             String repetir_pass = input_repetir_pass.getText().toString();
 

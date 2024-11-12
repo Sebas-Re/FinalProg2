@@ -26,8 +26,8 @@
     <string name="nueva_contrasenia">Nueva\nContraseña</string>
     <string name="recuperar_contrasenia">Recuperar Contraseña</string>
     <string name="recuperar_ncontrasenia">Recuperar\nContraseña</string>
-    <string name="instruccion_codigo">Ingrese el código enviado a su email</string>
-    <string name="codigo_recibido">Código recibido</string>
+    <string name="instruccion_token">Ingrese el token enviado a su email</string>
+    <string name="token_recibido">Token recibido</string>
     <string name="registrarse">Registrarse</string>
     <string name="si_ya_tienes_un_usuario">Si ya tienes un usuario</string>
     <string name="inicia_sesion">inicia sesión</string>
@@ -40,4 +40,5 @@
     <string name="whatsapp">WhatsApp</string>
     <string name="instagram">Instagram</string>
     <string name="mail">Correo Electrónico</string>
+    <string name="enviar_token">Enviar Token</string>
 </resources>

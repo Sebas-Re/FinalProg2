@@ -1,7 +1,6 @@
 package com.example.finalprog2.negocio;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 
 import androidx.annotation.NonNull;
@@ -11,10 +10,14 @@ import androidx.media3.common.util.UnstableApi;
 
 import com.example.finalprog2.entidad.Usuario;
 import com.example.finalprog2.interfaces.LogInCallback;
-import com.example.finalprog2.interfaces.ObtenerUsuarioCallbak;
+import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
 import com.example.finalprog2.interfaces.RegistrationCallback;
+import com.example.finalprog2.interfaces.VerificarEmailCallback;
+import com.example.finalprog2.interfaces.VerificarTokenCallback;
 import com.example.finalprog2.interfaces.updateUsuarioCallback;
+import com.example.finalprog2.utils.EmailController;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,7 +50,7 @@ public class NegocioUsuario {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             if (!task.getResult().isEmpty()) {
-                                Log.d("Firestore", "Usuario encontrado");
+                                Log.i("Firestore", "Usuario encontrado");
                                 callback.onSuccess();
 
 
@@ -56,7 +59,7 @@ public class NegocioUsuario {
                                 callback.onFailure(null);
                             }
                         } else {
-                            Log.w("Firestore", "Error al verificar LogIn", task.getException());
+                            Log.e("Firestore", "Error al verificar LogIn", task.getException());
                             callback.onFailure(null);
 
                         }
@@ -78,17 +81,6 @@ public class NegocioUsuario {
         }
     }
 
-    public boolean verificarEmail(String email){
-        //Busca el email en sistema. Si existe:
-        // 1. Envia un codigo de recuperacion de contraseña al email
-        // 2. Se obtiene el usuario correspondiente al email (funcion obtenerUsuario)
-        // 3. Se almacena el codigo en la base de datos (campo "token" en clase Usuario)
-        // 4. Se modifica el usuario en la base de datos (funcion modificarUsuario) para aplicar el token
-        // devuelve true.
-
-        // Si no existe, devuelve false
-        return true;
-    }
 
     @OptIn(markerClass = UnstableApi.class)
     public void registrarUsuario(Usuario nuevoUsuario, RegistrationCallback callback) {
@@ -137,12 +129,12 @@ public class NegocioUsuario {
                                                                 db.collection("usuarios").document(user.getUid()).set(userData)
                                                                         .addOnSuccessListener(aVoid -> {
                                                                             // Datos de usuario añadidos exitosamente
-                                                                            Log.d("Firestore", "Datos de usuario añadidos exitosamente");
+                                                                            Log.i("Firestore", "Datos de usuario añadidos exitosamente");
                                                                             callback.onSuccess();
                                                                         })
                                                                         .addOnFailureListener(e -> {
                                                                             // Error añadiendo datos del usuario
-                                                                            Log.w("Firestore", "Error añadiendo datos del usuario", e);
+                                                                            Log.e("Firestore", "Error añadiendo datos del usuario", e);
                                                                             callback.onFailure(e);
                                                                         });
                                                             } else {
@@ -155,14 +147,14 @@ public class NegocioUsuario {
 
                                         }
                                         else {
-                                            Log.w("Firestore", "Error al verificar email", emailTask.getException());
+                                            Log.e("Firestore", "Error al verificar email", emailTask.getException());
                                             callback.onFailure(null);
                                         }
                                     });
                         }
 
                     } else {
-                        Log.w("Firestore", "Error al verificar usuario", chequeoUsuarioTask.getException());
+                        Log.e("Firestore", "Error al verificar usuario", chequeoUsuarioTask.getException());
                         callback.onFailure(null);
                     }
                 });
@@ -184,21 +176,40 @@ public class NegocioUsuario {
 
     @OptIn(markerClass = UnstableApi.class)
     public void modificarUsuario(Usuario usuario, updateUsuarioCallback callback) {
+
         // Busqueda SQL para modificar el usuario en la base de datos, con los datos del usuario
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> updates = mapeoUsuarioAmodificar(usuario);
 
-        db.collection("usuarios").document(String.valueOf(usuario.getId())).update(updates)
-                .addOnSuccessListener(aVoid -> {
-                    // Datos actualizados correctamente
-                    Log.d("Firestore", "Datos de usuario actualizados exitosamente");
-                    callback.onSuccess();
-                })
-                .addOnFailureListener(e -> {
-                    // Error actualizando los datos del usuario
-                    Log.w("Firestore", "Error actualizando los datos del usuario", e);
-                    callback.onFailure(null);
+        db.collection("usuarios")
+                .whereEqualTo("usuario", usuario.getUsuario()) // Busca el documento a partir del nombre de usuario
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            // Obtenemos la referencia del documento
+                            DocumentReference docRef = task.getResult().getDocuments().get(0).getReference();
 
+                            // mandamos la update
+                            docRef.update(updates)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.i("Firestore", "Datos de usuario actualizados exitosamente");
+                                        callback.onSuccess();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("Firestore", "Error actualizando los datos del usuario " + usuario.getUsuario(), e);
+                                        callback.onFailure(null);
+                                    });
+                        } else {
+
+                            Log.w("Firestore", "No se encontró un usuario con nombre de usuario proporcionado");
+
+                        }
+                    } else {
+
+                        Log.e("Firestore", "Error al buscar el usuario", task.getException());
+
+                    }
                 });
 
     }
@@ -212,6 +223,7 @@ public class NegocioUsuario {
             updates.put("apellido", usuario.getApellido());
             updates.put("usuario", usuario.getUsuario());
             updates.put("email", usuario.getEmail());
+            updates.put("token", usuario.getToken());
 
         }
         else{
@@ -220,6 +232,7 @@ public class NegocioUsuario {
             updates.put("usuario", usuario.getUsuario());
             updates.put("email", usuario.getEmail());
             updates.put("pass", usuario.getPass());
+            updates.put("token", usuario.getToken());
         }
         return updates;
     }
@@ -229,12 +242,9 @@ public class NegocioUsuario {
     // Esta funcion es util en el fragment EditarPerfil, puesto que cargaría la vista
     // a partir del objeto usuario que retorna esta funcion
     @OptIn(markerClass = UnstableApi.class)
-    public Usuario ObtenerUsuario(Usuario usuarioAbuscar, ObtenerUsuarioCallbak callback) {
-
+    public void ObtenerUsuario(Usuario usuarioAbuscar, ObtenerUsuarioCallback callback) {
         // Recibe Nombre de Usuario, retorna usuario
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final Usuario[] usuarioEncontrado = {new Usuario()};
-
 
         // Buscaría al usuario en la base de datos a partir del nombre de usuario
         db.collection("usuarios")
@@ -243,65 +253,165 @@ public class NegocioUsuario {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (!task.getResult().isEmpty()) {
-                            Log.d("Firestore", "Usuario encontrado");
+                            Log.i("Firestore", "Usuario encontrado");
 
                             //obtiene el documento
                             DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                            usuarioEncontrado[0] = document.toObject(Usuario.class);
+                            Usuario usuarioEncontrado = document.toObject(Usuario.class);
+                            callback.onSuccess(usuarioEncontrado);
 
                         } else {
                             Log.w("Firestore", "ID incorrecto");
                         }
                     } else {
-                        Log.w("Firestore", "Error al obtener usuario", task.getException());
+                        Log.e("Firestore", "Error al obtener usuario", task.getException());
 
                     }
                 });
-        return usuarioEncontrado[0];
     }
 
 
     @OptIn(markerClass = UnstableApi.class)
-    public Usuario obtenerUsuario(String email){
+    public void obtenerUsuario(String email, ObtenerUsuarioCallback callback){
         //recibe email, retorna objeto usuario
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final Usuario[] usuario = {new Usuario()};
+
         // Buscaría al usuario en la base de datos a partir del email
 
-        db.collection("usuarios")
-                .whereEqualTo("email", email)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (!task.getResult().isEmpty()) {
-                            Log.d("Firestore", "Usuario encontrado");
+        db.collection("usuarios").whereEqualTo("email", email).get().addOnCompleteListener(task ->
+        {
 
-                            //obtiene el documento
-                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                            usuario[0] = document.toObject(Usuario.class);
+            if (task.isSuccessful())
+            {
+                if (!task.getResult().isEmpty()) {
+                    Log.i("Firestore", "Usuario encontrado a partir de email (ObtenerUsuario(String email) )");
+
+                    //obtiene el documento
+                    DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                    Usuario usuarioEncontrado = document.toObject(Usuario.class);
+
+                    callback.onSuccess(usuarioEncontrado);
 
 
-                        } else {
-                            Log.w("Firestore", "Email incorrecto");
-                        }
-                    } else {
-                        Log.w("Firestore", "Error al obtener Usuario", task.getException());
+                } else {
+                    Log.w("Firestore", "Email incorrecto");
+                    callback.onFailure(new Exception("Email incorrecto"));
+                }
 
-                    }
-                });
-
-        return usuario[0];
+            } else
+                {
+                  Log.e("Firestore", "Error al obtener Usuario", task.getException());
+                }
+        });
     }
 
-    public boolean verificarCodigo(String email, int codigo) {
+
+    // Funcion para autogenerar un token numerico de 6 digitos
+
+    public String generarToken(){
+        String token = "";
+        for (int i = 0; i < 6; i++) {
+            token += (int)(Math.random() * 10);
+        }
+        return token;
+    }
+
+    @OptIn(markerClass = UnstableApi.class)
+    public void verificarEmail(Usuario usuario, VerificarEmailCallback callback)
+    {
+        //Busca el email en sistema. Si existe devuelve success, si no devuelve fail.
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Buscaría al usuario en la base de datos a partir del email
+        db.collection("usuarios").whereEqualTo("email", usuario.getEmail()).get().addOnCompleteListener(task ->
+        {
+            if (task.isSuccessful())
+            {
+
+                if (!task.getResult().isEmpty()) {
+                    Log.d("Firestore", "Email encontrado (Funcion VerificarEmail");
+                    callback.onSuccess();
+                } else {
+                    Log.w("Firestore", "Email incorrecto");
+                    callback.onFailure(null);
+                }
+            } else
+                {
+                Log.e("Firestore", "Error al obtener Usuario", task.getException());
+                callback.onFailure(null);
+                }
+        });
+    }
+
+
+    // Funcion para enviar Token por email
+    public void enviarToken(Usuario usuario, updateUsuarioCallback callback){
+
+        int tokenGenerado = Integer.parseInt(generarToken());
+        obtenerUsuario(usuario.getEmail(), new ObtenerUsuarioCallback() {
+            @Override
+            public boolean onSuccess(Usuario usuarioEncontrado) {
+                usuarioEncontrado.setToken(tokenGenerado);
+
+                modificarUsuario(usuarioEncontrado, new updateUsuarioCallback()
+                {
+                    @OptIn(markerClass = UnstableApi.class)
+                    @Override
+                    public void onSuccess() {
+                        Log.i("Firestore", "Token añadido exitosamente");
+                        //si el token se seteo exitosamente, se envia el email
+                        EmailController.enviarEmailUsuario(usuario.getEmail(), "Recuperación de contraseña", "Tu código de recuperación es: " + tokenGenerado);
+                        callback.onSuccess();
+                    }
+
+                    @OptIn(markerClass = UnstableApi.class)
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("Firestore", "Error al añadir token", e);
+                        callback.onFailure(null);
+                    }
+                });
+                return false;
+            }
+
+            @OptIn(markerClass = UnstableApi.class)
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("Firestore", "Error al obtener Usuario", e);
+                callback.onFailure(null);
+            }
+        });
+
+    }
+
+
+
+
+    // Funcion para verificar el token
+    public void VerificarToken(Usuario usuarioAverificar, VerificarTokenCallback callback) {
         // En este paso, el email ya fue verificado, por lo que no es necesario verificar nuevamente
 
         // Se busca al usuario en la base de datos a partir del email (funcion obtenerUsuario)
-        Usuario usuario = obtenerUsuario(email);
+        obtenerUsuario(usuarioAverificar.getEmail(), new ObtenerUsuarioCallback() {
+            @OptIn(markerClass = UnstableApi.class)
+            @Override
+            public boolean onSuccess(Usuario usuarioEnDB) {
+                // Se verifica el código
+                Log.i("Firestore", "Verificando token");
+                if (usuarioEnDB.getToken() == usuarioAverificar.getToken()){
+                    callback.onSuccess();
 
-        // Se verifica el código
-        return usuario.getToken() == codigo;
+                }
+                return true;
+            }
+
+            @OptIn(markerClass = UnstableApi.class)
+            @Override
+            public void onFailure(Exception e) {
+                Log.w("Firestore", "Error al obtener Usuario", e);
+            }
+
+        });
     }
 
     public void cambiarPass(Usuario usuarioAmodificar, updateUsuarioCallback callback) {
@@ -311,14 +421,22 @@ public class NegocioUsuario {
 
         //Se busca al usuario en la base de datos a partir del email (funcion obtenerUsuario),
         // y se almacenan los datos en un objeto
-        Usuario usuario = obtenerUsuario(usuarioAmodificar.getEmail());
+        obtenerUsuario(usuarioAmodificar.getEmail(), new ObtenerUsuarioCallback() {
+            @Override
+            public boolean onSuccess(Usuario usuarioEncontrado) {
+                // Se modifica la contraseña del usuario segun lo ingresado
+                usuarioEncontrado.setPass(usuarioAmodificar.getPass());
+                //Se actualiza la contraseña del usuario en la base de datos (funcion modificarUsuario)
+                modificarUsuario(usuarioEncontrado, callback);
+                return true;
+            }
 
-        // Se modifica la contraseña del usuario segun lo ingresado
-        usuario.setPass(usuarioAmodificar.getPass());
+            @OptIn(markerClass = UnstableApi.class)
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("Firestore", "Error al obtener Usuario", e);
+            }
 
-
-        //Se actualiza la contraseña del usuario en la base de datos (funcion modificarUsuario)
-        modificarUsuario(usuario, callback);
-
+            });
     }
 }

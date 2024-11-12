@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
@@ -32,6 +34,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    packaging {
+        resources.excludes.add("META-INF/NOTICE.md")
+        resources.excludes.add("META-INF/LICENSE.md")
+    }
 }
 
 dependencies {
@@ -46,6 +53,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.android.mail)
+    implementation(libs.android.activation)
 
     // Usa el BOM para Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
@@ -54,3 +63,5 @@ dependencies {
 
 // Aplica el plugin de Google Services al final
 apply(plugin = "com.google.gms.google-services")
+
+

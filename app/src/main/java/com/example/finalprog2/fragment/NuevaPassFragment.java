@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
 import com.example.finalprog2.interfaces.updateUsuarioCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
 
@@ -60,22 +61,32 @@ public class NuevaPassFragment extends Fragment {
                                 @Override
                                 public void onSuccess() {
                                     Toast.makeText(getActivity(), "Contraseña cambiada exitosamente", Toast.LENGTH_SHORT).show();
-                                    Usuario usuarioEncontrado = negocioUsuario.obtenerUsuario(email);
+                                    negocioUsuario.obtenerUsuario(email, new ObtenerUsuarioCallback() {
+                                        @Override
+                                        public boolean onSuccess(Usuario usuarioEncontrado) {
 
-                                    // Guardar el nombre de usuario en SharedPreferences
-                                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putString("usuario", usuarioEncontrado.getUsuario());
-                                    editor.apply();
+                                            // Guardar el nombre de usuario en SharedPreferences
+                                            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString("usuario", usuarioEncontrado.getUsuario());
+                                            editor.apply();
 
-                                    // Redireccionar a la pantalla de inicio de sesión
-                                    // Redirige a la pantalla de LogInFragment
-                                    LogInFragment logInFragment = new LogInFragment();
-                                    requireActivity().getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .replace(R.id.fragment_container, logInFragment)
-                                            .addToBackStack(null) // Esto permite regresar al fragmento anterior
-                                            .commit();
+                                            // Redireccionar a la pantalla de inicio de sesión
+                                            // Redirige a la pantalla de LogInFragment
+                                            LogInFragment logInFragment = new LogInFragment();
+                                            requireActivity().getSupportFragmentManager()
+                                                    .beginTransaction()
+                                                    .replace(R.id.fragment_container, logInFragment)
+                                                    .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                                    .commit();
+                                            return true;
+                                        }
+
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Toast.makeText(getActivity(), "Error al obtener el usuario", Toast.LENGTH_SHORT).show();
+                                        }
+                                        });
                                 }
 
                                 @Override

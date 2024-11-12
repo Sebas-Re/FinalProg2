@@ -14,11 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
 import com.example.finalprog2.interfaces.LogInCallback;
+import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
 //import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -72,13 +72,25 @@ public class LogInFragment extends Fragment {
                             // Si el nombre de usuario no es nulo, se almacena en sharedPreferences
                             if (nuevoLogUser.getUsuario() == null){
                                 NegocioUsuario buscarUsuario = new NegocioUsuario(getActivity());
-                                Usuario usuarioEncontrado =  buscarUsuario.obtenerUsuario(nuevoLogUser.getEmail());
+                                buscarUsuario.obtenerUsuario(nuevoLogUser.getEmail(), new ObtenerUsuarioCallback() {
+                                    @Override
+                                    public boolean onSuccess(Usuario usuarioEncontrado) {
+                                        // Guardar el nombre de usuario en SharedPreferences
+                                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("usuario", usuarioEncontrado.getUsuario());
+                                        editor.apply();
 
-                                // Guardar el nombre de usuario en SharedPreferences
-                                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("usuario", usuarioEncontrado.getUsuario());
-                                editor.apply();
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                    // Manejar el error si es necesario
+                                    }
+
+                                    });
+
                             }
                             else{
                                 // Guardar el nombre de usuario en SharedPreferences

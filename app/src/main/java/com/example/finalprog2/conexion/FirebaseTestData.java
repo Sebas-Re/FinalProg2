@@ -100,4 +100,51 @@ public class FirebaseTestData {
         }
     }
 
+
+    public void crearTutorialDePrueba() {
+        // Crear una instancia de FirebaseFirestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Crear un nuevo mapa de datos para la noticia principal
+        Map<String, Object> tutorialPrincipal = new HashMap<>();
+        tutorialPrincipal.put("titulo", "Tutorial Principal");
+        tutorialPrincipal.put("imagen", "url_imagen_principal"); // Puedes poner una URL de una imagen aquí
+        tutorialPrincipal.put("descripcion", "Descripción breve del tutorial principal");
+        tutorialPrincipal.put("texto_completo", "Texto completo del tutorial principal.");
+        tutorialPrincipal.put("fecha_publicacion", new Timestamp(new Date())); // Usa la fecha actual
+        tutorialPrincipal.put("enlace", "https://www.clarin.com/");
+
+        // Crear el documento de la noticia principal en la colección "noticias"
+        db.collection("tutoriales")
+                .add(tutorialPrincipal)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("Tutorial", "Tutorial principal agregada correctamente: " + documentReference.getId());
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Tutorial", "Error al agregar el Tutorial principal", e);
+                });
+
+        // Crear una lista de Tutorial adicionales
+        for (int i = 1; i <= 10; i++) {
+            final int tutorialIndex = i; // Hacemos que i sea final
+
+            Map<String, Object> tutorial = new HashMap<>();
+            tutorial.put("titulo", "Tutorial " + tutorialIndex);
+            tutorial.put("imagen", "url_imagen_" + tutorialIndex);
+            tutorial.put("descripcion", "Descripción del tutorial " + tutorialIndex);
+            tutorial.put("texto_completo", "Texto completo del tutorial " + tutorialIndex);
+            tutorial.put("fecha_publicacion", new Timestamp(new Date()));
+            tutorial.put("enlace", "https://www.clarin.com/");
+
+            // Agregar los tutoriales adicionales a la colección "tutorial"
+            db.collection("tutoriales")
+                    .add(tutorial)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d("Tutorial", "Tutorial " + tutorialIndex + " agregada correctamente: " + documentReference.getId());
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("Tutorial", "Error al agregar el tutorial " + tutorialIndex, e);
+                    });
+        }
+    }
 }

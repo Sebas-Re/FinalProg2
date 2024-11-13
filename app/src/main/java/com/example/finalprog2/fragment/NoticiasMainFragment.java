@@ -48,7 +48,7 @@ public class NoticiasMainFragment extends Fragment implements NoticiaAdapter.OnN
     private NoticiaAdapter noticiaAdapter;
 
     private TextView tituloNoticiaPrincipal, descripcionNoticiaPrincipal;
-    private ImageView imagenNoticiaPrincipal; // Nuevo: ImageView para la imagen de la noticia principal
+    private ImageView imagenNoticiaPrincipal; // ImageView para la imagen de la noticia principal
     private ImageButton btnPreviousPage, btnNextPage;
     private EditText searchEditText;
 

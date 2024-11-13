@@ -4,14 +4,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.finalprog2.R;
+import com.example.finalprog2.utils.PopupMenuHelper;
 
 public class VerTutorialFragment extends Fragment {
 
@@ -28,18 +33,37 @@ public class VerTutorialFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        if (toolbarTitle != null) {
+            toolbarTitle.setText("Tutorial");
+        }
+
+        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
+        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+
+
         ImageView imageTutorial = view.findViewById(R.id.image_tutorial);
         TextView titleTextView = view.findViewById(R.id.text_tutorial_titulo);
         TextView contentTextView = view.findViewById(R.id.text_tutorial_contenido);
 
 
-        // Cargar imagen desde drawable
-        imageTutorial.setImageResource(R.drawable.sample_main_tutorial2); // Cambia "nombre_de_tu_imagen" por el nombre real de tu imagen sin la extensión
+        // Obtener los datos de la noticia del bundle
+        Bundle arguments = getArguments();
+        Bundle args = getArguments();
+        if (args != null) {
+            String titulo = args.getString("titulo");
+            String imagenUrl = args.getString("imagen");
+            String contenido = args.getString("textoCompleto");
 
-        // Asigna el título y contenido si es necesario
-        titleTextView.setText("Título del Tutorial");
-        contentTextView.setText("Contenido completo del tutorial...");
+            titleTextView.setText(titulo);
+            contentTextView.setText(contenido);
 
+            Glide.with(this).load(imagenUrl).into(imageTutorial); // Utiliza Glide o Picasso para cargar la imagen
+        }
 
     }
 

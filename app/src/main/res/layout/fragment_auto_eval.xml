@@ -1,164 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F6EC"
-    android:padding="16dp">
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
 
-    <!-- Campo de entrada para Electrodoméstico -->
+    <!-- Toolbar personalizado -->
+    <include
+        layout="@layout/toolbar_layout"
+        android:id="@+id/custom_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Campo de entrada para Consumo por Hora -->
-
-    <!-- Spinner para Seleccionar Frecuencia -->
-    <Spinner
-        android:id="@+id/spinner_electrodomestico"
+    <!-- ScrollView para permitir desplazamiento -->
+    <android.widget.ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/edit_text_bg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/spinner_eficiencia"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edit_text_bg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner_electrodomestico" />
-
-    <!-- Botón Agregar -->
-
-    <!-- Contenedor de electrodomésticos -->
-
-    <!-- Campo de entrada para Tarifa -->
-
-    <TextView
-        android:id="@+id/tv_kwh"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/edit_text_bg"
-        android:clickable="false"
-        android:enabled="false"
-        android:focusable="false"
-        android:padding="12dp"
-        android:textColor="#132625"
-        app:layout_constraintStart_toEndOf="@id/spinner_eficiencia"
-        app:layout_constraintTop_toBottomOf="@id/spinner_electrodomestico" />
-
-    <Button
-        android:id="@+id/btn_agregar"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="#4F9A6E"
-        android:text="+ Agregar"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.773"
-        
-        app:layout_constraintStart_toEndOf="@id/tv_kwh"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_eficiencia" />
-
-    <!-- Texto de Promedio Semanal -->
-
-    <!-- Texto de Costo Estimado -->
-
-    <TextView
-        android:id="@+id/tv_lista_electrodomesticos"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="#424242"
-        android:padding="12dp"
-        android:text="ELECTRODOMESTICOS:\nHorno: 0.8 kmh\nHeladera: 75 kwh\nAire Acondicionado: 1350 kmh"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_agregar" />
-
-    <TextView
-        android:id="@+id/tv_tarifaKwh"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:background="#F3F6EC"
-        android:padding="12dp"
-        android:text="Tarifa por Kwh ($)"
-        android:textColor="#132625"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_lista_electrodomesticos" />
-
-    <EditText
-        android:id="@+id/input_tarifaKwh"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edit_text_bg"
-        android:hint="Ingrese Tarifa por Kwh"
-        android:inputType="numberDecimal"
-        android:padding="10dp"
-        android:textColor="#132625"
-        android:textColorHint="#132625"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_tarifaKwh"/>
-
-    <TextView
-        android:id="@+id/tv_promedio_consumo_semanal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="#3A539B"
-        android:padding="12dp"
-        android:text="PROMEDIO SEMANAL:\n475,27 kwh"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_tarifaKwh" />
-
-    <TextView
-        android:id="@+id/tv_costo_estimado"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#3A539B"
-        android:padding="12dp"
-        android:text="COSTO ESTIMADO SEMANAL:\n$66,54"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/tv_promedio_consumo_semanal"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/custom_toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-         />
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <!-- Botón Ahorro -->
-    <Button
-        android:id="@+id/btn_mas_ahorro"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="#4F9A6E"
-        android:text="+ Ahorro"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_costo_estimado" />
+        <!-- Contenedor de los elementos -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/content_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <!-- Spinner para seleccionar el electrodoméstico -->
+            <Spinner
+                android:id="@+id/spinner_electrodomestico"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/edit_text_bg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Spinner para seleccionar el tipo de eficiencia -->
+            <Spinner
+                android:id="@+id/spinner_eficiencia"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edit_text_bg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_electrodomestico" />
+
+            <!-- TextView para mostrar el consumo de kWh -->
+            <TextView
+                android:id="@+id/tv_kwh"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/edit_text_bg"
+                android:padding="12dp"
+                android:text="0 kWh"
+                android:textColor="#132625"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_eficiencia" />
+
+            <!-- Botón para agregar el electrodoméstico seleccionado -->
+            <!-- Botón para limpiar la lista de electrodomésticos seleccionados -->
+
+            <!-- Lista de electrodomésticos seleccionados -->
+            <Button
+                android:id="@+id/btn_agregar"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="#4F9A6E"
+                android:text="+ Agregar"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_eficiencia" />
+
+
+
+            <TextView
+                android:id="@+id/tv_lista_electrodomesticos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#424242"
+                android:padding="12dp"
+                android:text="ELECTRODOMÉSTICOS SELECCIONADOS:\n"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_agregar" />
+
+            <Button
+                android:id="@+id/btn_limpiar"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="#D32F2F"
+                android:text="Limpiar lista"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_lista_electrodomesticos" />
+            <!-- Tarifa por Kwh -->
+            <TextView
+                android:id="@+id/tv_tarifaKwh"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tarifa por Kwh ($):"
+                android:textColor="#132625"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_limpiar" />
+
+            <EditText
+                android:id="@+id/input_tarifaKwh"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edit_text_bg"
+                android:hint="Ingrese Tarifa por Kwh"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_tarifaKwh" />
+
+            <!-- Resultados -->
+            <Button
+                android:id="@+id/btn_calcular_costo"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#4F9A6E"
+                android:text="Calcular costo"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/input_tarifaKwh" />
+
+            <!-- Resultados -->
+            <TextView
+                android:id="@+id/tv_promedio_consumo_semanal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#3A539B"
+                android:padding="12dp"
+                android:text="PROMEDIO SEMANAL: - kWh"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_calcular_costo" />
+
+            <TextView
+                android:id="@+id/tv_costo_estimado"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="#3A539B"
+                android:padding="12dp"
+                android:text="COSTO ESTIMADO SEMANAL: - $"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_promedio_consumo_semanal" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </android.widget.ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

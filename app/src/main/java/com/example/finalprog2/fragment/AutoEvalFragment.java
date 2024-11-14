@@ -65,6 +65,12 @@ public class AutoEvalFragment extends Fragment {
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
 
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
         // Inicializar vistas
         spinnerElectrodomestico = view.findViewById(R.id.spinner_electrodomestico);
         spinnerEficiencia = view.findViewById(R.id.spinner_eficiencia);
@@ -275,6 +281,14 @@ public class AutoEvalFragment extends Fragment {
         String textoActual = tvListaElectrodomesticos.getText().toString();
         String nuevoTexto = textoActual + "\n" + electrodomestico.getTipo() + " "+   electrodomestico.getEficienciaPorHora(electrodomestico.getTipo()) + "kwh" + ": " + electrodomestico.getConsumoSemanal() + " kWh semanal";
         tvListaElectrodomesticos.setText(nuevoTexto);
+    }
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
 }

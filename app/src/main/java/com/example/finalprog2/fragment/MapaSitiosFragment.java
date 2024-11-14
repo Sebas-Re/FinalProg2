@@ -221,6 +221,13 @@ public class MapaSitiosFragment extends Fragment {
             PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
         });
 
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
+
         // Configurar el fragmento del mapa
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -263,4 +270,14 @@ public class MapaSitiosFragment extends Fragment {
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 LOCATION_PERMISSION_REQUEST_CODE);
     }
+
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 }

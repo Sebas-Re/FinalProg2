@@ -42,6 +42,12 @@ public class HomeFragment extends Fragment {
             PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
         });
 
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
         // Navegación entre fragmentos usando FragmentTransaction
         setupNavigationButtons(view);
     }

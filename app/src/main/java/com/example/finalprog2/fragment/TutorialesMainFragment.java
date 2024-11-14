@@ -79,6 +79,14 @@ public class TutorialesMainFragment extends Fragment implements TutorialAdapter.
 
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
+
         FirebaseTestData firebaseTestData = new FirebaseTestData();
       //  firebaseTestData.crearTutorialDePrueba();
         inicializarTutorial();
@@ -210,4 +218,14 @@ public class TutorialesMainFragment extends Fragment implements TutorialAdapter.
                 .addToBackStack(null)
                 .commit();
     }
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
 }

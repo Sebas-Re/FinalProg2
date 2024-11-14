@@ -45,6 +45,12 @@ public class VerTutorialFragment extends Fragment {
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
 
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
 
         ImageView imageTutorial = view.findViewById(R.id.image_tutorial);
         TextView titleTextView = view.findViewById(R.id.text_tutorial_titulo);
@@ -66,5 +72,14 @@ public class VerTutorialFragment extends Fragment {
         }
 
     }
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 
 }

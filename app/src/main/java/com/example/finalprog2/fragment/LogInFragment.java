@@ -122,11 +122,10 @@ public class LogInFragment extends Fragment {
 
                             Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
                             //Redirige a la pantalla de autoeval
-                            //AutoEvalFragment autoEvalFragment = new AutoEvalFragment();
-                            EditarPerfilFragment editarPerfilFragment = new EditarPerfilFragment();
+
                             requireActivity().getSupportFragmentManager()
                                     .beginTransaction()
-                                    .replace(R.id.fragment_container, editarPerfilFragment)
+                                    .replace(R.id.fragment_container, new HomeFragment())
                                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                                     .commit();
 
@@ -160,7 +159,7 @@ public class LogInFragment extends Fragment {
             // Reemplazar el fragmento actual por RegistroUsuarioFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment()) // Usa el ID correcto de tu contenedor de fragmentos
+                    .replace(R.id.fragment_container, new RegistroUsuarioFragment()) // Usa el ID correcto de tu contenedor de fragmentos
                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                     .commit();
         });

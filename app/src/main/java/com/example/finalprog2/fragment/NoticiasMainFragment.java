@@ -79,6 +79,13 @@ public class NoticiasMainFragment extends Fragment implements NoticiaAdapter.OnN
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
 
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
+
         inicializarNoticias();
 
         tituloNoticiaPrincipal = view.findViewById(R.id.titulo_noticia_principal);
@@ -209,4 +216,12 @@ public class NoticiasMainFragment extends Fragment implements NoticiaAdapter.OnN
                 .commit();
     }
 
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 }

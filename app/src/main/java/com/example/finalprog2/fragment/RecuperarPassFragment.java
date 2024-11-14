@@ -76,49 +76,58 @@ public class RecuperarPassFragment extends Fragment {
         btn_recu_pass.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                usuario.setToken(Integer.parseInt(input_codigo.getText().toString()));
-                //si ambos campos no estan vacios
-                if(!usuario.getEmail().isEmpty() && String.valueOf(usuario.getToken()).length() == 6) {
 
-                    NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
+                if (!input_codigo.getText().toString().isEmpty()) {
+                    usuario.setToken(Integer.parseInt(input_codigo.getText().toString()));
 
-                    negocioUsuario.verificarEmail(usuario, new VerificarEmailCallback() {
-                        @Override
-                        public void onSuccess() {
+                    //si ambos campos no estan vacios
+                    if(!usuario.getEmail().isEmpty() && String.valueOf(usuario.getToken()).length() == 6) {
 
-                            negocioUsuario.VerificarToken(usuario, new VerificarTokenCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    // Redireccionar a la pantalla de nueva contraseña con el email como argumento
-                                    Bundle args = new Bundle();
-                                    args.putString("email", usuario.getEmail());
-                                    NuevaPassFragment nuevaPassFragment = new NuevaPassFragment();
-                                    nuevaPassFragment.setArguments(args);
-                                    requireActivity().getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .replace(R.id.fragment_container, nuevaPassFragment)
-                                            .addToBackStack(null) // Esto permite regresar al fragmento anterior
-                                            .commit();
-                                }
+                        NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
 
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Toast.makeText(getActivity(), "Código incorrecto", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                        negocioUsuario.verificarEmail(usuario, new VerificarEmailCallback() {
+                            @Override
+                            public void onSuccess() {
 
-                        }
+                                negocioUsuario.VerificarToken(usuario, new VerificarTokenCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        // Redireccionar a la pantalla de nueva contraseña con el email como argumento
+                                        Bundle args = new Bundle();
+                                        args.putString("email", usuario.getEmail());
+                                        NuevaPassFragment nuevaPassFragment = new NuevaPassFragment();
+                                        nuevaPassFragment.setArguments(args);
+                                        requireActivity().getSupportFragmentManager()
+                                                .beginTransaction()
+                                                .replace(R.id.fragment_container, nuevaPassFragment)
+                                                .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                                .commit();
+                                    }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            Toast.makeText(getActivity(), "Email inexistente", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        Toast.makeText(getActivity(), "Código incorrecto", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Toast.makeText(getActivity(), "Email inexistente", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "Por favor, complete todos los campos correctamente", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
                     Toast.makeText(getActivity(), "Por favor, complete todos los campos correctamente", Toast.LENGTH_SHORT).show();
                 }
+
+
             }
         });
 

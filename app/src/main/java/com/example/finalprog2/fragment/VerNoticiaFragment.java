@@ -45,6 +45,12 @@ public class VerNoticiaFragment extends Fragment {
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
 
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
 
         ImageView imageNoticia = view.findViewById(R.id.image_noticia);
         TextView titleTextView = view.findViewById(R.id.text_noticia_titulo);
@@ -66,5 +72,14 @@ public class VerNoticiaFragment extends Fragment {
         }
 
     }
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 
 }

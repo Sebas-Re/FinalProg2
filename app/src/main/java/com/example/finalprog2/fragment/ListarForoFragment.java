@@ -73,6 +73,14 @@ public class ListarForoFragment extends Fragment {
             PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
 
         });
+
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
+
         // Configurar evento de clic para el campo de búsqueda
         etBuscarForo.setOnClickListener(v -> {
             String textoBusqueda = etBuscarForo.getText().toString();
@@ -89,5 +97,15 @@ public class ListarForoFragment extends Fragment {
                 Toast.makeText(getContext(), "Navegar a la derecha", Toast.LENGTH_SHORT).show()
         );
     }
+
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 
 }

@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             // Cargar el fragmento de inicio de sesión
-            //LogInFragment logInFragment = new LogInFragment();
-            ListarForoFragment logInFragment = new ListarForoFragment();
+            LogInFragment logInFragment = new LogInFragment();
+            //ListarForoFragment logInFragment = new ListarForoFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, logInFragment) // Utiliza el ID del contenedor
                     .commit();

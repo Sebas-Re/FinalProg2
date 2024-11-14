@@ -2,12 +2,10 @@ package com.example.finalprog2.entidad;
 
 import android.util.Log;
 
-import com.example.finalprog2.conexion.DataDB;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Publicacion {
     private int id;
@@ -47,45 +45,24 @@ public class Publicacion {
 
     // Método para guardar la publicación en la base de datos
     public void guardarPublicacion() {
-        Connection connection = null;
-        PreparedStatement statement = null;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        try {
-            // Cargar el driver JDBC
-            Class.forName("com.mysql.jdbc.Driver");
+        // Crear un mapa para representar el documento de la publicación
+        Map<String, Object> data = new HashMap<>();
+        data.put("titulo", titulo);
+        data.put("descripcion", descripcion);
+        data.put("relacionEnergetica", relacionEnergetica);
+        data.put("estado", estado);
+        // ... (agregar otros campos necesarios, como usuario)
 
-            // Establecer la conexión
-            connection = DriverManager.getConnection(DataDB.urlMySQL, DataDB.user, DataDB.pass);
-
-            // Consulta SQL para insertar la publicación
-            //Despues agregar usuario para tener todo mas prolijo
-            String query = "INSERT INTO publicaciones (titulo, descripcion, relacionEnergetica, estado) VALUES (?, ?, ?, ?)";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, this.titulo);
-            statement.setString(2, this.descripcion);
-            statement.setString(3, this.relacionEnergetica);
-            statement.setBoolean(4, this.estado);
-
-            // Ejecutar la consulta
-            int result = statement.executeUpdate();
-
-            if (result > 0) {
-                Log.d("Publicacion", "Publicación insertada correctamente");
-            } else {
-                Log.d("Publicacion", "Error al insertar la publicación");
-            }
-
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            Log.e("Publicacion", "Error al conectar con la base de datos", e);
-        } finally {
-            // Cerrar los recursos
-            try {
-                if (statement != null) statement.close();
-                if (connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        // Agregar el documento a la colección "publicaciones"
+        db.collection("publicaciones")
+                .add(data)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("Publicacion", "Publicación agregada con ID: " + documentReference.getId());
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Publicacion", "Error al agregar la publicación", e);
+                });
     }
 }

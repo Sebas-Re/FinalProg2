@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">EcoCasa</string>
     <string name="titulo">Titulo</string>
     <string name="titulo_del_post">Titulo del Post</string>
     <string name="descripcion_del_post">Descripcion del post</string>

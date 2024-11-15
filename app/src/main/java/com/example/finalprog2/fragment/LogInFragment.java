@@ -51,98 +51,94 @@ public class LogInFragment extends Fragment {
             usuario.setUsuario(nombreUsuario);
         }
 
-        btn_login.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                // implementar lógica para iniciar sesion
-                EditText input_usuarioEmail = view.findViewById(R.id.input_usuarioEmail);
-                EditText input_pass = view.findViewById(R.id.input_pass);
-                String usuarioEmail = input_usuarioEmail.getText().toString();
-                String pass = input_pass.getText().toString();
+        btn_login.setOnClickListener(v -> {
+            // implementar lógica para iniciar sesion
+            EditText input_usuarioEmail = view.findViewById(R.id.input_usuarioEmail);
+            EditText input_pass = view.findViewById(R.id.input_pass);
+            String usuarioEmail = input_usuarioEmail.getText().toString();
+            String pass = input_pass.getText().toString();
 
 
-                NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
-                if(!usuarioEmail.isEmpty() && !pass.isEmpty()){
+            NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
+            if(!usuarioEmail.isEmpty() && !pass.isEmpty()){
 
-                    Usuario nuevoLogUser = new Usuario(usuarioEmail, pass);
-                    negociousuario.verificarUsuario(nuevoLogUser, new LogInCallback() {
+                Usuario nuevoLogUser = new Usuario(usuarioEmail, pass);
+                negociousuario.verificarUsuario(nuevoLogUser, new LogInCallback() {
 
-                        @Override
-                        public void onSuccess() {
+                    @Override
+                    public void onSuccess() {
 
-                            // Si el nombre de usuario el nulo (porque se inicio sesion con email),
-                            // se busca la info del usuario y se almacena en sharedPreferences
-                            // Si el nombre de usuario no es nulo, se almacena en sharedPreferences
-                            if (nuevoLogUser.getUsuario() == null){
-                                NegocioUsuario buscarUsuario = new NegocioUsuario(getActivity());
-                                buscarUsuario.obtenerUsuario(nuevoLogUser.getEmail(), new ObtenerUsuarioCallback() {
-                                    @Override
-                                    public boolean onSuccess(Usuario usuarioEncontrado) {
-                                        // Guardar el nombre de usuario en SharedPreferences
-                                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putString("usuario", usuarioEncontrado.getUsuario());
-                                        editor.putInt("id", usuarioEncontrado.getId());
-                                        editor.apply();
+                        // Si el nombre de usuario el nulo (porque se inicio sesion con email),
+                        // se busca la info del usuario y se almacena en sharedPreferences
+                        // Si el nombre de usuario no es nulo, se almacena en sharedPreferences
+                        if (nuevoLogUser.getUsuario() == null){
+                            NegocioUsuario buscarUsuario = new NegocioUsuario(getActivity());
+                            buscarUsuario.obtenerUsuario(nuevoLogUser.getEmail(), new ObtenerUsuarioCallback() {
+                                @Override
+                                public boolean onSuccess(Usuario usuarioEncontrado) {
+                                    // Guardar el nombre de usuario en SharedPreferences
+                                    SharedPreferences sharedPreferences1 = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences1.edit();
+                                    editor.putString("usuario", usuarioEncontrado.getUsuario());
+                                    editor.putInt("id", usuarioEncontrado.getId());
+                                    editor.apply();
 
-                                        return false;
-                                    }
+                                    return false;
+                                }
 
-                                    @Override
-                                    public void onFailure(Exception e) {
-                                    // Manejar el error si es necesario
-                                    }
+                                @Override
+                                public void onFailure(Exception e) {
+                                // Manejar el error si es necesario
+                                }
 
-                                    });
-
-                            }
-                            else{
-                                NegocioUsuario buscarUsuario = new NegocioUsuario(getActivity());
-                                buscarUsuario.ObtenerUsuario(nuevoLogUser, new ObtenerUsuarioCallback() {
-                                    @Override
-                                    public boolean onSuccess(Usuario usuarioEncontrado) {
-                                        // Guardar el nombre de usuario en SharedPreferences
-                                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putString("usuario", nuevoLogUser.getUsuario());
-                                        editor.putInt("id", usuarioEncontrado.getId());
-                                        editor.apply();
-                                        return true;
-                                    }
-
-                                    @Override
-                                    public void onFailure(Exception e) {
-
-                                    }
                                 });
 
+                        }
+                        else{
+                            NegocioUsuario buscarUsuario = new NegocioUsuario(getActivity());
+                            buscarUsuario.ObtenerUsuario(nuevoLogUser, new ObtenerUsuarioCallback() {
+                                @Override
+                                public boolean onSuccess(Usuario usuarioEncontrado) {
+                                    // Guardar el nombre de usuario en SharedPreferences
+                                    SharedPreferences sharedPreferences1 = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences1.edit();
+                                    editor.putString("usuario", nuevoLogUser.getUsuario());
+                                    editor.putInt("id", usuarioEncontrado.getId());
+                                    editor.apply();
+                                    return true;
+                                }
 
-                            }
+                                @Override
+                                public void onFailure(Exception e) {
 
+                                }
+                            });
 
-                            Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
-                            //Redirige a la pantalla de autoeval
-
-                            requireActivity().getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.fragment_container, new HomeFragment())
-                                    .addToBackStack(null) // Esto permite regresar al fragmento anterior
-                                    .commit();
 
                         }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            Toast.makeText(getActivity(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-                else{
-                    Toast.makeText(getActivity(), "Por favor ingrese usuario y contraseña", Toast.LENGTH_SHORT).show();
-                }
 
+                        Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
+                        //Redirige a la pantalla de autoeval
 
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, new HomeFragment())
+                                .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                .commit();
+
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(getActivity(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
+            else{
+                Toast.makeText(getActivity(), "Por favor ingrese usuario y contraseña", Toast.LENGTH_SHORT).show();
+            }
+
 
         });
 

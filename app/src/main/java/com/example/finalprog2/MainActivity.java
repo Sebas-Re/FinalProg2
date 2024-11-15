@@ -5,8 +5,6 @@ import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.finalprog2.fragment.CrearForoFragment;
-import com.example.finalprog2.fragment.ListarForoFragment;
 import com.example.finalprog2.fragment.LogInFragment;
 
 public class MainActivity extends AppCompatActivity {

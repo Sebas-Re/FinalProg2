@@ -10,7 +10,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+
 public class FirebaseTestData {
     private FirebaseFirestore db;
 

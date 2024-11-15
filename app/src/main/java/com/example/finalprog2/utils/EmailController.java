@@ -50,7 +50,7 @@ public class EmailController {
 
             } catch (MessagingException e) {
                 // 6. manejar caso de error
-                e.printStackTrace();
+                Log.e("EmailController", "Error al enviar el email: " + e.getMessage());
             }
         }).start();
     }

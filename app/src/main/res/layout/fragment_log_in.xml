@@ -74,7 +74,7 @@
         app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_LogIn"
-        tools:ignore="Autofill" />
+        tools:ignore="Autofill,TextFields" />
 
 
     <!-- Campo de Contraseña -->

@@ -103,37 +103,34 @@ public class EditarPerfilFragment extends Fragment {
         }
 
 
-        btn_guardarCambios.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            String nombre = input_nombre.getText().toString();
-            String apellido = input_apellido.getText().toString();
-            String usuario = tv_usuario.getText().toString();
-            String email = tv_email.getText().toString();
-            String pass = input_pass.getText().toString();
-            String repetir_pass = input_repetir_pass.getText().toString();
+        btn_guardarCambios.setOnClickListener(view1 -> {
+        String nombre = input_nombre.getText().toString();
+        String apellido = input_apellido.getText().toString();
+        String usuario = tv_usuario.getText().toString();
+        String email = tv_email.getText().toString();
+        String pass = input_pass.getText().toString();
+        String repetir_pass = input_repetir_pass.getText().toString();
 
-            //Logica de negocio para almacenar los datos modificados
-            NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
-                if(pass.isEmpty() && repetir_pass.isEmpty()){
-                 Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, null);
-                 usuarioAeditar.setId(idUsuario);
-                 // Manda el usuario con la contraseña nula, para que no se modifique
+        //Logica de negocio para almacenar los datos modificados
+        NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
+            if(pass.isEmpty() && repetir_pass.isEmpty()){
+             Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, null);
+             usuarioAeditar.setId(idUsuario);
+             // Manda el usuario con la contraseña nula, para que no se modifique
+                updateUsuario(negocioUsuario, usuarioAeditar);
+            }
+            else{
+                if(pass.equals(repetir_pass)){
+                    Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, pass);
+                    usuarioAeditar.setId(idUsuario);
                     updateUsuario(negocioUsuario, usuarioAeditar);
                 }
                 else{
-                    if(pass.equals(repetir_pass)){
-                        Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, pass);
-                        usuarioAeditar.setId(idUsuario);
-                        updateUsuario(negocioUsuario, usuarioAeditar);
-                    }
-                    else{
-                        Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
+
+
         });
 
     }

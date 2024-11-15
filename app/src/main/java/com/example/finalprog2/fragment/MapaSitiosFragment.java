@@ -69,7 +69,7 @@ public class MapaSitiosFragment extends Fragment {
                     Toast.makeText(getContext(), "No se pudo aplicar el estilo del mapa.", Toast.LENGTH_SHORT).show();
                 }
             } catch (Resources.NotFoundException e) {
-                e.printStackTrace();
+                Log.e("Map", "No se pudo encontrar el estilo del mapa.", e);
             }
 
             mMap.getUiSettings().setZoomControlsEnabled(true);

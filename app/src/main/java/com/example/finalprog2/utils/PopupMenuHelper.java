@@ -7,9 +7,13 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.OptIn;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.media3.common.util.Log;
+import androidx.media3.common.util.UnstableApi;
+
 import com.example.finalprog2.R;
 import com.example.finalprog2.fragment.AutoEvalFragment;
 import com.example.finalprog2.fragment.NoticiasMainFragment;
@@ -22,6 +26,7 @@ import java.lang.reflect.Method;
 
 public class PopupMenuHelper {
 
+    @OptIn(markerClass = UnstableApi.class)
     public static void showPopupMenu(Context context, ImageButton button, FragmentActivity activity) {
         // Crear el PopupMenu
         PopupMenu popupMenu = new PopupMenu(context, button);
@@ -68,13 +73,14 @@ public class PopupMenuHelper {
             Method setBackgroundDrawableMethod = menuPopupHelper.getClass().getMethod("setBackgroundDrawable", Drawable.class);
             setBackgroundDrawableMethod.invoke(menuPopupHelper, ContextCompat.getDrawable(context, R.color.dark_green));
         } catch (Exception e) {
-            e.printStackTrace();
+           Log.e("PopupMenuHelper", "Error al aplicar el estilo de fondo al menú", e);
         }
 
         // Mostrar el menú
         popupMenu.show();
     }
 
+    @OptIn(markerClass = UnstableApi.class)
     private static void enableIconsInPopupMenu(PopupMenu popupMenu) {
         try {
             Field popup = PopupMenu.class.getDeclaredField("mPopup");
@@ -84,7 +90,7 @@ public class PopupMenuHelper {
             Method setForceShowIcon = classPopupHelper.getMethod("setForceShowIcon", boolean.class);
             setForceShowIcon.invoke(menuPopupHelper, true);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("PopupMenuHelper", "Error al habilitar iconos en el menú", e);
         }
     }
 

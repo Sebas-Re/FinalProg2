@@ -1,5 +1,7 @@
 package com.example.finalprog2.entidad;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
 public class Usuario {
@@ -117,6 +119,7 @@ public class Usuario {
         this.estado = estado;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Usuario{" +

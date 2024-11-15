@@ -86,14 +86,14 @@
 
     <!-- Botón de Recuperar Contraseña -->
     <Button
-        android:id="@+id/btn_recu_pass"
+        android:id="@+id/btn_reestablecer_pass"
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="32dp"
         android:backgroundTint="#4F9A6E"
-        android:text="@string/recuperar_contrasenia"
+        android:text="@string/validar_email"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.489"

@@ -7,14 +7,14 @@
     android:background="#F3F6EC">
 
 
-    <!-- Título de Recuperar Contraseña -->
+    <!-- Título de ValidacionEmail -->
     <TextView
         android:id="@+id/tv_titulo_recu_pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/recuperar_ncontrasenia"
+        android:text="@string/validar_nemail"
         android:textColor="#132625"
-        android:textSize="32sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,12 +107,12 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- Botón de Recuperar Contraseña -->
+    <!-- Botón de Validar Email -->
     <Button
-        android:id="@+id/btn_recu_pass"
+        android:id="@+id/btn_validar_email"
         android:layout_width="300dp"
         android:layout_height="48dp"
-        android:text="@string/recuperar_contrasenia"
+        android:text="@string/validar_email"
         app:layout_constraintTop_toBottomOf="@id/contenedor_codigo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

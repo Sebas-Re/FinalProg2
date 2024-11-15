@@ -24,8 +24,9 @@
     <string name="requerimientos_pass">La contraseña debe tener por lo menos 8 caracteres, contener letras y números</string>
     <string name="guardar_cambios">Guardar Cambios</string>
     <string name="nueva_contrasenia">Nueva\nContraseña</string>
-    <string name="recuperar_contrasenia">Recuperar Contraseña</string>
-    <string name="recuperar_ncontrasenia">Recuperar\nContraseña</string>
+    <string name="validar_email">Validar Email</string>
+    <string name="reestablecer_contrasenia">Reestablecer Contraseña</string>
+    <string name="validar_nemail">Validar\nEmail</string>
     <string name="instruccion_token">Ingrese el token enviado a su email</string>
     <string name="token_recibido">Token recibido</string>
     <string name="registrarse">Registrarse</string>

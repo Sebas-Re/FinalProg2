@@ -65,7 +65,7 @@ public class LogInFragment extends Fragment {
                 if(!usuarioEmail.isEmpty() && !pass.isEmpty()){
 
                     Usuario nuevoLogUser = new Usuario(usuarioEmail, pass);
-                    negociousuario.verificarUsuario(nuevoLogUser, new LogInCallback() {
+                    negociousuario.logearUsuario(nuevoLogUser, new LogInCallback() {
 
                         @Override
                         public void onSuccess() {
@@ -150,7 +150,7 @@ public class LogInFragment extends Fragment {
             // Reemplazar el fragmento actual por RegistroUsuarioFragment
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new RecuperarPassFragment()) // Usa el ID correcto de tu contenedor de fragmentos
+                    .replace(R.id.fragment_container, new ValidacionEmailFragment()) // Usa el ID correcto de tu contenedor de fragmentos
                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                     .commit();
         });

@@ -1,8 +1,9 @@
 package com.example.finalprog2.entidad;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Usuario {
+public class Usuario implements Serializable {
     private int id;
     private String nombre;
     private String apellido;
@@ -141,6 +142,7 @@ public class Usuario {
     public int hashCode() {
         return Objects.hash(id, nombre, apellido, usuario, email, pass, token, estado);
     }
+
 
 
 }

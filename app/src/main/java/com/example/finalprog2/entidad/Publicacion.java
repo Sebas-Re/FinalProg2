@@ -27,6 +27,22 @@ public class Publicacion {
     }
 
     // Métodos getter y setter
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public String getRelacionEnergetica() {
+        return relacionEnergetica;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
@@ -42,6 +58,7 @@ public class Publicacion {
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
+
 
     // Método para guardar la publicación en la base de datos
     public void guardarPublicacion() {

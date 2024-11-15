@@ -1,111 +1,66 @@
 package com.example.finalprog2.fragment;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalprog2.R;
-import com.example.finalprog2.utils.PopupMenuHelper;
+import com.example.finalprog2.adapter.PublicacionAdapter;
+import com.example.finalprog2.entidad.Publicacion;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import android.widget.PopupMenu;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListarForoFragment extends Fragment {
 
-    // Método para inflar el layout
+    private RecyclerView recyclerView;
+    private PublicacionAdapter adapter;
+    private List<Publicacion> publicaciones;
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        // Inflamos el layout del fragmento
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_listado_foro, container, false);
     }
 
-    // Habilitar el menú en el fragmento
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true); // Esto habilita el menú en este fragmento
-    }
-
-    // No inflar el menú, así no aparecen los tres puntos
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        // No inflar el menú aquí para ocultar los tres puntos
-    }
-
-    // Método para configurar vistas y eventos después de que el layout ha sido creado
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Configurar el Toolbar
-        Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        recyclerView = view.findViewById(R.id.recyclerView_publicaciones);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Configurar el título
-        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-        if (toolbarTitle != null) {
-            toolbarTitle.setText("Foro" );
-        }
+        publicaciones = new ArrayList<>();
+        adapter = new PublicacionAdapter(publicaciones,getContext());
+        recyclerView.setAdapter(adapter);
 
-        // Buscar elementos del layout
-        EditText etBuscarForo = view.findViewById(R.id.et_buscar_foro);
-        ImageView ivFlechaIzquierda = view.findViewById(R.id.iv_flecha_izquierda);
-        ImageView ivFlechaDerecha = view.findViewById(R.id.iv_flecha_derecha);
-        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button); // Tu ImageButton
-
-        // Configurar evento de clic para el botón del menú
-        leftMenuButton.setOnClickListener(v -> {
-            PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
-
-        });
-
-        // Configuracion del boton perfil
-        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
-        rightUserButton.setOnClickListener(v -> {
-            navigateToFragment(new EditarPerfilFragment());
-        });
-
-
-        // Configurar evento de clic para el campo de búsqueda
-        etBuscarForo.setOnClickListener(v -> {
-            String textoBusqueda = etBuscarForo.getText().toString();
-            Toast.makeText(getContext(), "Buscando: " + textoBusqueda, Toast.LENGTH_SHORT).show();
-            // Aquí puedes agregar la lógica de búsqueda
-        });
-
-        // Configurar evento de clic para flechas de navegación
-        ivFlechaIzquierda.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Navegar a la izquierda", Toast.LENGTH_SHORT).show()
-        );
-
-        ivFlechaDerecha.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Navegar a la derecha", Toast.LENGTH_SHORT).show()
-        );
+        // Cargar publicaciones desde Firebase
+        cargarPublicaciones();
     }
 
-
-    private void navigateToFragment(Fragment fragment) {
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
+    private void cargarPublicaciones() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("publicaciones")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        publicaciones.clear();
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            Publicacion publicacion = document.toObject(Publicacion.class);
+                            publicaciones.add(publicacion);
+                        }
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        // Manejar errores si es necesario
+                    }
+                });
     }
-
-
 }

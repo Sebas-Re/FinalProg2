@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Cargar el fragmento de inicio de sesión
             LogInFragment logInFragment = new LogInFragment();
+            //CrearForoFragment logInFragment = new CrearForoFragment();
             //ListarForoFragment logInFragment = new ListarForoFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, logInFragment) // Utiliza el ID del contenedor

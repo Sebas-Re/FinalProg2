@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,18 +24,21 @@ import com.example.finalprog2.entidad.Usuario;
 import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
 import com.example.finalprog2.interfaces.updateUsuarioCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
-
-
+import com.example.finalprog2.utils.PopupMenuHelper;
 
 
 public class EditarPerfilFragment extends Fragment {
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_editar_perfil, container, false);
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         // Inflate the layout for this fragment
-        View view =inflater.inflate(R.layout.fragment_editar_perfil, container, false);
         EditText input_nombre = view.findViewById(R.id.input_nombre);
         EditText input_apellido = view.findViewById(R.id.input_apellido);
         TextView tv_usuario = view.findViewById(R.id.tv_usuario);
@@ -38,6 +46,31 @@ public class EditarPerfilFragment extends Fragment {
         EditText input_pass = view.findViewById(R.id.input_pass);
         EditText input_repetir_pass = view.findViewById(R.id.input_repetir_pass);
         Button btn_guardarCambios = view.findViewById(R.id.btn_guardarCambios);
+
+
+        Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        if (toolbarTitle != null) {
+            toolbarTitle.setText("EditarPerfil");
+        }
+
+        //Ocultar el nombre de la app
+        toolbar.setTitle("");
+
+        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
+        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
+
+
+
 
 
         
@@ -103,8 +136,6 @@ public class EditarPerfilFragment extends Fragment {
             }
         });
 
-
-       return view;
     }
 
     // Funcion para modificar los datos del usuario
@@ -123,6 +154,14 @@ public class EditarPerfilFragment extends Fragment {
         });
     }
 
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 
 
 }

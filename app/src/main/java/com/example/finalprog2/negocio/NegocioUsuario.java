@@ -86,77 +86,35 @@ public class NegocioUsuario {
 
     @OptIn(markerClass = UnstableApi.class)
     public void registrarUsuario(Usuario nuevoUsuario, RegistrationCallback callback) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance(); //instanciado de firebase Auth
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        mAuth.createUserWithEmailAndPassword(nuevoUsuario.getEmail(), nuevoUsuario.getPass())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // se procede a realizar el registro
+                        Log.d("Firebase", "createUserWithEmail:success");
+                        FirebaseUser user = mAuth.getCurrentUser();
 
-        db.collection("usuarios")
-                .whereEqualTo("usuario", nuevoUsuario.getUsuario())
-                .get()
-                .addOnCompleteListener(chequeoUsuarioTask -> {
-                    if (chequeoUsuarioTask.isSuccessful()) {
-                        if (!chequeoUsuarioTask.getResult().isEmpty()) {
-                            // El usuario ya existe
-                            Log.w("Firestore", "El nombre de usuario ya está en uso");
-                            callback.onFailure(null);
-                        }
-                        else{
-                            //Caso contrario, continua con la ejecucion del codigo
+                        assert user != null;
+                        // Crea un mapa con los datos del usuario registrado
+                        Map<String, Object> userData = mapeoUsuarioAregistrar(nuevoUsuario, user);
 
-                            //Chequeo de Email
-                            db.collection("usuarios")
-                                    .whereEqualTo("email", nuevoUsuario.getEmail())
-                                    .get()
-                                    .addOnCompleteListener(emailTask -> {
-                                        if (emailTask.isSuccessful()) {
-                                            if (!emailTask.getResult().isEmpty()) {
-                                                // El email ya está en uso
-                                                Log.w("Firestore", "El email ya está en uso");
-                                                callback.onFailure(null);
-                                            }
-                                            else{
-                                                // Email no esta en uso
-                                                mAuth.createUserWithEmailAndPassword(nuevoUsuario.getEmail(), nuevoUsuario.getPass())
-                                                        .addOnCompleteListener(task -> {
-                                                            if (task.isSuccessful()) {
-                                                                // Sign up success, updateUI with the signed-in user's information
-                                                                Log.d("Firebase", "createUserWithEmail:success");
-                                                                FirebaseUser user = mAuth.getCurrentUser();
+                        // Guarda los datos del usuario en la base de datos
 
-                                                                assert user != null;
-                                                                // Crea un mapa con los datos del usuario registrado
-                                                                Map<String, Object> userData = mapeoUsuarioAregistrar(nuevoUsuario, user);
-
-                                                                // Guarda los datos del usuario en la base de datos
-
-                                                                db.collection("usuarios").document(user.getUid()).set(userData)
-                                                                        .addOnSuccessListener(aVoid -> {
-                                                                            // Datos de usuario añadidos exitosamente
-                                                                            Log.i("Firestore", "Datos de usuario añadidos exitosamente");
-                                                                            callback.onSuccess();
-                                                                        })
-                                                                        .addOnFailureListener(e -> {
-                                                                            // Error añadiendo datos del usuario
-                                                                            Log.e("Firestore", "Error añadiendo datos del usuario", e);
-                                                                            callback.onFailure(e);
-                                                                        });
-                                                            } else {
-                                                                // Si el registro falla, pone la flag en false
-                                                                Log.w("Firebase", "createUserWithEmail:failure", task.getException());
-                                                                callback.onFailure(null);
-                                                            }
-                                                        });
-                                            }
-
-                                        }
-                                        else {
-                                            Log.e("Firestore", "Error al verificar email", emailTask.getException());
-                                            callback.onFailure(null);
-                                        }
-                                    });
-                        }
-
+                        db.collection("usuarios").document(user.getUid()).set(userData)
+                                .addOnSuccessListener(aVoid -> {
+                                    // Datos de usuario añadidos exitosamente
+                                    Log.i("Firestore", "Datos de usuario añadidos exitosamente");
+                                    callback.onSuccess();
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Error añadiendo datos del usuario
+                                    Log.e("Firestore", "Error añadiendo datos del usuario", e);
+                                    callback.onFailure(e);
+                                });
                     } else {
-                        Log.e("Firestore", "Error al verificar usuario", chequeoUsuarioTask.getException());
+                        // Si el registro falla, pone la flag en false
+                        Log.w("Firebase", "createUserWithEmail:failure", task.getException());
                         callback.onFailure(null);
                     }
                 });
@@ -226,6 +184,7 @@ public class NegocioUsuario {
             updates.put("usuario", usuario.getUsuario());
             updates.put("email", usuario.getEmail());
             updates.put("token", usuario.getToken());
+            updates.put("estado", usuario.isEstado());
 
         }
         else{
@@ -235,6 +194,7 @@ public class NegocioUsuario {
             updates.put("email", usuario.getEmail());
             updates.put("pass", usuario.getPass());
             updates.put("token", usuario.getToken());
+            updates.put("estado", usuario.isEstado());
         }
         return updates;
     }
@@ -334,7 +294,7 @@ public class NegocioUsuario {
                     Log.d("Firestore", "Email encontrado (Funcion VerificarEmail");
                     callback.onSuccess();
                 } else {
-                    Log.w("Firestore", "Email incorrecto");
+                    Log.w("Firestore", "Email inexistente");
                     callback.onFailure(null);
                 }
             } else
@@ -468,6 +428,7 @@ public class NegocioUsuario {
     }
 
     public void validarRegistro(Usuario nuevoUsuario, ValidarRegistroCallback callback) {
+
         chequearUsuario(nuevoUsuario, new ChequeoUsuarioCallback() {
             @Override
             public void onSuccess() {
@@ -482,7 +443,26 @@ public class NegocioUsuario {
                     @Override
                     // Si no encuentra el email, devuelve success
                     public void onFailure(Exception e) {
-                        callback.onSuccess();
+
+                        //registra al usuario sólo con email y usuario
+                        registrarUsuario(nuevoUsuario, new RegistrationCallback() {
+
+                            @OptIn(markerClass = UnstableApi.class)
+                            @Override
+                                    public void onSuccess() {
+                                        callback.onSuccess();
+                                        Log.i("Firestore", "Usuario registrado exitosamente");
+                                    }
+
+                            @OptIn(markerClass = UnstableApi.class)
+                            @Override
+                                    public void onFailure(Exception e) {
+                                    callback.onFailure(e);
+                                    Log.e("Firestore", "Error al registrar usuario", e);
+                                    }
+                                });
+
+
                     }
                 });
             }

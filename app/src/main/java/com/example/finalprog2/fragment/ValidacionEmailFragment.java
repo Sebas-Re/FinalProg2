@@ -1,5 +1,7 @@
 package com.example.finalprog2.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -38,15 +40,17 @@ public class ValidacionEmailFragment extends Fragment {
 
         // Busca un bundle de tipo usuario llamado "DatosRegistro en los argumentos del fragmento
         Bundle bundle = getArguments();
-        Usuario DatosRegistro = null;
+        Usuario DatosRegistro;
         if (bundle != null) {
             DatosRegistro = (Usuario) bundle.getSerializable("DatosRegistro");
             if (DatosRegistro != null) {
                 input_email.setText(DatosRegistro.getEmail());
+                usuario.setEmail(DatosRegistro.getEmail());
                 input_email.setEnabled(false);
                 btn_enviar_token.setEnabled(false);
+                DatosRegistro.setEstado(true);
 
-                negocioUsuario.enviarToken(usuario, new updateUsuarioCallback(){
+                negocioUsuario.enviarToken(DatosRegistro, new updateUsuarioCallback(){
                     @Override
                     public void onSuccess() {
                         Toast.makeText(getActivity(), "Token enviado", Toast.LENGTH_SHORT).show();
@@ -57,6 +61,8 @@ public class ValidacionEmailFragment extends Fragment {
                     }
                 });
             }
+        } else {
+            DatosRegistro = null;
         }
 
         btn_enviar_token.setOnClickListener(view12 -> {
@@ -92,9 +98,8 @@ public class ValidacionEmailFragment extends Fragment {
 
 
         //Este boton se tocaria una vez ingresado el token
-        Usuario finalDatosRegistro = DatosRegistro;
-        btn_validar_email.setOnClickListener(view1 -> {
 
+        btn_validar_email.setOnClickListener(view1 -> {
             if (!input_codigo.getText().toString().isEmpty()) {
                 usuario.setToken(Integer.parseInt(input_codigo.getText().toString()));
 
@@ -109,16 +114,51 @@ public class ValidacionEmailFragment extends Fragment {
                             negocioUsuario.VerificarToken(usuario, new VerificarTokenCallback() {
                                 @Override
                                 public void onSuccess() {
-                                    // Redireccionar a la pantalla de nueva contraseña con el email como argumento
-                                    Bundle args = new Bundle();
-                                    args.putString("email", usuario.getEmail());
-                                    NuevaPassFragment nuevaPassFragment = new NuevaPassFragment();
-                                    nuevaPassFragment.setArguments(args);
-                                    requireActivity().getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .replace(R.id.fragment_container, nuevaPassFragment)
-                                            .addToBackStack(null) // Esto permite regresar al fragmento anterior
-                                            .commit();
+                                    // Si finalDatosRegistro es nulo, es porque el usuario quiere cambiar su contraseña, por lo que se lo redirige a NuevaPassFragment
+                                    // Caso contrario, registra al usuario y lo devuelve al login
+                                    if (DatosRegistro == null) {
+                                        // Redireccionar a la pantalla de nueva contraseña con el email como argumento
+                                        Bundle args = new Bundle();
+                                        args.putString("email", usuario.getEmail());
+                                        NuevaPassFragment nuevaPassFragment = new NuevaPassFragment();
+                                        nuevaPassFragment.setArguments(args);
+                                        requireActivity().getSupportFragmentManager()
+                                                .beginTransaction()
+                                                .replace(R.id.fragment_container, nuevaPassFragment)
+                                                .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                                .commit();
+                                    }
+                                    else{
+                                        NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
+                                        DatosRegistro.setEstado(true);
+                                        negociousuario.modificarUsuario(DatosRegistro, new updateUsuarioCallback() {
+                                            @Override
+                                            public void onSuccess() {
+                                                Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+
+
+                                                // Guardar el nombre de usuario en SharedPreferences
+                                                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.putString("usuario", DatosRegistro.getUsuario());
+                                                editor.apply();
+
+
+                                                // Redirige a la pantalla de LogInFragment
+                                                LogInFragment logInFragment = new LogInFragment();
+                                                requireActivity().getSupportFragmentManager()
+                                                        .beginTransaction()
+                                                        .replace(R.id.fragment_container, logInFragment)
+                                                        .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                                        .commit();
+                                            }
+
+                                            @Override
+                                            public void onFailure(Exception e) {
+                                                Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
                                 }
 
                                 @Override

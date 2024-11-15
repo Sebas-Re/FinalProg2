@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
 import com.example.finalprog2.interfaces.RegistrationCallback;
+import com.example.finalprog2.interfaces.ValidarRegistroCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
 
 
@@ -38,38 +39,37 @@ public class RegistroUsuarioFragment extends Fragment {
         TextView tv_Link_LogIn = view.findViewById(R.id.tv_link_LogIn);
 
         btn_registro_usuario.setOnClickListener(v -> {
-            String nombre = input_nombre.getText().toString();
-            String apellido = input_apellido.getText().toString();
-            String usuario = input_usuario.getText().toString();
-            String email = input_email.getText().toString();
-            String pass = input_pass.getText().toString();
-            String repetir_pass = input_repetir_pass.getText().toString();
+            String nombre = input_nombre.getText().toString().trim();
+            String apellido = input_apellido.getText().toString().trim();
+            String usuario = input_usuario.getText().toString().trim();
+            String email = input_email.getText().toString().trim();
+            String pass = input_pass.getText().toString().trim();
+            String repetir_pass = input_repetir_pass.getText().toString().trim();
 
             if(!nombre.isEmpty() && !apellido.isEmpty() && !usuario.isEmpty() && !email.isEmpty() && !pass.isEmpty() && !repetir_pass.isEmpty()){
                 if(pass.equals(repetir_pass)){
                     if(passValida(pass)){
                         Usuario nuevoUsuario = new Usuario(nombre, apellido, usuario, email, pass);
+                        nuevoUsuario.setEstado(false);
                         NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
                         //Carga de usuario en sistema
 
-                        negociousuario.registrarUsuario(nuevoUsuario, new RegistrationCallback() {
+                        negociousuario.validarRegistro(nuevoUsuario, new ValidarRegistroCallback() {
                             @Override
                             public void onSuccess() {
-                                Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+
+                                // guarda el objeto nuevoUsuario dentro de un bundle
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("DatosRegistro", nuevoUsuario);
+
+                                // Redirige a la pantalla de ValidacionEmailFragment
+                                ValidacionEmailFragment validacionEmailFragment = new ValidacionEmailFragment();
+                                validacionEmailFragment.setArguments(bundle);
 
 
-                                // Guardar el nombre de usuario en SharedPreferences
-                                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("usuario", usuario);
-                                editor.apply();
-
-
-                                // Redirige a la pantalla de LogInFragment
-                                LogInFragment logInFragment = new LogInFragment();
                                 requireActivity().getSupportFragmentManager()
                                         .beginTransaction()
-                                        .replace(R.id.fragment_container, logInFragment)
+                                        .replace(R.id.fragment_container, validacionEmailFragment)
                                         .addToBackStack(null) // Esto permite regresar al fragmento anterior
                                         .commit();
                             }

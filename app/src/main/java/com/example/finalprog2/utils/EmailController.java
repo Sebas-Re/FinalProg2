@@ -17,6 +17,7 @@ public class EmailController {
 
     @OptIn(markerClass = UnstableApi.class)
     public static void enviarEmailUsuario(String recipientEmail, String subject, String body) {
+        Log.i("EmailController", "Iniciando envio de email");
         // Se crea un nuevo hilo, para ejecutar la funcion en segundo plano
         new Thread(() -> {
 

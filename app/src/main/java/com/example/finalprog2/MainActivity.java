@@ -6,6 +6,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.finalprog2.fragment.LogInFragment;
+import com.example.finalprog2.fragment.RegistroUsuarioFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
             LogInFragment logInFragment = new LogInFragment();
             //CrearForoFragment logInFragment = new CrearForoFragment();
             //ListarForoFragment logInFragment = new ListarForoFragment();
+            //RegistroUsuarioFragment logInFragment = new RegistroUsuarioFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, logInFragment) // Utiliza el ID del contenedor
                     .commit();

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalprog2.R;
 import com.example.finalprog2.adapter.PublicacionAdapter;
 import com.example.finalprog2.entidad.Publicacion;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -43,6 +44,13 @@ public class ListarForoFragment extends Fragment {
 
         // Cargar publicaciones desde Firebase
         cargarPublicaciones();
+
+        // Configurar el botón flotante para agregar nuevas publicaciones
+        FloatingActionButton fabAdd = view.findViewById(R.id.fab_add_publicacion);
+        fabAdd.setOnClickListener(v -> {
+            // Navegar manualmente a CrearForoFragment usando FragmentTransaction
+            navigateToFragment(new CrearForoFragment());
+        });
     }
 
     private void cargarPublicaciones() {
@@ -62,5 +70,14 @@ public class ListarForoFragment extends Fragment {
                         // Manejar errores si es necesario
                     }
                 });
+    }
+
+    // Método para navegar a un nuevo fragmento
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

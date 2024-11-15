@@ -63,6 +63,10 @@ dependencies {
     // Usa el BOM para Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-firestore")
+
+    // Agregar las dependencias de la navegación
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
 }
 
 // Aplica el plugin de Google Services al final

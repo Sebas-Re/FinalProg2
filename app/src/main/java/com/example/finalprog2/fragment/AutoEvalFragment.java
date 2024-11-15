@@ -62,6 +62,9 @@ public class AutoEvalFragment extends Fragment {
             toolbarTitle.setText("AutoEvaluacion");
         }
 
+        //Ocultar el nombre de la app
+        toolbar.setTitle("");
+
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
 

@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:background="#F3F6EC">
 
+
+    <!-- Toolbar personalizado -->
+    <include
+        layout="@layout/toolbar_layout"
+        android:id="@+id/custom_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Título de EditarPerfil -->
     <TextView
         android:id="@+id/tv_titulo_EditarPerfil"
@@ -15,7 +24,7 @@
         android:textColor="#132625"
         android:textSize="32sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/custom_toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="40dp" />

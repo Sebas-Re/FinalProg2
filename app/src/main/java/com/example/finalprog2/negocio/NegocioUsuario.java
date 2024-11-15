@@ -9,9 +9,11 @@ import androidx.media3.common.util.Log;
 import androidx.media3.common.util.UnstableApi;
 
 import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.ChequeoUsuarioCallback;
 import com.example.finalprog2.interfaces.LogInCallback;
 import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
 import com.example.finalprog2.interfaces.RegistrationCallback;
+import com.example.finalprog2.interfaces.ValidarRegistroCallback;
 import com.example.finalprog2.interfaces.VerificarEmailCallback;
 import com.example.finalprog2.interfaces.VerificarTokenCallback;
 import com.example.finalprog2.interfaces.updateUsuarioCallback;
@@ -35,7 +37,7 @@ public class NegocioUsuario {
 
     // Funcion de LogIn
     @OptIn(markerClass = UnstableApi.class)
-    public void verificarUsuario(Usuario usuario, LogInCallback callback) {
+    public void logearUsuario(Usuario usuario, LogInCallback callback) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -345,42 +347,14 @@ public class NegocioUsuario {
 
 
     // Funcion para enviar Token por email
+    @OptIn(markerClass = UnstableApi.class)
     public void enviarToken(Usuario usuario, updateUsuarioCallback callback){
 
         int tokenGenerado = Integer.parseInt(generarToken());
-        obtenerUsuario(usuario.getEmail(), new ObtenerUsuarioCallback() {
-            @Override
-            public boolean onSuccess(Usuario usuarioEncontrado) {
-                usuarioEncontrado.setToken(tokenGenerado);
-
-                modificarUsuario(usuarioEncontrado, new updateUsuarioCallback()
-                {
-                    @OptIn(markerClass = UnstableApi.class)
-                    @Override
-                    public void onSuccess() {
-                        Log.i("Firestore", "Token añadido exitosamente");
-                        //si el token se seteo exitosamente, se envia el email
-                        EmailController.enviarEmailUsuario(usuario.getEmail(), "Recuperación de contraseña", "Tu código de recuperación es: " + tokenGenerado);
-                        callback.onSuccess();
-                    }
-
-                    @OptIn(markerClass = UnstableApi.class)
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.e("Firestore", "Error al añadir token", e);
-                        callback.onFailure(null);
-                    }
-                });
-                return false;
-            }
-
-            @OptIn(markerClass = UnstableApi.class)
-            @Override
-            public void onFailure(Exception e) {
-                Log.e("Firestore", "Error al obtener Usuario", e);
-                callback.onFailure(null);
-            }
-        });
+        Log.i("Firestore", "Token añadido exitosamente");
+        //Se genera el token, se manda por email, y se devuelve el token
+        EmailController.enviarEmailUsuario(usuario.getEmail(), "Recuperación de contraseña", "Tu código de recuperación es: " + tokenGenerado);
+        callback.onSuccess();
 
     }
 
@@ -439,4 +413,61 @@ public class NegocioUsuario {
 
             });
     }
+
+
+    @OptIn(markerClass = UnstableApi.class)
+    private void chequearUsuario(Usuario nuevoUsuario, ChequeoUsuarioCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("usuarios")
+                .whereEqualTo("usuario", nuevoUsuario.getUsuario())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            // El usuario ya existe
+                            Log.w("Firestore", "El nombre de usuario ya está en uso");
+                            callback.onFailure(null);
+                        } else {
+                            // El usuario no existe, continuar con el registro
+                            callback.onSuccess();
+                        }
+                    } else {
+                        Log.e("Firestore", "Error al verificar usuario", task.getException());
+                        callback.onFailure(task.getException());
+                    }
+                });
+    }
+
+    public void validarRegistro(Usuario nuevoUsuario, ValidarRegistroCallback callback) {
+        chequearUsuario(nuevoUsuario, new ChequeoUsuarioCallback() {
+            @Override
+            public void onSuccess() {
+                verificarEmail(nuevoUsuario, new VerificarEmailCallback() {
+                    @Override
+                    // Si encuentra el email, devuelve fail
+                    public void onSuccess() {
+                        callback.onFailure(null);
+
+                    }
+
+                    @Override
+                    // Si no encuentra el email, devuelve success
+                    public void onFailure(Exception e) {
+                        callback.onSuccess();
+                    }
+                });
+            }
+
+            @Override public void onFailure(Exception e) {
+                callback.onFailure(e);
+            }
+        });
+    }
+
+
+
+
+
+
 }

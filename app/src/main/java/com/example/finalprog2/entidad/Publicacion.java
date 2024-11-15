@@ -6,6 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Publicacion {
     private int id;
@@ -13,6 +15,7 @@ public class Publicacion {
     private String titulo;
     private String descripcion;
     private String relacionEnergetica;
+    private List<Comentario> comentarios;
     private boolean estado;
 
     public Publicacion() {}
@@ -27,6 +30,26 @@ public class Publicacion {
     }
 
     // Métodos getter y setter
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public String getRelacionEnergetica() {
+        return relacionEnergetica;
+    }
+
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
@@ -42,6 +65,7 @@ public class Publicacion {
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
+
 
     // Método para guardar la publicación en la base de datos
     public void guardarPublicacion() {
@@ -64,5 +88,9 @@ public class Publicacion {
                 .addOnFailureListener(e -> {
                     Log.w("Publicacion", "Error al agregar la publicación", e);
                 });
+    }
+    //Metodo para guardar comentarios
+    public void agregarComentario(Comentario comentario) {
+        comentarios.add(comentario);
     }
 }

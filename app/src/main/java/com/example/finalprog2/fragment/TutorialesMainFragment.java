@@ -77,6 +77,10 @@ public class TutorialesMainFragment extends Fragment implements TutorialAdapter.
             toolbarTitle.setText("Tutoriales");
         }
 
+        //Ocultar el nombre de la app
+        toolbar.setTitle("");
+
+
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
 

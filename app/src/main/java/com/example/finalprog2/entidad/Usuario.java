@@ -1,6 +1,8 @@
 package com.example.finalprog2.entidad;
 
 import java.io.Serializable;
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
 public class Usuario implements Serializable {
@@ -118,6 +120,7 @@ public class Usuario implements Serializable {
         this.estado = estado;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Usuario{" +
@@ -142,7 +145,6 @@ public class Usuario implements Serializable {
     public int hashCode() {
         return Objects.hash(id, nombre, apellido, usuario, email, pass, token, estado);
     }
-
 
 
 }

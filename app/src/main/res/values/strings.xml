@@ -42,4 +42,5 @@
     <string name="instagram">Instagram</string>
     <string name="mail">Correo Electrónico</string>
     <string name="enviar_token">Enviar Token</string>
+    <string name="imagen_principal">Imagen Principal</string>
 </resources>

@@ -36,6 +36,9 @@ public class HomeFragment extends Fragment {
             toolbarTitle.setText("Inicio");
         }
 
+        //Ocultar el nombre de la app
+        toolbar.setTitle("");
+
         // Configuración del botón de menú en el Toolbar
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
         leftMenuButton.setOnClickListener(v -> {

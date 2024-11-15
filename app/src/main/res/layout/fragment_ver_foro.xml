@@ -15,156 +15,53 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Título del Foro"
-        android:textColor="#000"
+        android:textColor="#FFF"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
+        android:background="@drawable/titulo_foro_burbuja"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
 
-    <!-- Simulación de Mensajes de Ejemplo -->
+    <!-- Cuerpo del Foro (Contenido principal) -->
+    <TextView
+        android:id="@+id/tv_forum_body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Aquí va el contenido del foro seleccionado"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:gravity="start"
+        android:background="@drawable/cuerpo_foro_burbuja"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_forum_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Sección de comentarios (simulación de mensajes de ejemplo) -->
     <LinearLayout
         android:id="@+id/messages_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/tv_forum_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_forum_body"
         app:layout_constraintBottom_toTopOf="@id/commentBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/scroll_bar"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="8dp">
 
+        <!-- Aquí puedes repetir bloques de mensajes de ejemplo, como antes -->
         <!-- Mensaje 1 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"/>
 
-            <!-- Contenido del mensaje -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/message_bubble"
-                android:padding="12dp"
-                android:text="Este es mi primer post, aqui iria todo lo descriptivo a un posteo de algo que tenga que ver con la tematica o alguna consulta especial sobre x tema."
-                android:textColor="@android:color/black"
-                android:textSize="16sp"/>
-
-            <!-- Información de fecha, hora y usuario en el mismo nivel -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp">
-
-                <!-- Fecha y hora alineada a la izquierda -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="17/09/24 10:10"
-                    android:textSize="12sp"
-                    android:textColor="#888"
-                    android:gravity="start"/>
-
-                <!-- Usuario alineado a la derecha -->
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="User1"
-                    android:textSize="12sp"
-                    android:textColor="#888"
-                    android:gravity="end"
-                    android:layout_weight="1"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Repite el bloque anterior para cada mensaje -->
-
-        <!-- Mensaje 2 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/message_bubble"
-                android:padding="12dp"
-                android:text="Aqui iria la contestacion o replica del comentario"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="17/09/24 10:12"
-                    android:textSize="12sp"
-                    android:textColor="#888"
-                    android:gravity="start"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="User2"
-                    android:textSize="12sp"
-                    android:textColor="#888"
-                    android:gravity="end"
-                    android:layout_weight="1"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Mensaje 3 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/message_bubble"
-                android:padding="12dp"
-                android:text="¿Alguien ha visto las últimas noticias?"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="17/09/24 10:15"
-                    android:textSize="12sp"
-                    android:textColor="#888"
-                    android:gravity="start"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="User3"
-                    android:textSize="12sp"
-                    android:textColor="#888"
-                    android:gravity="end"
-                    android:layout_weight="1"/>
-            </LinearLayout>
-        </LinearLayout>
-
+        <!-- Puedes agregar más bloques de mensajes aquí -->
     </LinearLayout>
 
     <!-- Barra para agregar un nuevo comentario -->
@@ -198,15 +95,5 @@
             android:textColor="#FFF"
             android:layout_marginStart="8dp"/>
     </LinearLayout>
-
-    <!-- Barra de desplazamiento -->
-    <View
-        android:id="@+id/scroll_bar"
-        android:layout_width="8dp"
-        android:layout_height="0dp"
-        android:background="@drawable/scroll_bar_bg"
-        app:layout_constraintTop_toBottomOf="@id/tv_forum_title"
-        app:layout_constraintBottom_toTopOf="@id/commentBar"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

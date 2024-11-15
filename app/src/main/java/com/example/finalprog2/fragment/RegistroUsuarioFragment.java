@@ -37,62 +37,59 @@ public class RegistroUsuarioFragment extends Fragment {
         Button btn_registro_usuario = view.findViewById(R.id.btn_registro_usuario);
         TextView tv_Link_LogIn = view.findViewById(R.id.tv_link_LogIn);
 
-        btn_registro_usuario.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                String nombre = input_nombre.getText().toString();
-                String apellido = input_apellido.getText().toString();
-                String usuario = input_usuario.getText().toString();
-                String email = input_email.getText().toString();
-                String pass = input_pass.getText().toString();
-                String repetir_pass = input_repetir_pass.getText().toString();
+        btn_registro_usuario.setOnClickListener(v -> {
+            String nombre = input_nombre.getText().toString();
+            String apellido = input_apellido.getText().toString();
+            String usuario = input_usuario.getText().toString();
+            String email = input_email.getText().toString();
+            String pass = input_pass.getText().toString();
+            String repetir_pass = input_repetir_pass.getText().toString();
 
-                if(!nombre.isEmpty() && !apellido.isEmpty() && !usuario.isEmpty() && !email.isEmpty() && !pass.isEmpty() && !repetir_pass.isEmpty()){
-                    if(pass.equals(repetir_pass)){
-                        if(passValida(pass)){
-                            Usuario nuevoUsuario = new Usuario(nombre, apellido, usuario, email, pass);
-                            NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
-                            //Carga de usuario en sistema
+            if(!nombre.isEmpty() && !apellido.isEmpty() && !usuario.isEmpty() && !email.isEmpty() && !pass.isEmpty() && !repetir_pass.isEmpty()){
+                if(pass.equals(repetir_pass)){
+                    if(passValida(pass)){
+                        Usuario nuevoUsuario = new Usuario(nombre, apellido, usuario, email, pass);
+                        NegocioUsuario negociousuario = new NegocioUsuario(getActivity());
+                        //Carga de usuario en sistema
 
-                            negociousuario.registrarUsuario(nuevoUsuario, new RegistrationCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+                        negociousuario.registrarUsuario(nuevoUsuario, new RegistrationCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
 
 
-                                    // Guardar el nombre de usuario en SharedPreferences
-                                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putString("usuario", usuario);
-                                    editor.apply();
+                                // Guardar el nombre de usuario en SharedPreferences
+                                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("usuario", usuario);
+                                editor.apply();
 
 
-                                    // Redirige a la pantalla de LogInFragment
-                                    LogInFragment logInFragment = new LogInFragment();
-                                    requireActivity().getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .replace(R.id.fragment_container, logInFragment)
-                                            .addToBackStack(null) // Esto permite regresar al fragmento anterior
-                                            .commit();
-                                }
+                                // Redirige a la pantalla de LogInFragment
+                                LogInFragment logInFragment = new LogInFragment();
+                                requireActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.fragment_container, logInFragment)
+                                        .addToBackStack(null) // Esto permite regresar al fragmento anterior
+                                        .commit();
+                            }
 
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                        else{
-                            Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
-                        }
+                            @Override
+                            public void onFailure(Exception e) {
+                                Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                     else{
-                        Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
-                    Toast.makeText(getActivity(), "Por favor ingrese todos los campos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
                 }
+            }
+            else{
+                Toast.makeText(getActivity(), "Por favor ingrese todos los campos", Toast.LENGTH_SHORT).show();
             }
         });
         

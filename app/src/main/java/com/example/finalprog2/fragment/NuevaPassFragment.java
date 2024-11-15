@@ -30,10 +30,10 @@ public class NuevaPassFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_nueva_pass, container, false);
         EditText inputPass = view.findViewById(R.id.input_pass);
         EditText inputRepetirPass = view.findViewById(R.id.input_repetir_pass);
-        Button btnRecuPass = view.findViewById(R.id.btn_recu_pass);
+        Button btnReestablecerPass = view.findViewById(R.id.btn_reestablecer_pass);
 
 
-        btnRecuPass.setOnClickListener(view1 -> {
+        btnReestablecerPass.setOnClickListener(view1 -> {
             String pass = inputPass.getText().toString();
             String repetirPass = inputRepetirPass.getText().toString();
 

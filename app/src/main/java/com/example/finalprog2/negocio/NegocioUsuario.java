@@ -347,14 +347,42 @@ public class NegocioUsuario {
 
 
     // Funcion para enviar Token por email
-    @OptIn(markerClass = UnstableApi.class)
     public void enviarToken(Usuario usuario, updateUsuarioCallback callback){
 
         int tokenGenerado = Integer.parseInt(generarToken());
-        Log.i("Firestore", "Token añadido exitosamente");
-        //Se genera el token, se manda por email, y se devuelve el token
-        EmailController.enviarEmailUsuario(usuario.getEmail(), "Recuperación de contraseña", "Tu código de recuperación es: " + tokenGenerado);
-        callback.onSuccess();
+        obtenerUsuario(usuario.getEmail(), new ObtenerUsuarioCallback() {
+            @Override
+            public boolean onSuccess(Usuario usuarioEncontrado) {
+                usuarioEncontrado.setToken(tokenGenerado);
+
+                modificarUsuario(usuarioEncontrado, new updateUsuarioCallback()
+                {
+                    @OptIn(markerClass = UnstableApi.class)
+                    @Override
+                    public void onSuccess() {
+                        Log.i("Firestore", "Token añadido exitosamente");
+                        //si el token se seteo exitosamente, se envia el email
+                        EmailController.enviarEmailUsuario(usuario.getEmail(), "Recuperación de contraseña", "Tu código de recuperación es: " + tokenGenerado);
+                        callback.onSuccess();
+                    }
+
+                    @OptIn(markerClass = UnstableApi.class)
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("Firestore", "Error al añadir token", e);
+                        callback.onFailure(null);
+                    }
+                });
+                return false;
+            }
+
+            @OptIn(markerClass = UnstableApi.class)
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("Firestore", "Error al obtener Usuario", e);
+                callback.onFailure(null);
+            }
+        });
 
     }
 

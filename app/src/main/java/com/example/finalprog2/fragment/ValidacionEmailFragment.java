@@ -19,27 +19,50 @@ import com.example.finalprog2.interfaces.updateUsuarioCallback;
 import com.example.finalprog2.negocio.NegocioUsuario;
 
 
-public class RecuperarPassFragment extends Fragment {
-
+public class ValidacionEmailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_recuperar_pass, container, false);
+        View view = inflater.inflate(R.layout.fragment_validacion_email, container, false);
 
         EditText input_email = view.findViewById(R.id.input_email);
         Usuario usuario = new Usuario();
         EditText input_codigo = view.findViewById(R.id.input_codigo);
         Button btn_enviar_token = view.findViewById(R.id.btn_enviar_token);
-        Button btn_recu_pass = view.findViewById(R.id.btn_recu_pass);
+        Button btn_validar_email = view.findViewById(R.id.btn_validar_email);
 
+        NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
+
+
+        // Busca un bundle de tipo usuario llamado "DatosRegistro en los argumentos del fragmento
+        Bundle bundle = getArguments();
+        Usuario DatosRegistro = null;
+        if (bundle != null) {
+            DatosRegistro = (Usuario) bundle.getSerializable("DatosRegistro");
+            if (DatosRegistro != null) {
+                input_email.setText(DatosRegistro.getEmail());
+                input_email.setEnabled(false);
+                btn_enviar_token.setEnabled(false);
+
+                negocioUsuario.enviarToken(usuario, new updateUsuarioCallback(){
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(getActivity(), "Token enviado", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(getActivity(), "Error al enviar token", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
 
         btn_enviar_token.setOnClickListener(view12 -> {
             usuario.setEmail(input_email.getText().toString());
 
             if (!usuario.getEmail().isEmpty()) {
-                NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
                 negocioUsuario.verificarEmail(usuario, new VerificarEmailCallback() {
 
                     @Override
@@ -69,7 +92,8 @@ public class RecuperarPassFragment extends Fragment {
 
 
         //Este boton se tocaria una vez ingresado el token
-        btn_recu_pass.setOnClickListener(view1 -> {
+        Usuario finalDatosRegistro = DatosRegistro;
+        btn_validar_email.setOnClickListener(view1 -> {
 
             if (!input_codigo.getText().toString().isEmpty()) {
                 usuario.setToken(Integer.parseInt(input_codigo.getText().toString()));
@@ -77,7 +101,6 @@ public class RecuperarPassFragment extends Fragment {
                 //si ambos campos no estan vacios
                 if(!usuario.getEmail().isEmpty() && String.valueOf(usuario.getToken()).length() == 6) {
 
-                    NegocioUsuario negocioUsuario = new NegocioUsuario(getActivity());
 
                     negocioUsuario.verificarEmail(usuario, new VerificarEmailCallback() {
                         @Override

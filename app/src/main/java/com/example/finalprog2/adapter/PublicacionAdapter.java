@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,28 +45,37 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
     }
 
     public class PublicacionViewHolder extends RecyclerView.ViewHolder {
-        Button btnPublicacion;
+
+        private ImageView ivLogoForo;
+        private TextView tvNombreForo;
+        private ImageView ivFlechaForo;
 
         public PublicacionViewHolder(@NonNull View itemView) {
             super(itemView);
-            btnPublicacion = itemView.findViewById(R.id.btn_publicacion);
+            ivLogoForo = itemView.findViewById(R.id.iv_logo_foro);
+            tvNombreForo = itemView.findViewById(R.id.tv_nombre_foro);
+            ivFlechaForo = itemView.findViewById(R.id.iv_flecha_foro);
         }
 
         public void bind(final Publicacion publicacion) {
-            btnPublicacion.setText(publicacion.getTitulo());
+            // Asignar datos
+            tvNombreForo.setText(publicacion.getTitulo());
+            int imageResId = getImageResource(publicacion.getRelacionEnergetica());
+            ivLogoForo.setImageResource(imageResId);
 
-            btnPublicacion.setOnClickListener(v -> {
+            // Manejo del clic
+            itemView.setOnClickListener(v -> {
                 VerForoFragment verForoFragment = new VerForoFragment();
 
-                // Crea un bundle para pasar los datos
+                // Crear un bundle para pasar los datos
                 Bundle bundle = new Bundle();
                 bundle.putString("titulo", publicacion.getTitulo());
                 bundle.putString("cuerpo", publicacion.getDescripcion());
 
-                // Asigna el bundle al fragmento
+                // Asignar el bundle al fragmento
                 verForoFragment.setArguments(bundle);
 
-                // Realiza la transacción del fragmento
+                // Realizar la transacción del fragmento
                 ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, verForoFragment)
                         .addToBackStack(null)
@@ -74,5 +83,16 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             });
         }
     }
+    private int getImageResource(String relacionEnergetica) {
+        switch (relacionEnergetica) {
+            case "ic_ecologia":
+                return R.drawable.ic_ecologia;
+            case "ic_flash":
+                return R.drawable.flash;
+            case "wind":
+                return R.drawable.wind;
+            default:
+                return R.drawable.ic_foro; // Imagen predeterminada si no coincide
+        }
+    }
 }
-

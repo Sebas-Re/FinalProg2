@@ -1,6 +1,7 @@
 package com.example.finalprog2.entidad;
 
 public class Comentario {
+    private int idPublicacion;
     private String usuario;
     private String texto;
     private long timestamp;

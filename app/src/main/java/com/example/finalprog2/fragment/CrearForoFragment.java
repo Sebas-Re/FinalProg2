@@ -1,110 +1,119 @@
 package com.example.finalprog2.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Publicacion;
+import com.example.finalprog2.entidad.Usuario;
+import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
+import com.example.finalprog2.negocio.NegocioUsuario;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CrearForoFragment extends Fragment {
 
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_crear_publicacion, container, false);
-        EditText input_titulo = view.findViewById(R.id.input_titulo);
-        EditText input_descripcion_post = view.findViewById(R.id.input_descripcion_post);
-        RadioGroup rg_relacionado_a = view.findViewById(R.id.rg_relacionado_a);
-        Button btn_crear_post = view.findViewById(R.id.btn_crear_post);
 
+        // Configuración del Toolbar
+        Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
-        //Esto todavia debe probarse. Por algun motivo se pueden seleccionar multiples opciones de radiobutton,
-        // como si no pertenecieran al mismo radiogroup.
-        Map<Integer, Runnable> radioButtonActions = new HashMap<>();
-        radioButtonActions.put(R.id.rb_opcion_eolica, () -> {
-            Toast.makeText(getActivity(), "Opción 1 seleccionada", Toast.LENGTH_SHORT).show();
-        });
-        radioButtonActions.put(R.id.rb_opcion_electrica, () -> {
-            Toast.makeText(getActivity(), "Opción 2 seleccionada", Toast.LENGTH_SHORT).show();
-        });
-        radioButtonActions.put(R.id.rb_opcion_ecologia, () -> {
-           Toast.makeText(getActivity(), "Opción 3 seleccionada", Toast.LENGTH_SHORT).show();
-        });
+        // Configuración del título en el Toolbar
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        if (toolbarTitle != null) {
+            toolbarTitle.setText("Crear Publicación");
+        }
 
-        rg_relacionado_a.setOnCheckedChangeListener((group, checkedId) -> {
-            Runnable action = radioButtonActions.get(checkedId);
-            if (action != null) {
-                action.run();
+        // Ocultar el nombre de la app
+        toolbar.setTitle("");
+
+        // Botón de retroceso (opcional)
+        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
+        leftMenuButton.setOnClickListener(v -> requireActivity().onBackPressed());
+
+        // Configuración de los campos del formulario
+        EditText inputTitulo = view.findViewById(R.id.input_titulo);
+        EditText inputDescripcion = view.findViewById(R.id.input_descripcion_post);
+        RadioGroup rgRelacionadoA = view.findViewById(R.id.rg_relacionado_a);
+        Button btnCrearPost = view.findViewById(R.id.btn_crear_post);
+
+        // Mapa para las opciones del RadioGroup
+        Map<Integer, String> radioButtonValues = new HashMap<>();
+        radioButtonValues.put(R.id.rb_opcion_eolica, "wind");
+        radioButtonValues.put(R.id.rb_opcion_electrica, "flash");
+        radioButtonValues.put(R.id.rb_opcion_ecologia, "ic_ecologia");
+
+        // Lógica para crear la publicación
+        btnCrearPost.setOnClickListener(view1 -> {
+            String titulo = inputTitulo.getText().toString();
+            String descripcion = inputDescripcion.getText().toString();
+
+            // Obtener el id del RadioButton seleccionado
+            int seleccionadoId = rgRelacionadoA.getCheckedRadioButtonId();
+            String categoriaSeleccionada = radioButtonValues.get(seleccionadoId);
+
+            if (!titulo.isEmpty() && !descripcion.isEmpty() && categoriaSeleccionada != null) {
+                // Crear el objeto Publicacion
+                Publicacion publicacion = new Publicacion();
+                publicacion.setTitulo(titulo);
+                publicacion.setDescripcion(descripcion);
+                publicacion.setRelacionEnergetica(categoriaSeleccionada);
+                String nombre = cargarDatosUsuario(view);// Guardar el valor en relacionEnergetica
+                publicacion.setUsuario(nombre);
+                publicacion.setEstado(true); // La publicación puede estar activa
+
+                // Guardar la publicación en la base de datos
+                publicacion.guardarPublicacion();
+
+                // Mostrar un mensaje de éxito
+                Toast.makeText(getActivity(), "Publicación creada correctamente", Toast.LENGTH_SHORT).show();
+
+                // Volver al fragmento de la lista de foros
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new ListarForoFragment())  // Reemplaza con el fragmento que lista los foros
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                Toast.makeText(getActivity(), "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        /*
-        btn_crear_post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String titulo = input_titulo.getText().toString();
-                String descripcion = input_descripcion_post.getText().toString();
-                //int seleccionadoId = rg_relacionado_a.getCheckedRadioButtonId();
-
-
-
-
-
-               Toast.makeText(getActivity(), "Publicación creada", Toast.LENGTH_SHORT).show();
-            }
-        });*/
-
-        btn_crear_post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String titulo = input_titulo.getText().toString();
-                String descripcion = input_descripcion_post.getText().toString();
-
-                // Obtener la opción seleccionada del RadioGroup
-                int seleccionadoId = rg_relacionado_a.getCheckedRadioButtonId();
-                String categoriaSeleccionada = "";
-
-                if (seleccionadoId == R.id.rb_opcion_eolica) {
-                    categoriaSeleccionada = "Eólica";
-                } else if (seleccionadoId == R.id.rb_opcion_electrica) {
-                    categoriaSeleccionada = "Eléctrica";
-                } else if (seleccionadoId == R.id.rb_opcion_ecologia) {
-                    categoriaSeleccionada = "Ecología";
-                }
-
-                if (!titulo.isEmpty() && !descripcion.isEmpty() /*&& !categoriaSeleccionada.isEmpty()*/) {
-                    // Crear un nuevo objeto Publicacion
-                    Publicacion publicacion = new Publicacion();
-                    publicacion.setTitulo(titulo);
-                    publicacion.setDescripcion(descripcion);
-                    publicacion.setRelacionEnergetica(categoriaSeleccionada);
-                    publicacion.setEstado(true); // Por ejemplo, la publicación puede estar activa al crearse
-
-                    // Guardar la publicación en la base de datos
-                    publicacion.guardarPublicacion();
-
-                    // Mostrar un mensaje de éxito
-                    Toast.makeText(getActivity(), "Publicación creada correctamente", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         return view;
     }
+
+    private String cargarDatosUsuario(View view) {
+        // Obtener datos del usuario de SharedPreferences
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String nombreUsuario = sharedPreferences.getString("usuario", null);
+        if (nombreUsuario == null) {
+            Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
+
+        }else {
+            return nombreUsuario;
+        }
+        return nombreUsuario;
+    }
+
 }

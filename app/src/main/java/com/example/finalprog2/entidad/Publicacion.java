@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Publicacion {
     private String id; // Cambiado a String para usar el ID generado por Firebase
-    private Usuario usuario;
+    private String usuario;
     private String titulo;
     private String descripcion;
     private String relacionEnergetica;
@@ -23,7 +23,7 @@ public class Publicacion {
         comentarios = new ArrayList<>(); // Inicializar lista de comentarios
     }
 
-    public Publicacion(Usuario usuario, String titulo, String descripcion, String relacionEnergetica, boolean estado) {
+    public Publicacion(String usuario, String titulo, String descripcion, String relacionEnergetica, boolean estado) {
         this.usuario = usuario;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -37,7 +37,7 @@ public class Publicacion {
         return id;
     }
 
-    public Usuario getUsuario() {
+    public String getUsuario() {
         return usuario;
     }
 
@@ -65,7 +65,7 @@ public class Publicacion {
         this.id = id;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
 
@@ -95,7 +95,7 @@ public class Publicacion {
         data.put("descripcion", descripcion);
         data.put("relacionEnergetica", relacionEnergetica);
         data.put("estado", estado);
-        data.put("usuario", usuario != null ? usuario.getNombre() : "Anónimo"); // Nombre del usuario o "Anónimo"
+        data.put("usuario", usuario); // Nombre del usuario o "Anónimo"
 
         // Agregar el documento a la colección "publicaciones"
         db.collection("publicaciones")

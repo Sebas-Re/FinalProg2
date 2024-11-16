@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,20 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F6EC"
-    android:layout_margin="16dp"> <!-- Agregado margen -->
+    android:layout_margin="16dp"
+    android:fitsSystemWindows="true">
+
+    <!-- Toolbar personalizada -->
+    <include
+        android:id="@+id/custom_toolbar"
+        layout="@layout/toolbar_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Guía para definir margen después del Toolbar -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintGuide_percent="0.12" />
 
     <!-- Título del post -->
     <TextView
         android:id="@+id/tv_titulo_post"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:text="@string/titulo"
         android:textColor="#132625"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
 
     <!-- Input del título -->
     <EditText
@@ -90,76 +106,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_relacionado_a">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Opción Eólica -->
+        <RadioButton
+            android:id="@+id/rb_opcion_eolica"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:drawablePadding="8dp"
+            android:text="@string/energia_eolica"
+            android:textColor="#132625"
+            android:textSize="16sp" />
 
-            <ImageView
-                android:id="@+id/img_eolica"
-                android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/wind"
-            android:contentDescription="@string/energia_eolica" />
-
-            <RadioButton
-                android:id="@+id/rb_opcion_eolica"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="8dp"
-                android:text="@string/energia_eolica"
-                android:textColor="#132625"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <RadioButton
+            android:id="@+id/rb_opcion_electrica"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:drawablePadding="8dp"
+            android:text="@string/energia_electrica"
+            android:textColor="#132625"
+            android:textSize="16sp" />
 
-            <ImageView
-                android:id="@+id/img_electrica"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/flash"
-                android:contentDescription="@string/energia_electrica" />
-
-            <RadioButton
-                android:id="@+id/rb_opcion_electrica"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="8dp"
-                android:text="@string/energia_electrica"
-                android:textColor="#132625"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <RadioButton
+            android:id="@+id/rb_opcion_ecologia"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:id="@+id/img_ecologia"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_ecologia"
-                android:contentDescription="@string/ecolog_a" />
-
-            <RadioButton
-                android:id="@+id/rb_opcion_ecologia"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="8dp"
-                android:text="@string/ecolog_a"
-                android:textColor="#132625"
-                android:textSize="16sp" />
-        </LinearLayout>
+            android:drawablePadding="8dp"
+            android:text="@string/ecolog_a"
+            android:textColor="#132625"
+            android:textSize="16sp" />
     </RadioGroup>
 
+    <!-- Botón de crear publicación -->
     <Button
         android:id="@+id/btn_crear_post"
         android:layout_width="0dp"

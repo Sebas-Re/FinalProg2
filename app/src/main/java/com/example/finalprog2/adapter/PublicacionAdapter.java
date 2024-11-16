@@ -87,7 +87,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
         switch (relacionEnergetica) {
             case "ic_ecologia":
                 return R.drawable.ic_ecologia;
-            case "ic_flash":
+            case "flash":
                 return R.drawable.flash;
             case "wind":
                 return R.drawable.wind;

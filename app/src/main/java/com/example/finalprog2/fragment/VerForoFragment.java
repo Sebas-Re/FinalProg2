@@ -123,20 +123,40 @@ public class VerForoFragment extends Fragment {
                         String comentarioTexto = document.getString("texto");
                         String autor = document.getString("usuario");
 
-                        // Crear una vista para cada comentario
+                        // Crear un LinearLayout para contener el TextView
+                        LinearLayout comentarioLayout = new LinearLayout(getContext());
+                        comentarioLayout.setOrientation(LinearLayout.VERTICAL);
+                        comentarioLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                        // Crear un TextView para cada comentario
                         TextView comentarioView = new TextView(getContext());
                         comentarioView.setText(autor + ": " + comentarioTexto);
-                        comentarioView.setPadding(8, 8, 8, 8);
                         comentarioView.setTextSize(16);
+                        comentarioView.setPadding(16, 16, 16, 16); // Padding adicional
 
-                        // Agregar la vista al layout
-                        messagesLayout.addView(comentarioView);
+                        // Aplicar el fondo de estilo con el archivo XML
+                        comentarioView.setBackgroundResource(R.drawable.foro_item_background);
+
+                        // Asegurarse de que el TextView se ajuste al contenido
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        comentarioView.setLayoutParams(layoutParams);
+
+                        // Agregar el TextView al LinearLayout
+                        comentarioLayout.addView(comentarioView);
+
+                        // Agregar el LinearLayout al layout de mensajes
+                        messagesLayout.addView(comentarioLayout);
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("VerForoFragment", "Error al cargar comentarios", e);
                 });
     }
+
+
+
 
     private void agregarComentarioAFirebase(String comentarioTexto, String usuario) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

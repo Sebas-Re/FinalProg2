@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/light_green" /> <!-- Cambia @color/green por tu color verde -->
-    <corners android:radius="16dp" /> <!-- Define el redondeo de las esquinas -->
+    <solid android:color="@color/light_green"/> <!-- Color de fondo -->
+    <corners android:radius="16dp"/> <!-- Radio de esquinas redondeadas -->
+    <padding
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp"
+        android:bottom="8dp"/> <!-- Padding para que el texto no quede pegado al borde -->
 </shape>

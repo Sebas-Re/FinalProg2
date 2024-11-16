@@ -1,5 +1,7 @@
 package com.example.finalprog2.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,7 +49,6 @@ public class VerForoFragment extends Fragment {
             String titulo = bundle.getString("titulo");
             String cuerpo = bundle.getString("cuerpo");
             foroId = bundle.getString("id");
-
             // Asignar los datos a los elementos del layout
             tvForumTitle.setText(titulo);
             tvForumBody.setText(cuerpo);
@@ -57,8 +58,10 @@ public class VerForoFragment extends Fragment {
         btnSend.setOnClickListener(v -> {
             if (foroId != null) {
                 String comentarioTexto = etComment.getText().toString();
+                String nombre = cargarDatosUsuario(view);
+
                 if (!comentarioTexto.isEmpty()) {
-                    agregarComentarioAFirebase(comentarioTexto);
+                    agregarComentarioAFirebase(comentarioTexto, nombre);
                     etComment.setText(""); // Limpiar el campo de texto
                 } else {
                     Toast.makeText(getContext(), "El comentario no puede estar vacío", Toast.LENGTH_SHORT).show();
@@ -74,6 +77,19 @@ public class VerForoFragment extends Fragment {
         }
 
         return view; // Esta es la línea final del método onCreateView
+    }
+
+    private String cargarDatosUsuario(View view) {
+        // Obtener datos del usuario de SharedPreferences
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String nombreUsuario = sharedPreferences.getString("usuario", null);
+        if (nombreUsuario == null) {
+            Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
+
+        }else {
+            return nombreUsuario;
+        }
+        return nombreUsuario;
     }
 
     private void cargarComentarios() {
@@ -103,13 +119,13 @@ public class VerForoFragment extends Fragment {
                 });
     }
 
-    private void agregarComentarioAFirebase(String comentarioTexto) {
+    private void agregarComentarioAFirebase(String comentarioTexto, String usuario) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> comentario = new HashMap<>();
         comentario.put("idPublicacion", foroId);
         comentario.put("texto", comentarioTexto);
-        comentario.put("usuario", "UsuarioAnonimo"); // Cambiar esto según sea necesario
+        comentario.put("usuario", usuario); // Cambiar esto según sea necesario
 
         db.collection("comentario")
                 .add(comentario)

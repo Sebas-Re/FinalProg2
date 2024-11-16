@@ -21,9 +21,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Publicacion;
-import com.example.finalprog2.entidad.Usuario;
-import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
-import com.example.finalprog2.negocio.NegocioUsuario;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +76,7 @@ public class CrearForoFragment extends Fragment {
                 publicacion.setTitulo(titulo);
                 publicacion.setDescripcion(descripcion);
                 publicacion.setRelacionEnergetica(categoriaSeleccionada);
-                String nombre = cargarDatosUsuario(view);// Guardar el valor en relacionEnergetica
+                String nombre = cargarDatosUsuario(view); // Guardar el valor en relacionEnergetica
                 publicacion.setUsuario(nombre);
                 publicacion.setEstado(true); // La publicación puede estar activa
 
@@ -89,12 +86,17 @@ public class CrearForoFragment extends Fragment {
                 // Mostrar un mensaje de éxito
                 Toast.makeText(getActivity(), "Publicación creada correctamente", Toast.LENGTH_SHORT).show();
 
+                // Limpiar los campos de texto y deseleccionar el RadioGroup
+                inputTitulo.setText(""); // Limpiar el título
+                inputDescripcion.setText(""); // Limpiar la descripción
+                rgRelacionadoA.clearCheck(); // Deseleccionar cualquier opción del RadioGroup
+
                 // Volver al fragmento de la lista de foros
-                requireActivity().getSupportFragmentManager()
+               /* requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, new ListarForoFragment())  // Reemplaza con el fragmento que lista los foros
                         .addToBackStack(null)
-                        .commit();
+                        .commit();*/
             } else {
                 Toast.makeText(getActivity(), "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
             }
@@ -109,11 +111,9 @@ public class CrearForoFragment extends Fragment {
         String nombreUsuario = sharedPreferences.getString("usuario", null);
         if (nombreUsuario == null) {
             Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
-
-        }else {
+        } else {
             return nombreUsuario;
         }
         return nombreUsuario;
     }
-
 }

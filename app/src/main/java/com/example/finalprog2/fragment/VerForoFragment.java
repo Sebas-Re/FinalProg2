@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import com.example.finalprog2.R;
+import com.example.finalprog2.utils.PopupMenuHelper;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -38,22 +39,28 @@ public class VerForoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ver_foro, container, false);
-        // Configuración del Toolbar
+
         Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
-        // Configuración del título en el Toolbar
         TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         if (toolbarTitle != null) {
             toolbarTitle.setText("Foro");
         }
 
-        // Ocultar el nombre de la app
+        //Ocultar el nombre de la app
         toolbar.setTitle("");
 
-        // Botón de retroceso (opcional)
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
-        leftMenuButton.setOnClickListener(v -> requireActivity().onBackPressed());
+        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
+
 
         // Vinculación de vistas
         tvForumTitle = view.findViewById(R.id.tv_forum_title);
@@ -176,5 +183,14 @@ public class VerForoFragment extends Fragment {
                     Log.e("VerForoFragment", "Error al agregar comentario", e);
                     Toast.makeText(getContext(), "Error al agregar comentario", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    // Método para navegar a un nuevo fragmento
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

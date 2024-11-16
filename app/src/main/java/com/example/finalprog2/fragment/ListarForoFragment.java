@@ -3,14 +3,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalprog2.R;
 import com.example.finalprog2.adapter.PublicacionAdapter;
 import com.example.finalprog2.entidad.Publicacion;
+import com.example.finalprog2.utils.PopupMenuHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -35,12 +41,41 @@ public class ListarForoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         recyclerView = view.findViewById(R.id.recyclerView_publicaciones);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         publicaciones = new ArrayList<>();
         adapter = new PublicacionAdapter(publicaciones,getContext());
         recyclerView.setAdapter(adapter);
+
+
+
+        Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        if (toolbarTitle != null) {
+            toolbarTitle.setText("Listado Foro");
+        }
+
+        //Ocultar el nombre de la app
+        toolbar.setTitle("");
+
+        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
+        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
+
+
+
+
+
 
         // Cargar publicaciones desde Firebase
         cargarPublicaciones();

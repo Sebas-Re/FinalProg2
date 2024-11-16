@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -121,17 +122,26 @@ public class MapaSitiosFragment extends Fragment {
         sitios = new ArrayList<>();
         sitiosFiltrados = new ArrayList<>();
 
-        // Configurar Toolbar
         Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
         TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         if (toolbarTitle != null) {
-            toolbarTitle.setText("Sitios");
+            toolbarTitle.setText("Mapa de Sitios");
         }
 
         //Ocultar el nombre de la app
         toolbar.setTitle("");
+
+        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
+        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+
+        // Configuracion del boton perfil
+        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setOnClickListener(v -> {
+            navigateToFragment(new EditarPerfilFragment());
+        });
+
 
         // Inicializar el fragmento del mapa
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -282,5 +292,13 @@ public class MapaSitiosFragment extends Fragment {
             LinearLayout infoLayout = view.findViewById(R.id.infoLocal);
             infoLayout.setVisibility(View.GONE);
         }
+    }
+
+    private void navigateToFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

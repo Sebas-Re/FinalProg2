@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Publicacion {
-    private String id; // Cambiado a String para usar el ID generado por Firebase
+    private Long id; // Cambiado a String para usar el ID generado por Firebase
     private String usuario;
     private String titulo;
     private String descripcion;
@@ -33,7 +33,7 @@ public class Publicacion {
     }
 
     // Getters y Setters
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class Publicacion {
         return estado;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -97,15 +97,33 @@ public class Publicacion {
         data.put("estado", estado);
         data.put("usuario", usuario); // Nombre del usuario o "Anónimo"
 
-        // Agregar el documento a la colección "publicaciones"
+        // Primero, obtener el número de publicaciones existentes para asignar un ID incrementado
         db.collection("publicaciones")
-                .add(data)
-                .addOnSuccessListener(documentReference -> {
-                    this.id = documentReference.getId(); // Asignar el ID generado
-                    Log.d("Publicacion", "Publicación agregada con ID: " + this.id);
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // Obtener el total de documentos en la colección
+                    int totalPublicaciones = queryDocumentSnapshots.size();
+
+                    // El nuevo ID será el total de publicaciones + 1
+                    int nuevoId = totalPublicaciones + 1;
+
+                    // Asignar el ID como un campo más en el documento
+                    data.put("id", nuevoId); // Agregar el ID incrementado
+
+                    // Agregar el documento a la colección "publicaciones"
+                    db.collection("publicaciones")
+                            .add(data)
+                            .addOnSuccessListener(documentReference -> {
+                                this.id = Long.valueOf(String.valueOf(nuevoId)); // Asignar el ID generado
+                                Log.d("Publicacion", "Publicación agregada con ID: " + this.id);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w("Publicacion", "Error al agregar la publicación", e);
+                            });
+
                 })
                 .addOnFailureListener(e -> {
-                    Log.w("Publicacion", "Error al agregar la publicación", e);
+                    Log.w("Publicacion", "Error al contar las publicaciones", e);
                 });
     }
 

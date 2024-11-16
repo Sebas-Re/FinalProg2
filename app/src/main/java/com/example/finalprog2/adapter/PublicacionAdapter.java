@@ -71,6 +71,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
                 Bundle bundle = new Bundle();
                 bundle.putString("titulo", publicacion.getTitulo());
                 bundle.putString("cuerpo", publicacion.getDescripcion());
+                bundle.putString("id", publicacion.getId().toString());
 
                 // Asignar el bundle al fragmento
                 verForoFragment.setArguments(bundle);

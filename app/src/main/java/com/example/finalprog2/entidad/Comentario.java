@@ -1,7 +1,7 @@
 package com.example.finalprog2.entidad;
 
 public class Comentario {
-    private int idPublicacion;
+    private Long idPublicacion;
     private String usuario;
     private String texto;
     private long timestamp;
@@ -39,11 +39,11 @@ public class Comentario {
         this.timestamp = timestamp;
     }
 
-    public int getIdPublicacion() {
+    public Long getIdPublicacion() {
         return idPublicacion;
     }
 
-    public void setIdPublicacion(int idPublicacion) {
+    public void setIdPublicacion(Long idPublicacion) {
         this.idPublicacion = idPublicacion;
     }
 }

@@ -36,24 +36,21 @@ public class VerForoFragment extends Fragment {
 
         // Vinculación de vistas
         tvForumTitle = view.findViewById(R.id.tv_forum_title);
-        tvForumBody = view.findViewById(R.id.tv_forum_body);
+        tvForumBody = view.findViewById(R.id.tv_descripcion_foro);
         etComment = view.findViewById(R.id.et_comment);
         btnSend = view.findViewById(R.id.btn_send);
         messagesLayout = view.findViewById(R.id.messages_layout);
 
-        // Obtener datos del foro desde los argumentos
-        if (getArguments() != null) {
-            foroId = getArguments().getString("foroId");
-            String tituloForo = getArguments().getString("titulo");
-            String cuerpoForo = getArguments().getString("cuerpo");
+        // Obtener los datos del bundle
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String titulo = bundle.getString("titulo");
+            String cuerpo = bundle.getString("cuerpo");
+            foroId = bundle.getString("id");
 
-            tvForumTitle.setText(tituloForo);
-            tvForumBody.setText(cuerpoForo);
-
-            Log.d("VerForoFragment", "Foro ID recibido: " + foroId);
-        } else {
-            Log.e("VerForoFragment", "No se recibieron argumentos para el ID del foro");
-            Toast.makeText(getContext(), "Error: No se encontró el ID del foro", Toast.LENGTH_SHORT).show();
+            // Asignar los datos a los elementos del layout
+            tvForumTitle.setText(titulo);
+            tvForumBody.setText(cuerpo);
         }
 
         // Configuración del botón de enviar comentario
@@ -76,59 +73,53 @@ public class VerForoFragment extends Fragment {
             cargarComentarios();
         }
 
-        return view;
-    }
-
-    private void agregarComentarioAFirebase(String comentarioTexto) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Crear un mapa para almacenar el comentario
-        Map<String, Object> comentario = new HashMap<>();
-        comentario.put("usuario", "usuarioEjemplo"); // Cambiar por el usuario real del sistema
-        comentario.put("texto", comentarioTexto);
-        comentario.put("timestamp", System.currentTimeMillis());
-
-        // Guardar comentario en Firebase
-        db.collection("publicaciones")
-                .document(foroId)
-                .collection("comentarios")
-                .add(comentario)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(getContext(), "Comentario agregado", Toast.LENGTH_SHORT).show();
-                    cargarComentarios(); // Actualizar lista de comentarios
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error al agregar comentario", Toast.LENGTH_SHORT).show();
-                });
+        return view; // Esta es la línea final del método onCreateView
     }
 
     private void cargarComentarios() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Leer comentarios desde Firebase
-        db.collection("publicaciones")
-                .document(foroId)
-                .collection("comentarios")
+        db.collection("comentario")
+                .whereEqualTo("idPublicacion", foroId)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addOnSuccessListener(querySnapshot -> {
                     messagesLayout.removeAllViews(); // Limpiar comentarios anteriores
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        String comentarioTexto = document.getString("texto");
+                        String autor = document.getString("usuario");
 
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        String usuario = doc.getString("usuario");
-                        String texto = doc.getString("texto");
+                        // Crear una vista para cada comentario
+                        TextView comentarioView = new TextView(getContext());
+                        comentarioView.setText(autor + ": " + comentarioTexto);
+                        comentarioView.setPadding(8, 8, 8, 8);
+                        comentarioView.setTextSize(16);
 
-                        // Crear un TextView para cada comentario
-                        TextView tvComentario = new TextView(getContext());
-                        tvComentario.setText(usuario + ": " + texto);
-                        tvComentario.setTextSize(16f);
-                        tvComentario.setPadding(16, 8, 16, 8);
-
-                        // Agregar comentario a la vista
-                        messagesLayout.addView(tvComentario);
+                        // Agregar la vista al layout
+                        messagesLayout.addView(comentarioView);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error al cargar comentarios", Toast.LENGTH_SHORT).show();
+                    Log.e("VerForoFragment", "Error al cargar comentarios", e);
+                });
+    }
+
+    private void agregarComentarioAFirebase(String comentarioTexto) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> comentario = new HashMap<>();
+        comentario.put("idPublicacion", foroId);
+        comentario.put("texto", comentarioTexto);
+        comentario.put("usuario", "UsuarioAnonimo"); // Cambiar esto según sea necesario
+
+        db.collection("comentario")
+                .add(comentario)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(getContext(), "Comentario agregado", Toast.LENGTH_SHORT).show();
+                    cargarComentarios(); // Actualizar los comentarios
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("VerForoFragment", "Error al agregar comentario", e);
+                    Toast.makeText(getContext(), "Error al agregar comentario", Toast.LENGTH_SHORT).show();
                 });
     }
 }

@@ -38,4 +38,12 @@ public class Comentario {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public int getIdPublicacion() {
+        return idPublicacion;
+    }
+
+    public void setIdPublicacion(int idPublicacion) {
+        this.idPublicacion = idPublicacion;
+    }
 }

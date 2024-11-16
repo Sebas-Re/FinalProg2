@@ -4,13 +4,13 @@ import android.util.Log;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Publicacion {
-    private int id;
+    private String id; // Cambiado a String para usar el ID generado por Firebase
     private Usuario usuario;
     private String titulo;
     private String descripcion;
@@ -18,18 +18,29 @@ public class Publicacion {
     private List<Comentario> comentarios;
     private boolean estado;
 
-    public Publicacion() {}
+    // Constructor vacío necesario para Firebase
+    public Publicacion() {
+        comentarios = new ArrayList<>(); // Inicializar lista de comentarios
+    }
 
-    public Publicacion(int id, Usuario usuario, String titulo, String descripcion, String relacionEnergetica, boolean estado) {
-        this.id = id;
+    public Publicacion(Usuario usuario, String titulo, String descripcion, String relacionEnergetica, boolean estado) {
         this.usuario = usuario;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.relacionEnergetica = relacionEnergetica;
         this.estado = estado;
+        this.comentarios = new ArrayList<>();
     }
 
-    // Métodos getter y setter
+    // Getters y Setters
+    public String getId() {
+        return id;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     public String getTitulo() {
         return titulo;
     }
@@ -50,6 +61,14 @@ public class Publicacion {
         return estado;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
@@ -66,8 +85,7 @@ public class Publicacion {
         this.estado = estado;
     }
 
-
-    // Método para guardar la publicación en la base de datos
+    // Método para guardar la publicación en Firebase
     public void guardarPublicacion() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -77,19 +95,21 @@ public class Publicacion {
         data.put("descripcion", descripcion);
         data.put("relacionEnergetica", relacionEnergetica);
         data.put("estado", estado);
-        // ... (agregar otros campos necesarios, como usuario)
+        data.put("usuario", usuario != null ? usuario.getNombre() : "Anónimo"); // Nombre del usuario o "Anónimo"
 
         // Agregar el documento a la colección "publicaciones"
         db.collection("publicaciones")
                 .add(data)
                 .addOnSuccessListener(documentReference -> {
-                    Log.d("Publicacion", "Publicación agregada con ID: " + documentReference.getId());
+                    this.id = documentReference.getId(); // Asignar el ID generado
+                    Log.d("Publicacion", "Publicación agregada con ID: " + this.id);
                 })
                 .addOnFailureListener(e -> {
                     Log.w("Publicacion", "Error al agregar la publicación", e);
                 });
     }
-    //Metodo para guardar comentarios
+
+    // Método para agregar un comentario a la publicación
     public void agregarComentario(Comentario comentario) {
         comentarios.add(comentario);
     }

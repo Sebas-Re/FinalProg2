@@ -37,6 +37,30 @@
         android:padding="8dp"
         android:text="Seleccione la ubicación que le interese para obtener más detalles." />
 
+    <Spinner
+        android:id="@+id/spinner_categoria"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/spinner_background"
+    android:theme="@style/SpinnerStyle"
+    android:popupBackground="@color/light_green"
+    android:dropDownSelector="@android:color/holo_green_light" />
+
+    <TextView
+        android:id="@+id/tv_no_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="No se encontraron sitios de interés en la zona seleccionada"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:visibility="gone" />
     <!-- Fragmento del mapa -->
     <fragment
         android:id="@+id/map"
@@ -72,6 +96,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Horarios: Lunes a Viernes 9:00 - 18:00"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/categoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Categoría: Restaurante"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />

@@ -224,7 +224,7 @@ public class AutoEvalFragment extends Fragment {
 
                         int eficienciaHora = electrodomestico.getEficienciaPorHora(tipoSeleccionado);
 
-                        totalConsumoSemanal += electrodomestico.getConsumoSemanal() * eficienciaHora;
+                        totalConsumoSemanal += electrodomestico.getconsumoPromedio() * eficienciaHora;
                     }
 
                     TextView tvtotalconsumo = getView().findViewById(R.id.tv_promedio_consumo_semanal);
@@ -262,7 +262,7 @@ public class AutoEvalFragment extends Fragment {
                         int consumoSemanal = document.getLong("consumoPromedio").intValue();
 
                         // Guardar el consumo semanal en el objeto Electrodomestico
-                        electrodomestico.setConsumoSemanal((long) consumoSemanal);
+                        electrodomestico.setconsumoPromedio((long) consumoSemanal);
 
                         // Agregar a la lista después de obtener el consumo
                         electrodomesticos.add(electrodomestico);
@@ -282,7 +282,7 @@ public class AutoEvalFragment extends Fragment {
 
     private void actualizarVistaElectrodomesticos(Electrodomestico electrodomestico) {
         String textoActual = tvListaElectrodomesticos.getText().toString();
-        String nuevoTexto = textoActual + "\n" + electrodomestico.getTipo() + " "+   electrodomestico.getEficienciaPorHora(electrodomestico.getTipo()) + "kwh" + ": " + electrodomestico.getConsumoSemanal() + " kWh semanal";
+        String nuevoTexto = textoActual + "\n" + electrodomestico.getTipo() + " "+   electrodomestico.getEficienciaPorHora(electrodomestico.getTipo()) + "kwh" + ": " + electrodomestico.getconsumoPromedio() + " kWh semanal";
         tvListaElectrodomesticos.setText(nuevoTexto);
     }
 

@@ -21,19 +21,22 @@ public class FirebaseTestData {
     public void generarSitiosAleatorios(int cantidad) {
         String[] nombres = {"Café Tigre", "Heladería Río", "Pizzería Canal", "Librería Delta", "Bazar Isla"};
         String[] descripciones = {"Delicioso café", "Exquisito helado", "Pizza tradicional", "Libros y más", "Artículos varios"};
+        String[] categorias = {"Comercio", "Sitio de Interés", "Localidad Beneficios Impositivos"};  // Nuevas categorías
 
         for (int i = 0; i < cantidad; i++) {
             String nombre = nombres[i % nombres.length];
             String descripcion = descripciones[i % descripciones.length];
+            String categoria = categorias[i % categorias.length];  // Asignar la categoría
 
             GeoPoint ubicacion = generarUbicacionAleatoriaTigre();
             String horarios = "9:00 - 18:00";
             String instagram = "@negocio";
             String whatsapp = "+5491123456789";
             String direccion = "Dirección ficticia " + (i + 1);
-            String correo= "test@test.com";
+            String correo = "test@test.com";
 
-            Sitio sitio = new Sitio(nombre, direccion, horarios, instagram, whatsapp,correo, ubicacion, descripcion);
+            // Crear el objeto Sitio con la categoría
+            Sitio sitio = new Sitio(nombre, direccion, horarios, instagram, whatsapp, correo, ubicacion, descripcion, categoria);
 
             db.collection("sitios")
                     .add(sitio)

@@ -14,12 +14,12 @@ public class Usuario implements Serializable {
     private String pass;
     private int token;
     private boolean estado;
-
+    private String role;
     // Constructor, getters y setters...
 
     public Usuario() {}
 
-    public Usuario(String nombre, String apellido, String usuario, String email, String pass, int token, boolean estado, int id) {
+    public Usuario(String nombre, String apellido, String usuario, String email, String pass, int token, boolean estado, int id, String role) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.usuario = usuario;
@@ -28,6 +28,7 @@ public class Usuario implements Serializable {
         this.token = token;
         this.estado = estado;
         this.id = id;
+        this.role = role;
     }
 
 
@@ -54,6 +55,7 @@ public class Usuario implements Serializable {
         this.email = email;
         this.pass = pass;
         this.estado = true;
+        this.role = role;
     }
 
     public void setId(int idUsuario) {
@@ -62,6 +64,14 @@ public class Usuario implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getNombre() {
@@ -130,6 +140,7 @@ public class Usuario implements Serializable {
                 ", usuario='" + usuario + '\'' +
                 ", email='" + email + '\'' +
                 ", estado=" + estado +
+                ", role='" + role + '\'' +
                 '}';
     }
 
@@ -138,13 +149,15 @@ public class Usuario implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario1 = (Usuario) o;
-        return id == usuario1.id && token == usuario1.token && estado == usuario1.estado && Objects.equals(nombre, usuario1.nombre) && Objects.equals(apellido, usuario1.apellido) && Objects.equals(usuario, usuario1.usuario) && Objects.equals(email, usuario1.email) && Objects.equals(pass, usuario1.pass);
+        return id == usuario1.id && token == usuario1.token && estado == usuario1.estado &&
+                Objects.equals(nombre, usuario1.nombre) && Objects.equals(apellido, usuario1.apellido) &&
+                Objects.equals(usuario, usuario1.usuario) && Objects.equals(email, usuario1.email) &&
+                Objects.equals(pass, usuario1.pass) && Objects.equals(role, usuario1.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nombre, apellido, usuario, email, pass, token, estado);
+        return Objects.hash(id, nombre, apellido, usuario, email, pass, token, estado, role);
     }
-
 
 }

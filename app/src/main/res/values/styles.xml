@@ -2,4 +2,14 @@
     <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
         <item name="android:popupBackground">@color/dark_green</item>
     </style>
+
+    <style name="SpinnerStyle">
+        <item name="android:backgroundTint">@color/light_green</item>  <!-- Fondo verde -->
+        <item name="android:textColor">@android:color/black</item> <!-- Texto blanco -->
+        <item name="android:paddingStart">12dp</item> <!-- Padding de izquierda -->
+        <item name="android:paddingEnd">12dp</item>   <!-- Padding de derecha -->
+        <item name="android:paddingTop">8dp</item>    <!-- Padding de arriba -->
+        <item name="android:paddingBottom">8dp</item> <!-- Padding de abajo -->
+        <item name="android:layout_marginTop">8dp</item> <!-- Margen superior -->
+    </style>
 </resources>

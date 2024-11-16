@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="#8EC7A5"
     android:elevation="4dp"
-    android:titleTextColor="@android:color/white"
+    android:titleTextColor="@android:color/black"
     android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
    >
 

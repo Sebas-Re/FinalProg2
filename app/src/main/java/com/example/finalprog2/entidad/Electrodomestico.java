@@ -8,21 +8,27 @@ public class Electrodomestico {
     private int id;
     private String tipo;
     private Map<String, Map<String, Integer>> eficiencia; // Cambiado a Map<String, Map<String, Integer>>
-    private Long consumoSemanal; // Cambiado a Long para evitar problemas de conversión
+    private Long consumoPromedio; // Cambiado a Long para evitar problemas de conversión
 
     public Electrodomestico() {
     }
 
-    public Electrodomestico(int id, String tipo, Map<String, Map<String, Integer>> eficiencia, Long consumoSemanal) {
+    public Electrodomestico(int id, String tipo, Map<String, Map<String, Integer>> eficiencia, Long consumoPromedio) {
         this.id = id;
         this.tipo = tipo;
         this.eficiencia = eficiencia;
-        this.consumoSemanal = consumoSemanal;
+        this.consumoPromedio = consumoPromedio;
     }
 
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
 
     public String getTipo() {
         return tipo;
@@ -57,17 +63,15 @@ public class Electrodomestico {
         return 0; // Devuelve 0 si no encuentra el tipo
     }
 
-    public Long getConsumoSemanal() {
-        return consumoSemanal;
+    public Long getconsumoPromedio() {
+        return consumoPromedio;
     }
 
-    public void setConsumoSemanal(Long consumoSemanal) {
-        this.consumoSemanal = consumoSemanal;
+    public void setconsumoPromedio(Long consumoPromedio) {
+        this.consumoPromedio = consumoPromedio;
     }
 
-    public int getConsumoSemanalAsInt() {
-        return consumoSemanal != null ? consumoSemanal.intValue() : 0;
-    }
+
 
     @Override
     public String toString() {

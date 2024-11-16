@@ -16,14 +16,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalprog2.R;
-import com.example.finalprog2.conexion.FirebaseTestData;
 import com.example.finalprog2.entidad.Sitio;
 import com.example.finalprog2.utils.PopupMenuHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -44,226 +45,144 @@ import androidx.core.app.ActivityCompat;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.example.finalprog2.conexion.FirebaseTestData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapaSitiosFragment extends Fragment {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private SupportMapFragment mapFragment;
-    private LatLng mOriginalLatLng;
-
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private FirebaseFirestore db;
+    private Spinner spinnerCategoria;
+    private List<Sitio> sitios = new ArrayList<>();
+    private List<Sitio> sitiosFiltrados = new ArrayList<>();
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
-            mMap = googleMap;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        FirebaseTestData firebaseTestData = new FirebaseTestData();
 
-            // Cargar el estilo del mapa
-            try {
-                boolean success = mMap.setMapStyle(
-                        MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
-                if (!success) {
-                    Toast.makeText(getContext(), "No se pudo aplicar el estilo del mapa.", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Resources.NotFoundException e) {
-                Log.e("Map", "No se pudo encontrar el estilo del mapa.", e);
+    }
+
+    private final OnMapReadyCallback callback = googleMap -> {
+        mMap = googleMap;
+
+        // Configurar estilo del mapa
+        try {
+            boolean success = mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
+            if (!success) {
+                Toast.makeText(getContext(), "No se pudo aplicar el estilo del mapa.", Toast.LENGTH_SHORT).show();
             }
-
-            mMap.getUiSettings().setZoomControlsEnabled(true);
-            mMap.getUiSettings().setCompassEnabled(true);
-            mMap.getUiSettings().setZoomGesturesEnabled(true);
-            mMap.getUiSettings().setScrollGesturesEnabled(true);
-
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true); // Habilitar la ubicación
-            } else {
-                requestLocationPermission();
-            }
-
-            // Crear instancias de FirebaseTestData y agregar los datos
-            FirebaseTestData testData = new FirebaseTestData();
-          //  testData.generarSitiosAleatorios(20); // Este método agregará los 20 registros
-
-            db = FirebaseFirestore.getInstance();
-
-            loadSitesOnMap();  // Cargar sitios desde Firestore
-
-            // Restablecer la ubicación inicial del mapa
-            mOriginalLatLng = mMap.getCameraPosition().target;
-
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    Sitio sitio = (Sitio) marker.getTag();  // Obtener el objeto Sitio asociado con el marcador
-
-                    // Mostrar la información del sitio
-                    LinearLayout infoLocal = getView().findViewById(R.id.infoLocal);
-                    infoLocal.setVisibility(View.VISIBLE);
-
-                    // Ajustar el mapa para que ocupe la mitad de la pantalla
-                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mapFragment.getView().getLayoutParams();
-                    params.height = 0; // Ocupa la mitad de la pantalla
-                    mapFragment.getView().setLayoutParams(params);
-
-                    // Actualizar la información del layout
-                    TextView direccion = getView().findViewById(R.id.direccion);
-                    direccion.setText("Dirección: " + sitio.getDireccion());
-
-                    TextView horarios = getView().findViewById(R.id.horarios);
-                    horarios.setText("Horarios: " + sitio.getHorarios());
-
-                    // Configurar los botones con los datos del sitio
-                    ImageView whatsappIcon = getView().findViewById(R.id.whatsappIcon);
-                    whatsappIcon.setOnClickListener(v -> {
-                        String whatsappUrl = "https://wa.me/" + sitio.getWhatsapp();
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl));
-                        startActivity(intent);
-                    });
-
-                    ImageView instagramIcon = getView().findViewById(R.id.instagramIcon);
-                    instagramIcon.setOnClickListener(v -> {
-                        String instagramUrl = "https://www.instagram.com/" + sitio.getInstagram();
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(instagramUrl));
-                        startActivity(intent);
-                    });
-
-                    ImageView mailIcon = getView().findViewById(R.id.mailIcon);
-                    mailIcon.setOnClickListener(v -> {
-                        String email = "mailto:" + sitio.getCorreo();
-                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(email));
-                        startActivity(intent);
-                    });
-
-                    return false;  // Devolver false para no cambiar el estado del marcador
-                }
-            });
-
-            // Restaurar la vista del mapa al hacer clic fuera del marcador
-            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    if (mOriginalLatLng != null) {
-                        LinearLayout infoLocal = getView().findViewById(R.id.infoLocal);
-                        infoLocal.setVisibility(View.GONE);
-
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOriginalLatLng, 12));
-
-                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mapFragment.getView().getLayoutParams();
-                        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
-                        mapFragment.getView().setLayoutParams(params);
-                    }
-                }
-            });
+        } catch (Resources.NotFoundException e) {
+            Log.e("Map", "No se pudo encontrar el estilo del mapa.", e);
         }
+
+        // Configuraciones del mapa
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestLocationPermission();
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+            getDeviceLocation();
+        } else {
+            requestLocationPermission();
+        }
+
+        // Cargar sitios desde Firestore
+        db = FirebaseFirestore.getInstance();
+        loadSitesOnMap();
+
+        // Listener para clics en los marcadores
+        mMap.setOnMarkerClickListener(marker -> {
+            Sitio sitio = (Sitio) marker.getTag();
+            if (sitio != null) showSiteInfo(sitio);
+            return true;
+        });
+
+        // Listener para clics en el mapa
+        mMap.setOnMapClickListener(latLng -> hideSiteInfo());
     };
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_mapa_sitios, container, false);
-    }
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_mapa_sitios, container, false);
 
-    private void loadSitesOnMap() {
-        Log.d("Firestore", "Iniciando consulta...");
-        db.collection("sitios").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d("Firestore", "Consulta exitosa");
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Sitio sitio = document.toObject(Sitio.class);
+        sitios = new ArrayList<>();
+        sitiosFiltrados = new ArrayList<>();
 
-                    GeoPoint location = sitio.getUbicacion();
-                    if (location != null) {
-                        Log.d("Firestore", "Ubicación obtenida: Lat=" + location.getLatitude() + ", Lng=" + location.getLongitude());
-                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-                        Marker marker = mMap.addMarker(new MarkerOptions()
-                                .position(latLng)
-                                .title(sitio.getNombre())
-                                .snippet(sitio.getDescripcion()));
-
-                        marker.setTag(sitio);
-
-                        // Mover la cámara para ver el marcador
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
-
-                    } else {
-                        Log.d("Firestore", "Ubicación no disponible para el sitio: " + sitio.getNombre());
-                    }
-                }
-            } else {
-                Log.e("Firestore", "Error al cargar sitios: ", task.getException());
-                Toast.makeText(getContext(), "Error al cargar sitios", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // Configurar el Toolbar
+        // Configurar Toolbar
         Toolbar toolbar = view.findViewById(R.id.custom_toolbar);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
         TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         if (toolbarTitle != null) {
-            toolbarTitle.setText("Mapa de Sitios");
+            toolbarTitle.setText("Sitios");
         }
 
         //Ocultar el nombre de la app
         toolbar.setTitle("");
 
-        ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
-        leftMenuButton.setOnClickListener(v -> {
-            PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
-        });
-
-        // Configuracion del boton perfil
-        ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
-        rightUserButton.setOnClickListener(v -> {
-            navigateToFragment(new EditarPerfilFragment());
-        });
-
-
-        // Configurar el fragmento del mapa
+        // Inicializar el fragmento del mapa
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
-        } else {
-            Log.e("Map", "El fragmento del mapa no se encontró.");
         }
 
-        // Configurar los iconos de redes sociales
-        ImageView whatsappIcon = view.findViewById(R.id.whatsappIcon);
-        ImageView instagramIcon = view.findViewById(R.id.instagramIcon);
-        ImageView mailIcon = view.findViewById(R.id.mailIcon);
+        // Inicializar el Spinner
+        spinnerCategoria = view.findViewById(R.id.spinner_categoria);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        // Cargar categorías desde strings.xml
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.categorias_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategoria.setAdapter(adapter);
+
+        // Listener para el cambio de selección en el Spinner
+        spinnerCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String categoriaSeleccionada = (String) parentView.getItemAtPosition(position);
+
+                // Si la opción "Todos" es seleccionada, cargar todos los sitios
+                if ("Todos".equalsIgnoreCase(categoriaSeleccionada)) {
+                    loadSitesOnMap();  // Cargar todos los sitios sin filtrar
+                } else {
+                    // Si no es "Todos", filtrar los sitios por la categoría seleccionada
+                    filterSitesByCategory(categoriaSeleccionada);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                loadSitesOnMap();  // Cargar todos los sitios si no hay nada seleccionado
+            }
+        });
+        return view;
     }
 
     private void getDeviceLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
             return;
         }
 
-        Task<android.location.Location> locationResult = fusedLocationClient.getLastLocation();
-        locationResult.addOnCompleteListener(task -> {
+        fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
-                android.location.Location currentLocation = task.getResult();
-                if (currentLocation != null) {
-                    LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
-                }
+                LatLng currentLocation = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
             } else {
-                Log.d("Location", "Error al obtener la ubicación.");
+                Log.e("Location", "No se pudo obtener la ubicación actual.");
             }
         });
     }
@@ -274,13 +193,94 @@ public class MapaSitiosFragment extends Fragment {
                 LOCATION_PERMISSION_REQUEST_CODE);
     }
 
-
-    private void navigateToFragment(Fragment fragment) {
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
+    private void loadSitesOnMap() {
+        db.collection("sitios").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                sitios.clear(); // Limpiar lista de sitios para evitar duplicados
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Sitio sitio = document.toObject(Sitio.class); // Carga del objeto Sitio
+                    sitios.add(sitio);
+                    GeoPoint location = sitio.getUbicacion();
+                    if (location != null) {
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(sitio.getNombre()));
+                        marker.setTag(sitio); // Asocia el sitio al marcador
+                    }
+                }
+            } else {
+                Log.e("Firestore", "Error al cargar sitios", task.getException());
+            }
+        });
     }
 
+    private void filterSitesByCategory(String category) {
+        // Limpiar los sitios del mapa
+        mMap.clear();
+
+        // Filtrar los sitios
+        sitiosFiltrados.clear();
+        for (Sitio sitio : sitios) {
+            if (sitio.getCategoria().equalsIgnoreCase(category)) {
+                sitiosFiltrados.add(sitio);
+            }
+        }
+
+        if (getView() != null) {
+            TextView tvNoResults = getView().findViewById(R.id.tv_no_results);
+
+            if (sitiosFiltrados.isEmpty()) {
+                // Muestra el mensaje de no resultados
+                tvNoResults.setVisibility(View.VISIBLE);
+            } else {
+                // Oculta el mensaje y actualiza la lista
+                tvNoResults.setVisibility(View.GONE);
+            }
+        }
+
+        // Cargar los sitios filtrados en el mapa
+        for (Sitio sitio : sitiosFiltrados) {
+            GeoPoint location = sitio.getUbicacion();
+            if (location != null) {
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(sitio.getNombre()));
+                marker.setTag(sitio); // Asocia el sitio al marcador
+            }
+        }
+
+
+    }
+
+
+    private void showSiteInfo(Sitio sitio) {
+        View view = getView();
+        if (view != null) {
+            LinearLayout infoLayout = view.findViewById(R.id.infoLocal);
+            infoLayout.setVisibility(View.VISIBLE);
+
+            // Dirección y horarios
+            TextView direccion = view.findViewById(R.id.direccion);
+            direccion.setText("Dirección: " + sitio.getDireccion());
+
+            TextView horarios = view.findViewById(R.id.horarios);
+            horarios.setText("Horarios: " + sitio.getHorarios());
+
+            // Mostrar la categoría
+            TextView categoria = view.findViewById(R.id.categoria);
+            if (sitio.getCategoria() != null && !sitio.getCategoria().isEmpty()) {
+                categoria.setVisibility(View.VISIBLE);
+                categoria.setText("Categoría: " + sitio.getCategoria());
+            }
+
+            // Redes sociales
+            // (similar a los métodos previos)
+        }
+    }
+
+    private void hideSiteInfo() {
+        View view = getView();
+        if (view != null) {
+            LinearLayout infoLayout = view.findViewById(R.id.infoLocal);
+            infoLayout.setVisibility(View.GONE);
+        }
+    }
 }

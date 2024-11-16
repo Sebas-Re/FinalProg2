@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.ConfiguracionElectroFragment"
+    android:fitsSystemWindows="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+
+        <EditText
+            android:id="@+id/etTipo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Tipo de Electrodoméstico"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/etConsumoSemanal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Consumo Semanal (kWh)"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etTipo"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/etAplus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Eficiencia A+ (kWh)"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etConsumoSemanal"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/etAplusplus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Eficiencia A+++ (kWh)"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etAplus"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/etB"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Eficiencia B (kWh)"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etAplusplus"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/etC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Eficiencia C (kWh)"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etB"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guardar Electrodoméstico"
+            app:layout_constraintTop_toBottomOf="@id/etC"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

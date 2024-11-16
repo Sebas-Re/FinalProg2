@@ -98,7 +98,7 @@ public class NegocioUsuario {
                         assert user != null;
                         // Crea un mapa con los datos del usuario registrado
                         Map<String, Object> userData = mapeoUsuarioAregistrar(nuevoUsuario, user);
-
+                        userData.put("rol", "usuario");
                         // Guarda los datos del usuario en la base de datos
 
                         db.collection("usuarios").document(user.getUid()).set(userData)
@@ -132,6 +132,41 @@ public class NegocioUsuario {
         userData.put("estado", nuevoUsuario.isEstado());
         return userData;
     }
+
+    @OptIn(markerClass = UnstableApi.class)
+    public void obtenerRolUsuario(String email, VerificarEmailCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Buscar el usuario por email
+        db.collection("usuarios")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        // Obtenemos el documento del usuario
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        String rol = document.getString("rol");
+
+                        if (rol != null) {
+                            Log.i("Firestore", "Rol del usuario: " + rol);
+
+                            // Verificamos si el rol es "administrador"
+                            if ("Administrador".equals(rol)) {
+                                callback.onSuccess();  // Solo pasa el rol si es administrador
+                            } else {
+                                callback.onFailure(new Exception("Rol no es administrador"));
+                            }
+                        } else {
+                            Log.w("Firestore", "El rol del usuario no está definido");
+                          //  callback.onFailure(new Exception(""));
+                        }
+                    } else {
+                        Log.e("Firestore", "Error al obtener rol", task.getException());
+                 //       callback.onFailure(new Exception(""));
+                    }
+                });
+    }
+
 
 
     @OptIn(markerClass = UnstableApi.class)

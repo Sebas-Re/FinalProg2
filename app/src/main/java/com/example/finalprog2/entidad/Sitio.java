@@ -11,10 +11,11 @@ public class Sitio {
     private String whatsapp;
     private String correo;
     private GeoPoint ubicacion;
+    private String categoria;
 
     public Sitio() {}
 
-    public Sitio(String nombre, String direccion, String horarios, String instagram, String whatsapp, String correo, GeoPoint ubicacion, String descripcion) {
+    public Sitio(String nombre, String direccion, String horarios, String instagram, String whatsapp, String correo, GeoPoint ubicacion, String descripcion, String categoria) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.horarios = horarios;
@@ -23,8 +24,15 @@ public class Sitio {
         this.correo = correo;
         this.ubicacion = ubicacion;
         this.descripcion = descripcion;
+        this.categoria= categoria;
+    }
+    public String getCategoria() {
+        return categoria;
     }
 
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
     // Getters y setters para cada campo
     public String getDescripcion() {
         return descripcion;

@@ -15,18 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Título debajo de la Toolbar personalizada -->
-    <TextView
-        android:id="@+id/tv_titulo_foro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Listar Foro"
-        android:textSize="20sp"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/custom_toolbar"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <!-- Buscador debajo de la Toolbar personalizada -->
     <EditText
         android:id="@+id/et_buscar_foro"

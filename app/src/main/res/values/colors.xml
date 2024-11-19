@@ -6,5 +6,10 @@
     <color name="dark_green">#3A6F47</color>
     <color name="light_green">#A8E6CF</color>
     <color name="primaryColor">#FF6200EE</color>
+    <color name="lightModeBackground">#F3F6EC</color>
+    <color name="lightModeBackgroundAlt">#FFFFFFFF</color>
+    <color name="darkModeBackground">#FF333333</color>
+    <color name="darkModeTextColor">#FFFFFF</color>
+    <color name="lightModeTextColor">#132625</color>
     <color name="secondaryColor">#FF3700B3</color>
 </resources>

@@ -12,9 +12,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.media3.common.util.Log;
+import androidx.media3.common.util.UnstableApi;
+
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Usuario;
 import com.example.finalprog2.interfaces.ObtenerUsuarioCallback;
@@ -143,9 +147,10 @@ public class HomeFragment extends Fragment {
 
             }
 
+            @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(getActivity(), "Error al verificar el rol del usuario", Toast.LENGTH_SHORT).show();
+                Log.e("HomeFragment", "Error al verificar el rol del usuario", e);
             }
         });
     }

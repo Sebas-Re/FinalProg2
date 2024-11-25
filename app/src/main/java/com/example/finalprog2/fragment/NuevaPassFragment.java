@@ -1,6 +1,8 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -82,28 +84,33 @@ public class NuevaPassFragment extends Fragment {
 
                                     @Override
                                     public void onFailure(Exception e) {
-                                        Toast.makeText(getActivity(), "Error al obtener el usuario", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getActivity(), "Error al obtener el usuario", Toast.LENGTH_SHORT).show();
+                                        popupmsg("Error","Error al obtener el usuario");
                                     }
                                     });
                             }
 
                             @Override
                             public void onFailure(Exception e) {
-                                Toast.makeText(getActivity(), "Error al cambiar la contraseña", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(), "Error al cambiar la contraseña", Toast.LENGTH_SHORT).show();
+                                popupmsg("Error","Error al cambiar la contraseña");
                             }
                         });
                     }
                     else{
-                        Toast.makeText(getActivity(), "La contraseña debe tener al menos 8 caracteres, una letra y un número", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "La contraseña debe tener al menos 8 caracteres, una letra y un número", Toast.LENGTH_SHORT).show();
+                        popupmsg("Error","La contraseña debe tener al menos 8 caracteres, una letra y un número");
                     }
 
                 }
                 else{
-                    Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    popupmsg("Error","Las contraseñas no coinciden");
                 }
             }
             else{
-                Toast.makeText(getActivity(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+                popupmsg("Error","Por favor, complete todos los campos");
             }
 
 
@@ -135,6 +142,21 @@ public class NuevaPassFragment extends Fragment {
         }
 
         return false; // Si no cumple los requisitos
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

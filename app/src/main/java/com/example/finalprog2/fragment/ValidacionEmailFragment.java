@@ -1,6 +1,8 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -53,11 +55,13 @@ public class ValidacionEmailFragment extends Fragment {
                 negocioUsuario.enviarToken(DatosRegistro, new updateUsuarioCallback(){
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(getActivity(), "Token enviado", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "Token enviado", Toast.LENGTH_SHORT).show();
+                        popupmsg("","Token enviado");
                     }
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(getActivity(), "Error al enviar token", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "Error al enviar token", Toast.LENGTH_SHORT).show();
+                        popupmsg("Error","Error al enviar token");
                     }
                 });
             }
@@ -76,23 +80,27 @@ public class ValidacionEmailFragment extends Fragment {
                         negocioUsuario.enviarToken(usuario, new updateUsuarioCallback(){
                             @Override
                             public void onSuccess() {
-                                Toast.makeText(getActivity(), "Token enviado", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(), "Token enviado", Toast.LENGTH_SHORT).show();
+                                popupmsg("","Token enviado");
                             }
                             @Override
                             public void onFailure(Exception e) {
-                                Toast.makeText(getActivity(), "Error al enviar token", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(), "Error al enviar token", Toast.LENGTH_SHORT).show();
+                                popupmsg("Error","Error al enviar token");
                             }
                         });
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(getActivity(), "Email inexistente", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "Email inexistente", Toast.LENGTH_SHORT).show();
+                        popupmsg("Error","Email inexistente");
                     }
                 });
             }
             else{
-                Toast.makeText(getActivity(), "Campo Email vacío", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Campo Email vacío", Toast.LENGTH_SHORT).show();
+                popupmsg("Error","Campo Email vacío");
             }
         });
 
@@ -134,7 +142,8 @@ public class ValidacionEmailFragment extends Fragment {
                                         negociousuario.modificarUsuario(DatosRegistro, new updateUsuarioCallback() {
                                             @Override
                                             public void onSuccess() {
-                                                Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(getActivity(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+                                                popupmsg("","Registro exitoso");
 
 
                                                 // Guardar el nombre de usuario en SharedPreferences
@@ -155,7 +164,8 @@ public class ValidacionEmailFragment extends Fragment {
 
                                             @Override
                                             public void onFailure(Exception e) {
-                                                Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
+                                                popupmsg("Error","El usuario o email ya estan en uso");
                                             }
                                         });
                                     }
@@ -163,7 +173,8 @@ public class ValidacionEmailFragment extends Fragment {
 
                                 @Override
                                 public void onFailure(Exception e) {
-                                    Toast.makeText(getActivity(), "Código incorrecto", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getActivity(), "Código incorrecto", Toast.LENGTH_SHORT).show();
+                                    popupmsg("Error","Código incorrecto");
                                 }
                             });
 
@@ -171,22 +182,41 @@ public class ValidacionEmailFragment extends Fragment {
 
                         @Override
                         public void onFailure(Exception e) {
-                            Toast.makeText(getActivity(), "Email inexistente", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getActivity(), "Email inexistente", Toast.LENGTH_SHORT).show();
+                            popupmsg("Error","Email inexistente");
                         }
                     });
 
                 }
                 else{
-                    Toast.makeText(getActivity(), "Por favor, complete todos los campos correctamente", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Por favor, complete todos los campos correctamente", Toast.LENGTH_SHORT).show();
+                    popupmsg("Error","Por favor, complete todos los campos correctamente");
                 }
             }
             else{
-                Toast.makeText(getActivity(), "Por favor, complete todos los campos correctamente", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Por favor, complete todos los campos correctamente", Toast.LENGTH_SHORT).show();
+                popupmsg("Error","Por favor, complete todos los campos correctamente");
             }
 
 
         });
 
+
         return view;
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

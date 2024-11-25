@@ -1,6 +1,8 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -37,6 +39,8 @@ public class RegistroUsuarioFragment extends Fragment {
         EditText input_repetir_pass = view.findViewById(R.id.input_repetir_pass);
         Button btn_registro_usuario = view.findViewById(R.id.btn_registro_usuario);
         TextView tv_Link_LogIn = view.findViewById(R.id.tv_link_LogIn);
+        //Crea el objeto builder para los popup de error
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         btn_registro_usuario.setOnClickListener(v -> {
             String nombre = input_nombre.getText().toString().trim();
@@ -76,20 +80,64 @@ public class RegistroUsuarioFragment extends Fragment {
 
                             @Override
                             public void onFailure(Exception e) {
-                                Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
+                                builder.setTitle("Error");
+                                builder.setMessage("El usuario o email ya estan en uso");
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Cierra el diálogo
+                                        dialog.dismiss();
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
                             }
                         });
                     }
                     else{
-                        Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
+                        builder.setTitle("Error");
+                        builder.setMessage("La contraseña no cumple con los requisitos");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Cierra el diálogo
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
                     }
                 }
                 else{
-                    Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    builder.setTitle("Error");
+                    builder.setMessage("Las contraseñas no coinciden");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Cierra el diálogo
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
             }
             else{
-                Toast.makeText(getActivity(), "Por favor ingrese todos los campos", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Por favor ingrese todos los campos", Toast.LENGTH_SHORT).show();
+                builder.setTitle("Error");
+                builder.setMessage("Por favor ingrese todos los campos");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Cierra el diálogo
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
         

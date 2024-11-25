@@ -1,6 +1,8 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -68,12 +70,9 @@ public class EditarPerfilFragment extends Fragment {
             navigateToFragment(new EditarPerfilFragment());
         });
 
+        //Crea el objeto builder para los popup de error
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-
-
-
-
-        
         // Carga de datos al iniciar el fragment
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String nombreUsuario = sharedPreferences.getString("usuario", null);
@@ -94,12 +93,34 @@ public class EditarPerfilFragment extends Fragment {
 
                 @Override
                 public void onFailure(Exception e) {
-                    Toast.makeText(getActivity(), "Error al cargar los datos", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Error al cargar los datos", Toast.LENGTH_SHORT).show();
+                    builder.setTitle("Error");
+                    builder.setMessage("Error al cargar los datos");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Cierra el diálogo
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
             });
         }
         else{
-            Toast.makeText(getActivity(), "No se encontro el nombre de usuario", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "No se encontro el nombre de usuario", Toast.LENGTH_SHORT).show();
+            builder.setTitle("Error");
+            builder.setMessage("No se encontro el nombre de usuario");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Cierra el diálogo
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
 
 
@@ -127,11 +148,31 @@ public class EditarPerfilFragment extends Fragment {
                         updateUsuario(negocioUsuario, usuarioAeditar);
                     }
                     else{
-                        Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
+                        builder.setTitle("Error");
+                        builder.setMessage("La contraseña no cumple con los requisitos");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Cierra el diálogo
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
                     }
                 }
                 else{
-                    Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    builder.setTitle("Error");
+                    builder.setMessage("Las contraseñas no coinciden");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Cierra el diálogo
+                            dialog.dismiss();
+                        }
+                    });
                 }
             }
 
@@ -145,13 +186,37 @@ public class EditarPerfilFragment extends Fragment {
         negocioUsuario.modificarUsuario(usuarioAeditar, new updateUsuarioCallback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(getActivity(), "Datos modificados correctamente", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Datos modificados correctamente", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("");
+                builder.setMessage("Datos modificados correctamente");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Cierra el diálogo
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(getActivity(), "Error al modificar los datos", Toast.LENGTH_SHORT).show();
+                 //Toast.makeText(getActivity(), "Error al modificar los datos", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Error");
+                builder.setMessage("Error al modificar los datos");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Cierra el diálogo
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }

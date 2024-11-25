@@ -1,7 +1,9 @@
 package com.example.finalprog2.fragment;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -42,7 +44,6 @@ public class LogInFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String nombreUsuario = sharedPreferences.getString("usuario", null);
         Usuario usuario = new Usuario();
-
 
         //setea el nombre de usuario en el campo de texto
         if (nombreUsuario != null) {
@@ -133,12 +134,39 @@ public class LogInFragment extends Fragment {
 
                         @Override
                         public void onFailure(Exception e) {
-                            Toast.makeText(getActivity(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getActivity(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                            //Crea el objeto builder para los popup de error
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setTitle("Error");
+                            builder.setMessage("Usuario o contraseña incorrectos");
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Cierra el diálogo
+                                    dialog.dismiss();
+                                }
+                            });
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+
                         }
                     });
                 }
                 else{
-                    Toast.makeText(getActivity(), "Por favor ingrese usuario y contraseña", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Por favor ingrese usuario y contraseña", Toast.LENGTH_SHORT).show();
+                    //Crea el objeto builder para los popup de error
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Warning");
+                    builder.setMessage("Por favor ingrese usuario y contraseña");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Cierra el diálogo
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
 
 
@@ -163,6 +191,8 @@ public class LogInFragment extends Fragment {
                     .addToBackStack(null) // Esto permite regresar al fragmento anterior
                     .commit();
         });
+
+
 
      return view;
     }

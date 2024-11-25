@@ -121,9 +121,14 @@ public class EditarPerfilFragment extends Fragment {
             }
             else{
                 if(pass.equals(repetir_pass)){
-                    Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, pass);
-                    usuarioAeditar.setId(idUsuario);
-                    updateUsuario(negocioUsuario, usuarioAeditar);
+                    if(passValida(pass)) {
+                        Usuario usuarioAeditar = new Usuario(nombre, apellido, usuario, email, pass);
+                        usuarioAeditar.setId(idUsuario);
+                        updateUsuario(negocioUsuario, usuarioAeditar);
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
                     Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
@@ -160,5 +165,29 @@ public class EditarPerfilFragment extends Fragment {
                 .commit();
     }
 
+    private boolean passValida(String pass) {
+        // Verificar que la contraseña tenga al menos 8 caracteres
+        if (pass.length() < 8) {
+            return false;
+        }
+
+        // Uso de expresiones regulares para comprobar letras y números
+        boolean tieneLetras = false;
+        boolean tieneDigitos = false;
+
+        for (char c : pass.toCharArray()) {
+            if (Character.isLetter(c)) {
+                tieneLetras = true;
+            }
+            if (Character.isDigit(c)) {
+                tieneDigitos = true;
+            }
+            if (tieneLetras && tieneDigitos) {
+                return true; // Si tiene ambos, la contraseña es válida
+            }
+        }
+
+        return false; // Si no cumple los requisitos
+    }
 
 }

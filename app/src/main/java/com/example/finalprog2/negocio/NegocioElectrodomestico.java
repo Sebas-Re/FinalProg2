@@ -3,6 +3,9 @@ package com.example.finalprog2.negocio;
 import android.content.Context;
 
 import com.example.finalprog2.entidad.Electrodomestico;
+import com.example.finalprog2.interfaces.EficienciaCallback;
+import com.example.finalprog2.interfaces.ElectrodomesticoCallback;
+import com.example.finalprog2.interfaces.KwhCallback;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -17,22 +20,7 @@ public class NegocioElectrodomestico {
 
     }
 
-    public interface ElectrodomesticoCallback {
-        void onElectrodomesticosCargados(List<String> listaElectrodomesticos);
-        void onErrorElectrodomestico(String error);
-    }
-
-    public interface EficienciaCallback {
-        void onEficienciasCargadas(List<String> eficiencias); // Callback para eficiencias
-        void onErrorEficiencia(String error);
-    }
-
-    public interface KwhCallback {
-        void onKwhObtenido(int kwh);
-        void onErrorKwh(String error);
-    }
-
-    public static void obtenerElectrodomesticos(final ElectrodomesticoCallback callback) {
+    public static void obtenerElectrodomesticos(ElectrodomesticoCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("electrodomestico")
@@ -58,7 +46,7 @@ public class NegocioElectrodomestico {
                 });
     }
 
-    public static void obtenerEficiencias(String tipo, final EficienciaCallback callback) {
+    public static void obtenerEficiencias(String tipo, EficienciaCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("electrodomestico")

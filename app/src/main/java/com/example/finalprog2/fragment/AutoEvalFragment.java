@@ -22,6 +22,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.finalprog2.R;
 import com.example.finalprog2.entidad.Electrodomestico;
+import com.example.finalprog2.interfaces.EficienciaCallback;
+import com.example.finalprog2.interfaces.ElectrodomesticoCallback;
+import com.example.finalprog2.interfaces.KwhCallback;
 import com.example.finalprog2.negocio.NegocioElectrodomestico;
 import com.example.finalprog2.utils.PopupMenuHelper;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -136,7 +139,7 @@ public class AutoEvalFragment extends Fragment {
     }
 
     private void actualizarKwh(String tipo, String eficiencia) {
-        NegocioElectrodomestico.obtenerKwhPorEficiencia(tipo, eficiencia, new NegocioElectrodomestico.KwhCallback() {
+        NegocioElectrodomestico.obtenerKwhPorEficiencia(tipo, eficiencia, new KwhCallback() {
             @Override
             public void onKwhObtenido(int kwh) {
                 tvKwh.setText(String.format("%s kWh", kwh));
@@ -150,7 +153,7 @@ public class AutoEvalFragment extends Fragment {
     }
 
     private void cargarElectrodomesticos() {
-        NegocioElectrodomestico.obtenerElectrodomesticos(new NegocioElectrodomestico.ElectrodomesticoCallback() {
+        NegocioElectrodomestico.obtenerElectrodomesticos(new ElectrodomesticoCallback() {
             @Override
             public void onElectrodomesticosCargados(List<String> listaElectrodomesticos) {
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
@@ -167,7 +170,7 @@ public class AutoEvalFragment extends Fragment {
     }
 
     private void cargarEficiencias(String tipo) {
-        NegocioElectrodomestico.obtenerEficiencias(tipo, new NegocioElectrodomestico.EficienciaCallback() {
+        NegocioElectrodomestico.obtenerEficiencias(tipo, new EficienciaCallback() {
             @Override
             public void onEficienciasCargadas(List<String> eficiencias) {
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),

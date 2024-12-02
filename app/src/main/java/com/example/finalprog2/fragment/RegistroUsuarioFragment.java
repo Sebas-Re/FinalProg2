@@ -81,63 +81,23 @@ public class RegistroUsuarioFragment extends Fragment {
                             @Override
                             public void onFailure(Exception e) {
                                 //Toast.makeText(getActivity(), "El usuario o email ya estan en uso", Toast.LENGTH_SHORT).show();
-                                builder.setTitle("Error");
-                                builder.setMessage("El usuario o email ya estan en uso");
-                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // Cierra el diálogo
-                                        dialog.dismiss();
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                dialog.show();
+                                popupmsg("Error","El usuario o email ya estan en uso");
                             }
                         });
                     }
                     else{
                         //Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
-                        builder.setTitle("Error");
-                        builder.setMessage("La contraseña no cumple con los requisitos");
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Cierra el diálogo
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                        popupmsg("Error","La contraseña no cumple con los requisitos");
                     }
                 }
                 else{
                     //Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-                    builder.setTitle("Error");
-                    builder.setMessage("Las contraseñas no coinciden");
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Cierra el diálogo
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+                    popupmsg("Error","Las contraseñas no coinciden");
                 }
             }
             else{
                 //Toast.makeText(getActivity(), "Por favor ingrese todos los campos", Toast.LENGTH_SHORT).show();
-                builder.setTitle("Error");
-                builder.setMessage("Por favor ingrese todos los campos");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Cierra el diálogo
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                popupmsg("Error","Por favor ingrese todos los campos");
             }
         });
         
@@ -176,5 +136,20 @@ public class RegistroUsuarioFragment extends Fragment {
         }
 
         return false; // Si no cumple los requisitos
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

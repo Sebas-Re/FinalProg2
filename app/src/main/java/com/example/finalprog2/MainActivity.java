@@ -1,10 +1,14 @@
 package com.example.finalprog2;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
+import com.example.finalprog2.fragment.HomeFragment;
 import com.example.finalprog2.fragment.LogInFragment;
 import com.example.finalprog2.fragment.RegistroUsuarioFragment;
 

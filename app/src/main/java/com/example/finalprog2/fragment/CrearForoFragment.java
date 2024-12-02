@@ -1,6 +1,8 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -84,7 +86,8 @@ public class CrearForoFragment extends Fragment {
                 publicacion.guardarPublicacion();
 
                 // Mostrar un mensaje de éxito
-                Toast.makeText(getActivity(), "Publicación creada correctamente", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Publicación creada correctamente", Toast.LENGTH_SHORT).show();
+                popupmsg("","Publicación creada correctamente");
 
                 // Limpiar los campos de texto y deseleccionar el RadioGroup
                 inputTitulo.setText(""); // Limpiar el título
@@ -98,7 +101,8 @@ public class CrearForoFragment extends Fragment {
                         .addToBackStack(null)
                         .commit();*/
             } else {
-                Toast.makeText(getActivity(), "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
+                popupmsg("","Por favor, complete todos los campos.");
             }
         });
 
@@ -110,10 +114,26 @@ public class CrearForoFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String nombreUsuario = sharedPreferences.getString("usuario", null);
         if (nombreUsuario == null) {
-            Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
+            popupmsg("","No se encontró el nombre de usuario");
         } else {
             return nombreUsuario;
         }
         return nombreUsuario;
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

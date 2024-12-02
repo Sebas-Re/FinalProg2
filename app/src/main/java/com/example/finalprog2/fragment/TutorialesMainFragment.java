@@ -1,5 +1,7 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -161,7 +163,8 @@ public class TutorialesMainFragment extends Fragment implements TutorialAdapter.
             } else {
                 FirebaseFirestoreException exception = (FirebaseFirestoreException) task.getException();
                 Log.e("TutorialesMainFragment", "Error al cargar tutoriales: ", exception);
-                Toast.makeText(getContext(), "Error al cargar tutoriales", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Error al cargar tutoriales", Toast.LENGTH_SHORT).show();
+                popupmsg("Error","Error al cargar tutoriales");
             }
         });
     }
@@ -231,5 +234,19 @@ public class TutorialesMainFragment extends Fragment implements TutorialAdapter.
                 .commit();
     }
 
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
 }

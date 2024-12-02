@@ -94,33 +94,13 @@ public class EditarPerfilFragment extends Fragment {
                 @Override
                 public void onFailure(Exception e) {
                     //Toast.makeText(getActivity(), "Error al cargar los datos", Toast.LENGTH_SHORT).show();
-                    builder.setTitle("Error");
-                    builder.setMessage("Error al cargar los datos");
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Cierra el diálogo
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+                    popupmsg("Error","Error al cargar los datos");
                 }
             });
         }
         else{
             //Toast.makeText(getActivity(), "No se encontro el nombre de usuario", Toast.LENGTH_SHORT).show();
-            builder.setTitle("Error");
-            builder.setMessage("No se encontro el nombre de usuario");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // Cierra el diálogo
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+            popupmsg("Error","No se encontro el nombre de usuario");
         }
 
 
@@ -149,30 +129,13 @@ public class EditarPerfilFragment extends Fragment {
                     }
                     else{
                         //Toast.makeText(getActivity(), "La contraseña no cumple con los requisitos", Toast.LENGTH_SHORT).show();
-                        builder.setTitle("Error");
-                        builder.setMessage("La contraseña no cumple con los requisitos");
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Cierra el diálogo
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                        popupmsg("Error","La contraseña no cumple con los requisitos");
                     }
                 }
                 else{
                     //Toast.makeText(getActivity(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-                    builder.setTitle("Error");
-                    builder.setMessage("Las contraseñas no coinciden");
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Cierra el diálogo
-                            dialog.dismiss();
-                        }
-                    });
+                    popupmsg("Error","Las contraseñas no coinciden");
+
                 }
             }
 
@@ -187,36 +150,14 @@ public class EditarPerfilFragment extends Fragment {
             @Override
             public void onSuccess() {
                 //Toast.makeText(getActivity(), "Datos modificados correctamente", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("");
-                builder.setMessage("Datos modificados correctamente");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Cierra el diálogo
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                popupmsg("","Datos modificados correctamente");
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
 
             @Override
             public void onFailure(Exception e) {
                  //Toast.makeText(getActivity(), "Error al modificar los datos", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Error");
-                builder.setMessage("Error al modificar los datos");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Cierra el diálogo
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                popupmsg("Error","Error al modificar los datos");
             }
         });
     }
@@ -253,6 +194,21 @@ public class EditarPerfilFragment extends Fragment {
         }
 
         return false; // Si no cumple los requisitos
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

@@ -1,8 +1,11 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,16 +29,53 @@ import com.example.finalprog2.interfaces.VerificarEmailCallback;
 import com.example.finalprog2.utils.PopupMenuHelper;
 import com.example.finalprog2.negocio.NegocioUsuario;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import android.view.KeyEvent;
+import androidx.activity.OnBackPressedCallback;
 
 public class HomeFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        // Hacer que el View sea capaz de recibir eventos de teclado
+        view.setFocusableInTouchMode(true);  // Esto permite que el View reciba el foco
+        view.requestFocus();  // Asignar el foco al View raíz del fragmento
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                mostrarConfirmacionSalida();
+            }
+        });
+
+        return view;
+    }
+
+    private void mostrarConfirmacionSalida() {
+        // Mostrar un cuadro de diálogo de confirmación
+        new AlertDialog.Builder(requireContext())
+                .setMessage("¿Estás seguro de que deseas salir?")
+                .setCancelable(false)
+                .setPositiveButton("Sí", (dialog, id) -> {
+                    requireActivity().finish(); // Finaliza la actividad y cierra la app
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        // Hacer que la actividad maneje las teclas (solo en la actividad principal)
+        requireActivity().findViewById(android.R.id.content).setFocusableInTouchMode(true);
+        requireActivity().findViewById(android.R.id.content).requestFocus();
+
+    }
+
+   @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -48,6 +88,7 @@ public class HomeFragment extends Fragment {
         if (toolbarTitle != null) {
             toolbarTitle.setText("Inicio");
         }
+
 
         //Ocultar el nombre de la app
         toolbar.setTitle("");
@@ -110,7 +151,8 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String nombreUsuario = sharedPreferences.getString("usuario", null);
         if (nombreUsuario == null) {
-            Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
+            popupmsg("Error","No se encontró el nombre de usuario");
             return;
         }
 
@@ -128,7 +170,8 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(getActivity(), "Error al cargar los datos del usuario", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Error al cargar los datos del usuario", Toast.LENGTH_SHORT).show();
+                popupmsg("Error","Error al cargar los datos del usuario");
             }
         });
     }
@@ -153,5 +196,20 @@ public class HomeFragment extends Fragment {
                 Log.e("HomeFragment", "Error al verificar el rol del usuario", e);
             }
         });
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

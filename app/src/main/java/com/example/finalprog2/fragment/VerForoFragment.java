@@ -1,6 +1,8 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -90,10 +92,12 @@ public class VerForoFragment extends Fragment {
                     agregarComentarioAFirebase(comentarioTexto, nombre);
                     etComment.setText(""); // Limpiar el campo de texto
                 } else {
-                    Toast.makeText(getContext(), "El comentario no puede estar vacío", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "El comentario no puede estar vacío", Toast.LENGTH_SHORT).show();
+                    popupmsg("","El comentario no puede estar vacío");
                 }
             } else {
-                Toast.makeText(getContext(), "Error: No se puede comentar sin un foro válido", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Error: No se puede comentar sin un foro válido", Toast.LENGTH_SHORT).show();
+                popupmsg("Error","No se puede comentar sin un foro válido");
             }
         });
 
@@ -110,7 +114,8 @@ public class VerForoFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String nombreUsuario = sharedPreferences.getString("usuario", null);
         if (nombreUsuario == null) {
-            Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "No se encontró el nombre de usuario", Toast.LENGTH_SHORT).show();
+            popupmsg("Error","No se encontró el nombre de usuario");
 
         }else {
             return nombreUsuario;
@@ -176,12 +181,14 @@ public class VerForoFragment extends Fragment {
         db.collection("comentario")
                 .add(comentario)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(getContext(), "Comentario agregado", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Comentario agregado", Toast.LENGTH_SHORT).show();
+                    popupmsg("","Comentario agregado");
                     cargarComentarios(); // Actualizar los comentarios
                 })
                 .addOnFailureListener(e -> {
                     Log.e("VerForoFragment", "Error al agregar comentario", e);
-                    Toast.makeText(getContext(), "Error al agregar comentario", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Error al agregar comentario", Toast.LENGTH_SHORT).show();
+                    popupmsg("Error", "Error al agregar comentario");
                 });
     }
 
@@ -192,5 +199,20 @@ public class VerForoFragment extends Fragment {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

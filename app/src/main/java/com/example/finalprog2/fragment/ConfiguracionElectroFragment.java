@@ -1,5 +1,7 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +13,13 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalprog2.entidad.Electrodomestico;
+import com.example.finalprog2.interfaces.GuardarElectrodomesticoCallback;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Transaction;
-import com.google.firebase.firestore.DocumentReference;
 
 import java.util.HashMap;
 import java.util.Map;
 import com.example.finalprog2.R;
+import com.example.finalprog2.negocio.NegocioElectrodomestico;
 
 public class ConfiguracionElectroFragment extends Fragment {
 
@@ -50,6 +50,9 @@ public class ConfiguracionElectroFragment extends Fragment {
         etC = view.findViewById(R.id.etC);
         btnGuardar = view.findViewById(R.id.btnGuardar);
 
+        // Inicializar negocio con una instancia de NegocioElectrodomestico
+        //negocioElectrodomestico = new NegocioElectrodomestico();
+
         // Configuración del botón para guardar
         btnGuardar.setOnClickListener(v -> guardarElectrodomestico());
 
@@ -57,56 +60,59 @@ public class ConfiguracionElectroFragment extends Fragment {
     }
 
     private void guardarElectrodomestico() {
-        String tipo = etTipo.getText().toString();
-        String consumoSemanalStr = etConsumoSemanal.getText().toString();
-        String aplus = etAplus.getText().toString();
-        String aplusplus = etAplusplus.getText().toString();
-        String b = etB.getText().toString();
-        String c = etC.getText().toString();
+        String tipo = etTipo.getText().toString().trim();
+        String consumoSemanalStr = etConsumoSemanal.getText().toString().trim();
+        String aplus = etAplus.getText().toString().trim();
+        String aplusplus = etAplusplus.getText().toString().trim();
+        String b = etB.getText().toString().trim();
+        String c = etC.getText().toString().trim();
 
         if (tipo.isEmpty() || consumoSemanalStr.isEmpty() || aplus.isEmpty() || aplusplus.isEmpty() || b.isEmpty() || c.isEmpty()) {
-            Toast.makeText(getActivity(), "Por favor complete todos los campos", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Por favor complete todos los campos", Toast.LENGTH_SHORT).show();
+            popupmsg("","Por favor complete todos los campos");
             return;
         }
 
-        int consumoPromedio = Integer.parseInt(consumoSemanalStr);
+        try {
+            int consumoPromedio = Integer.parseInt(consumoSemanalStr);
 
-        // Crear el objeto Electrodomestico
-        Electrodomestico electrodomestico = new Electrodomestico();
-        electrodomestico.setTipo(tipo);
-        electrodomestico.setconsumoPromedio((long) consumoPromedio);
+            // Crear el objeto Electrodomestico
+            Electrodomestico electrodomestico = new Electrodomestico();
+            electrodomestico.setTipo(tipo);
+            electrodomestico.setconsumoPromedio((long) consumoPromedio);
 
-        // Crear el mapa de eficiencia
-        Map<String, Map<String, Integer>> eficiencia = new HashMap<>();
-        eficiencia.put("A+", createEfficiencyMap(Integer.parseInt(aplus)));
-        eficiencia.put("A++", createEfficiencyMap(Integer.parseInt(aplusplus)));
-        eficiencia.put("B", createEfficiencyMap(Integer.parseInt(b)));
-        eficiencia.put("C", createEfficiencyMap(Integer.parseInt(c)));
+            // Crear el mapa de eficiencia
+            Map<String, Map<String, Integer>> eficiencia = new HashMap<>();
+            eficiencia.put("A+", createEfficiencyMap(Integer.parseInt(aplus)));
+            eficiencia.put("A++", createEfficiencyMap(Integer.parseInt(aplusplus)));
+            eficiencia.put("B", createEfficiencyMap(Integer.parseInt(b)));
+            eficiencia.put("C", createEfficiencyMap(Integer.parseInt(c)));
 
-        electrodomestico.setEficiencia(eficiencia);
+            electrodomestico.setEficiencia(eficiencia);
 
-        // Obtener el número actual de registros para asignar un id incremental
-        db.collection("electrodomestico").get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot snapshot = task.getResult();
-                        int currentId = snapshot.size(); // Obtener el número actual de documentos
-                        electrodomestico.setId(currentId + 1); // Asignar un id incremental
+            // Inicializar negocio con una instancia de NegocioElectrodomestico
+            NegocioElectrodomestico negocioElectrodomestico = new NegocioElectrodomestico(getContext());
 
-                        // Guardar el electrodoméstico en Firebase con el id incremental
-                        db.collection("electrodomestico")
-                                .add(electrodomestico)
-                                .addOnSuccessListener(documentReference -> {
-                                    Toast.makeText(getActivity(), "Electrodoméstico guardado exitosamente", Toast.LENGTH_SHORT).show();
-                                    clearFields();
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(getActivity(), "Error al guardar el electrodoméstico", Toast.LENGTH_SHORT).show();
-                                });
-                    } else {
-                        Toast.makeText(getActivity(), "Error al obtener los registros", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            // Llamar al negocio con Callback
+            negocioElectrodomestico.GuardarElectrodomestico(electrodomestico, new GuardarElectrodomesticoCallback() {
+                @Override
+                public void onGuardarElectro() {
+                    //Toast.makeText(getActivity(), "Electrodoméstico guardado exitosamente", Toast.LENGTH_SHORT).show();
+                    popupmsg("","Electrodoméstico guardado exitosamente");
+                    clearFields();
+                }
+
+                @Override
+                public void onErrorGuardarElectro(String error) {
+                    //Toast.makeText(getActivity(), "Error al guardar: " + error, Toast.LENGTH_SHORT).show();
+                    popupmsg("Error","Error al guardar: " + error);
+                }
+            });
+
+        } catch (NumberFormatException e) {
+            //Toast.makeText(getActivity(), "Por favor ingrese valores numéricos válidos", Toast.LENGTH_SHORT).show();
+            popupmsg("","Por favor ingrese valores numéricos válidos");
+        }
     }
 
     private Map<String, Integer> createEfficiencyMap(int kwh) {
@@ -122,5 +128,20 @@ public class ConfiguracionElectroFragment extends Fragment {
         etAplusplus.setText("");
         etB.setText("");
         etC.setText("");
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

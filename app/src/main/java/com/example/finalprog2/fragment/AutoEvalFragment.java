@@ -1,5 +1,7 @@
 package com.example.finalprog2.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +27,7 @@ import com.example.finalprog2.entidad.Electrodomestico;
 import com.example.finalprog2.interfaces.EficienciaCallback;
 import com.example.finalprog2.interfaces.ElectrodomesticoCallback;
 import com.example.finalprog2.interfaces.KwhCallback;
+import com.example.finalprog2.interfaces.ObtenerConsumoCallback;
 import com.example.finalprog2.negocio.NegocioElectrodomestico;
 import com.example.finalprog2.utils.PopupMenuHelper;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -147,7 +150,8 @@ public class AutoEvalFragment extends Fragment {
 
             @Override
             public void onErrorKwh(String error) {
-                Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show();
+                //Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show();
+                popupmsg("Error",error);
             }
         });
     }
@@ -164,7 +168,8 @@ public class AutoEvalFragment extends Fragment {
 
             @Override
             public void onErrorElectrodomestico(String error) {
-                Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show();
+                //Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show();
+                popupmsg("Error",error);
             }
         });
     }
@@ -195,18 +200,40 @@ public class AutoEvalFragment extends Fragment {
 
             // Crear el objeto Electrodomestico
             Electrodomestico electrodomestico = new Electrodomestico();
-
-            // Guardar la eficiencia en el Map con el tipo como clave
-            electrodomestico.setEficienciaPorHoras(tipoSeleccionado, kwhPorHora);
             electrodomestico.setTipo(tipoSeleccionado);
-            // Obtener el consumo semanal desde Firebase y luego agregar a la lista
-          obtenerConsumoSemanalDesdeFirebase(tipoSeleccionado, electrodomestico);
+            electrodomestico.setEficienciaPorHoras(tipoSeleccionado, kwhPorHora);
 
+            // Obtener el consumo semanal utilizando la interfaz
+            NegocioElectrodomestico.obtenerConsumoSemanal(tipoSeleccionado, new ObtenerConsumoCallback() {
+                @Override
+                public void onObtenerconsumo(List<String> listaConsumo) {
+                    if (!listaConsumo.isEmpty()) {
+                        int consumoSemanal = Integer.parseInt(listaConsumo.get(0)); // Supongamos que el consumo está en la primera posición
+                        electrodomestico.setconsumoPromedio((long) consumoSemanal);
 
+                        // Agregar a la lista de electrodomésticos
+                        electrodomesticos.add(electrodomestico);
+
+                        // Actualizar la vista
+                        actualizarVistaElectrodomesticos(electrodomestico);
+                    } else {
+                        //Toast.makeText(requireContext(), "No se encontraron datos para este electrodoméstico.", Toast.LENGTH_SHORT).show();
+                        popupmsg("","No se encontraron datos para este electrodoméstico.");
+                    }
+                }
+
+                @Override
+                public void onErrorObtenerConsumo(String error) {
+                    //Toast.makeText(requireContext(), "Error al obtener el consumo semanal: " + error, Toast.LENGTH_SHORT).show();
+                    popupmsg("","Error al obtener el consumo semanal: " + error);
+                }
+            });
         } else {
-            Toast.makeText(requireContext(), "Selecciona un electrodoméstico y su eficiencia.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(requireContext(), "Selecciona un electrodoméstico y su eficiencia.", Toast.LENGTH_SHORT).show();
+            popupmsg("","Selecciona un electrodoméstico y su eficiencia.");
         }
     }
+
     private void calcularCosto() {
         // Obtener el valor ingresado por el usuario en el campo de tarifa kWh
         EditText inputTarifaKwh = getView().findViewById(R.id.input_tarifaKwh);
@@ -239,49 +266,21 @@ public class AutoEvalFragment extends Fragment {
                     TextView tvCostoEstimado = getView().findViewById(R.id.tv_costo_estimado);
                     tvCostoEstimado.setText(String.format("COSTO ESTIMADO SEMANAL: $%.2f", costoEstimado));
                 } else {
-                    Toast.makeText(requireContext(), "No hay electrodomésticos agregados.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(requireContext(), "No hay electrodomésticos agregados.", Toast.LENGTH_SHORT).show();
+                    popupmsg("","No hay electrodomésticos agregados.");
                 }
 
             } catch (NumberFormatException e) {
                 // Mostrar un mensaje si la tarifa no es un número válido
-                Toast.makeText(requireContext(), "Por favor ingrese una tarifa válida.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(requireContext(), "Por favor ingrese una tarifa válida.", Toast.LENGTH_SHORT).show();
+                popupmsg("","Por favor ingrese una tarifa válida.");
             }
         } else {
             // Si el campo de tarifa está vacío
-            Toast.makeText(requireContext(), "Por favor ingrese la tarifa por kWh.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(requireContext(), "Por favor ingrese la tarifa por kWh.", Toast.LENGTH_SHORT).show();
+            popupmsg("","Por favor ingrese la tarifa por kWh.");
         }
     }
-
-    private void obtenerConsumoSemanalDesdeFirebase(String tipo, Electrodomestico electrodomestico) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("electrodomestico")
-                .whereEqualTo("tipo", tipo)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Supongamos que el campo en Firebase para el consumo semanal se llama "consumoSemanal"
-                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
-                        int consumoSemanal = document.getLong("consumoPromedio").intValue();
-
-                        // Guardar el consumo semanal en el objeto Electrodomestico
-                        electrodomestico.setconsumoPromedio((long) consumoSemanal);
-
-                        // Agregar a la lista después de obtener el consumo
-                        electrodomesticos.add(electrodomestico);
-
-                        // Actualizar la vista
-                        actualizarVistaElectrodomesticos(electrodomestico);
-
-                    } else {
-                        Toast.makeText(requireContext(), "No se encontró el tipo de electrodoméstico en la base de datos.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Error al obtener datos de Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
 
     private void actualizarVistaElectrodomesticos(Electrodomestico electrodomestico) {
         String textoActual = tvListaElectrodomesticos.getText().toString();
@@ -295,6 +294,21 @@ public class AutoEvalFragment extends Fragment {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void popupmsg(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cierra el diálogo
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

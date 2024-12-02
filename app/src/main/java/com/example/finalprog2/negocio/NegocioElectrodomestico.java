@@ -5,10 +5,13 @@ import android.content.Context;
 import com.example.finalprog2.entidad.Electrodomestico;
 import com.example.finalprog2.interfaces.EficienciaCallback;
 import com.example.finalprog2.interfaces.ElectrodomesticoCallback;
+import com.example.finalprog2.interfaces.GuardarElectrodomesticoCallback;
 import com.example.finalprog2.interfaces.KwhCallback;
+import com.example.finalprog2.interfaces.ObtenerConsumoCallback;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +98,48 @@ public class NegocioElectrodomestico {
                     }
                 })
                 .addOnFailureListener(e -> callback.onErrorKwh("Error al obtener kWh: " + e.getMessage()));
+    }
+
+    public static void obtenerConsumoSemanal(String tipo, ObtenerConsumoCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("electrodomestico")
+                .whereEqualTo("tipo", tipo)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        List<String> listaConsumo = new ArrayList<>();
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            int consumoSemanal = document.getLong("consumoPromedio").intValue();
+                            listaConsumo.add(String.valueOf(consumoSemanal));
+                        }
+                        callback.onObtenerconsumo(listaConsumo);
+                    } else {
+                        callback.onErrorObtenerConsumo("No se encontraron datos para este tipo de electrodoméstico.");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onErrorObtenerConsumo("Error en Firestore: " + e.getMessage()));
+    }
+
+    public void GuardarElectrodomestico(Electrodomestico electrodomestico, GuardarElectrodomesticoCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("electrodomestico").get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot snapshot = task.getResult();
+                        int currentId = (snapshot != null) ? snapshot.size() : 0;
+                        electrodomestico.setId(currentId + 1);
+
+                        // Guardar el electrodoméstico en Firestore
+                        db.collection("electrodomestico")
+                                .add(electrodomestico)
+                                .addOnSuccessListener(documentReference -> callback.onGuardarElectro())
+                                .addOnFailureListener(e -> callback.onErrorGuardarElectro(e.getMessage()));
+                    } else {
+                        callback.onErrorGuardarElectro("Error al obtener registros de la colección.");
+                    }
+                });
     }
 }
 

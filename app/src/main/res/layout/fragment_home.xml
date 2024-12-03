@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:text="Noticias"
                     android:textSize="20sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:paddingTop="8dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:text="Tutoriales"
                     android:textSize="20sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:paddingTop="8dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:text="AutoEvaluación"
                     android:textSize="20sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:paddingTop="8dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -158,7 +158,7 @@
                     android:layout_height="wrap_content"
                     android:text="Foros"
                     android:textSize="20sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:paddingTop="8dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -192,7 +192,7 @@
                     android:layout_height="wrap_content"
                     android:text="Sitios"
                     android:textSize="20sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:paddingTop="8dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -226,7 +226,7 @@
                     android:layout_height="wrap_content"
                     android:text="Configuración"
                     android:textSize="20sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:paddingTop="8dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

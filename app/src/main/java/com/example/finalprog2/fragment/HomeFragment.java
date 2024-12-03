@@ -7,9 +7,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,8 @@ import com.example.finalprog2.interfaces.VerificarEmailCallback;
 import com.example.finalprog2.utils.PopupMenuHelper;
 import com.example.finalprog2.negocio.NegocioUsuario;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.sun.mail.imap.Rights;
+
 import android.view.KeyEvent;
 import androidx.activity.OnBackPressedCallback;
 
@@ -95,14 +99,17 @@ public class HomeFragment extends Fragment {
 
         // Configuración del botón de menú en el Toolbar
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
+        leftMenuButton.setTag("left");
         leftMenuButton.setOnClickListener(v -> {
             PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
         });
 
         // Configuracion del boton perfil
         ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setTag("right");
         rightUserButton.setOnClickListener(v -> {
-            navigateToFragment(new EditarPerfilFragment());
+            //navigateToFragment(new EditarPerfilFragment());
+            PopupMenuHelper.showPopupMenu(getContext(), rightUserButton, requireActivity());
         });
 
         View btnConfiguracionElectrodomestico = view.findViewById(R.id.btnConfiguracionElectrodomesticos);
@@ -112,9 +119,6 @@ public class HomeFragment extends Fragment {
         // Navegación entre fragmentos usando FragmentTransaction
         setupNavigationButtons(view);
     }
-
-
-
 
     private void setupNavigationButtons(View view) {
         view.findViewById(R.id.btnNoticias).setOnClickListener(v -> {

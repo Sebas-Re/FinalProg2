@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+        <item
+            android:id="@+id/menu_editar_perfil"
+            android:icon="@drawable/ic_user"
+            android:title="Editar perfil"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/menu_cerrar_sesion"
+            android:icon="@drawable/ic_flecha_izquierda"
+            android:title="Cerrar sesión"
+            app:showAsAction="never" />
+</menu>

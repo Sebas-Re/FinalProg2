@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,11 +67,12 @@ public class EditarPerfilFragment extends Fragment {
 
         // Configuracion del boton perfil
         ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
-        rightUserButton.setOnClickListener(v -> {
-            navigateToFragment(new EditarPerfilFragment());
-        });
+        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), rightUserButton, requireActivity()));
+        //rightUserButton.setOnClickListener(v -> {
+        //    navigateToFragment(new EditarPerfilFragment());
+        //});
 
-        //Crea el objeto builder para los popup de error
+                //Crea el objeto builder para los popup de error
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         // Carga de datos al iniciar el fragment
@@ -142,6 +144,22 @@ public class EditarPerfilFragment extends Fragment {
 
         });
 
+    }
+
+    private void cerrarSesion() {
+        // Limpia las preferencias compartidas para eliminar datos del usuario
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear(); // Elimina todos los datos guardados
+        editor.apply();
+
+        // Navega a la actividad de inicio de sesión
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new LogInFragment())
+                .commit();
+
+        Toast.makeText(requireContext(), "Sesión cerrada", Toast.LENGTH_SHORT).show();
     }
 
     // Funcion para modificar los datos del usuario

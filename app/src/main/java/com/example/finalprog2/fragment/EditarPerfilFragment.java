@@ -62,15 +62,20 @@ public class EditarPerfilFragment extends Fragment {
         //Ocultar el nombre de la app
         toolbar.setTitle("");
 
+        // Configuración del botón de menú en el Toolbar
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
-        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+        leftMenuButton.setTag("left");
+        leftMenuButton.setOnClickListener(v -> {
+            PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
+        });
 
         // Configuracion del boton perfil
         ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
-        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), rightUserButton, requireActivity()));
-        //rightUserButton.setOnClickListener(v -> {
-        //    navigateToFragment(new EditarPerfilFragment());
-        //});
+        rightUserButton.setTag("right");
+        rightUserButton.setOnClickListener(v -> {
+            //navigateToFragment(new EditarPerfilFragment());
+            PopupMenuHelper.showPopupMenu(getContext(), rightUserButton, requireActivity());
+        });
 
                 //Crea el objeto builder para los popup de error
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

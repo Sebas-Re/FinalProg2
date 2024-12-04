@@ -83,15 +83,20 @@ public class TutorialesMainFragment extends Fragment implements TutorialAdapter.
         toolbar.setTitle("");
 
 
+        // Configuración del botón de menú en el Toolbar
         ImageButton leftMenuButton = view.findViewById(R.id.left_menu_button);
-        leftMenuButton.setOnClickListener(v -> PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity()));
+        leftMenuButton.setTag("left");
+        leftMenuButton.setOnClickListener(v -> {
+            PopupMenuHelper.showPopupMenu(getContext(), leftMenuButton, requireActivity());
+        });
 
         // Configuracion del boton perfil
         ImageButton rightUserButton = view.findViewById(R.id.right_user_button);
+        rightUserButton.setTag("right");
         rightUserButton.setOnClickListener(v -> {
-            navigateToFragment(new EditarPerfilFragment());
+            //navigateToFragment(new EditarPerfilFragment());
+            PopupMenuHelper.showPopupMenu(getContext(), rightUserButton, requireActivity());
         });
-
 
         FirebaseTestData firebaseTestData = new FirebaseTestData();
       //  firebaseTestData.crearTutorialDePrueba();

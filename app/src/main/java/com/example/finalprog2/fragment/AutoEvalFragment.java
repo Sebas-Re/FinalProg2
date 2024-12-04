@@ -244,7 +244,11 @@ public class AutoEvalFragment extends Fragment {
             try {
                 // Convertir el valor de tarifa kWh a un número decimal (double)
                 double tarifaKWh = Double.parseDouble(tarifaKwhString);
-
+                //Valida que el costo no sea 0
+                if (tarifaKWh == 0) {
+                    popupmsg("Error", "Por favor, ingrese una tarifa válida (diferente de 0).");
+                    return; // Detener la ejecución de la función
+                }
                 // Aquí ya no necesitamos obtener la lista, ya que la lista es la misma que se actualiza en `agregarElectrodomestico`
                 if (!electrodomesticos.isEmpty()) {
                     int totalConsumoSemanal = 0;
